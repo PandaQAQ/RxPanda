@@ -1,0 +1,323 @@
+package com.pandaq.rxpanda.config;
+
+import androidx.annotation.NonNull;
+import com.pandaq.rxpanda.RxPanda;
+import com.pandaq.rxpanda.entity.ApiData;
+import com.pandaq.rxpanda.entity.IApiData;
+import com.pandaq.rxpanda.ssl.SSLManager;
+import okhttp3.Call;
+import okhttp3.ConnectionPool;
+import okhttp3.Interceptor;
+import retrofit2.CallAdapter;
+import retrofit2.Converter;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSocketFactory;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * Created by huxinyu on 2019/1/9.
+ * Email : panda.h@foxmail.com
+ * <p>
+ * Description :http global config
+ */
+public class HttpGlobalConfig {
+
+    //todo cache 和 cookie 暂时未做
+    private List<CallAdapter.Factory> callAdapterFactories = new ArrayList<>();//Call适配器工厂
+    private Converter.Factory converterFactory;//转换工厂
+    private Call.Factory callFactory;//Call工厂
+    private SSLSocketFactory sslSocketFactory;//SSL工厂
+    private HostnameVerifier hostnameVerifier;//主机域名验证
+    private ConnectionPool connectionPool;//连接池
+    private Map<String, String> globalHeaders = new LinkedHashMap<>();//请求头
+    private Map<String, String> globalParams = new LinkedHashMap<>();//请求参数
+    private String baseUrl;//基础域名
+    private long retryDelayMillis;//请求失败重试间隔时间
+    private int retryCount;//请求失败重试次数
+    private static HttpGlobalConfig sHttpGlobalConfig;
+    private boolean isDebug;
+    private Long apiSuccessCode = -1L;
+    private Class<? extends IApiData> apiDataClazz = ApiData.class;
+
+    private HttpGlobalConfig() {
+    }
+
+    public static HttpGlobalConfig getInstance() {
+        if (sHttpGlobalConfig == null) {
+            synchronized (HttpGlobalConfig.class) {
+                if (sHttpGlobalConfig == null) {
+                    sHttpGlobalConfig = new HttpGlobalConfig();
+                }
+            }
+        }
+        return sHttpGlobalConfig;
+    }
+
+    /**
+     * add a CallAdapter.Factory,if never add ,will add a RxJava2CallAdapterFactory as default
+     *
+     * @param factory the factory to add
+     * @return Config self
+     */
+    public HttpGlobalConfig addCallAdapterFactory(@NonNull CallAdapter.Factory factory) {
+        this.callAdapterFactories.add(factory);
+        return this;
+    }
+
+    /**
+     * add a Converter.Factory,if never add ,will add a GsonConverterFactory as default
+     *
+     * @param factory the factory to add
+     * @return Config self
+     */
+    public HttpGlobalConfig converterFactory(@NonNull Converter.Factory factory) {
+        this.converterFactory = factory;
+        return this;
+    }
+
+    /**
+     * add a Converter.Factory,if never add ,will add a GsonConverterFactory as default
+     *
+     * @param factory the factory to add
+     * @return Config self
+     */
+    public HttpGlobalConfig callFactory(@NonNull Call.Factory factory) {
+        this.callFactory = factory;
+        return this;
+    }
+
+    /**
+     * add a Converter.Factory,if never add ,will add a GsonConverterFactory as default
+     *
+     * @param factory the factory to add
+     * @return Config self
+     */
+    public HttpGlobalConfig sslFactory(@NonNull SSLSocketFactory factory) {
+        this.sslSocketFactory = factory;
+        return this;
+    }
+
+    /**
+     * add a HostnameVerifier,the Request will add your baseUrl as default,if you want add other host
+     * call this method
+     *
+     * @param verifier the hostname verifier
+     * @return Config self
+     */
+    public HttpGlobalConfig hostVerifier(@NonNull HostnameVerifier verifier) {
+        this.hostnameVerifier = verifier;
+        return this;
+    }
+
+    /**
+     * 添加安全认证的 hosts
+     *
+     * @param hosts hosts 地址
+     * @return config self
+     */
+    public HttpGlobalConfig hosts(String... hosts) {
+        // 默认添加基础域名
+        if (this.hostnameVerifier == null) {
+            this.hostnameVerifier = new SSLManager.SafeHostnameVerifier(hosts);
+            ((SSLManager.SafeHostnameVerifier) this.hostnameVerifier).addHost(baseUrl);
+        } else {
+            if (this.hostnameVerifier instanceof SSLManager.SafeHostnameVerifier) {
+                ((SSLManager.SafeHostnameVerifier) this.hostnameVerifier).addHosts(Arrays.asList(hosts));
+                ((SSLManager.SafeHostnameVerifier) this.hostnameVerifier).addHost(baseUrl);
+            } else {
+                throw new IllegalArgumentException("please verifier host in your custom hostnameVerifier,or do not call hostVerifier()");
+            }
+        }
+        return this;
+    }
+
+    /**
+     * set custom connectionPool
+     *
+     * @param pool custom pool
+     * @return Config self
+     */
+    public HttpGlobalConfig connectionPool(@NonNull ConnectionPool pool) {
+        this.connectionPool = pool;
+        return this;
+    }
+
+    /**
+     * add globalHeader this header will be added with every request
+     *
+     * @param key    header name
+     * @param header header value
+     * @return Config self
+     */
+    public HttpGlobalConfig addGlobalHeader(@NonNull String key, String header) {
+        this.globalHeaders.put(key, header);
+        return this;
+    }
+
+    /**
+     * add globalHeader by map
+     *
+     * @param headers http request headers
+     * @return Config self
+     */
+    public HttpGlobalConfig globalHeader(@NonNull Map<String, String> headers) {
+        this.globalHeaders = headers;
+        return this;
+    }
+
+    /**
+     * add globalParams,the params will be added with every HttpRequest exclude RetrofitRequest
+     *
+     * @param params the params
+     * @return config self
+     */
+    public HttpGlobalConfig globalParams(@NonNull Map<String, String> params) {
+        this.globalParams = params;
+        return this;
+    }
+
+    /**
+     * add globalParam,the param will be added with every HttpRequest exclude RetrofitRequest
+     *
+     * @param key   the paramsKey
+     * @param param the paramValue
+     * @return config self
+     */
+    public HttpGlobalConfig addGlobalParam(@NonNull String key, String param) {
+        this.globalParams.put(key, param);
+        return this;
+    }
+
+    /**
+     * if you use this http lib,must call it
+     *
+     * @param baseUrl RetrofitRequest's baseUrl,and this url will be added to HostnameVerifier
+     * @return config self
+     */
+    public HttpGlobalConfig baseUrl(@NonNull String baseUrl) {
+        this.baseUrl = baseUrl;
+        return this;
+    }
+
+    /**
+     * if you open retry strategy,you can set delay between tow requests
+     *
+     * @param retryDelay delay time (unit is 'ms')
+     * @return config self
+     */
+    public HttpGlobalConfig retryDelayMillis(long retryDelay) {
+        this.retryDelayMillis = retryDelay;
+        return this;
+    }
+
+    /**
+     * set retry count
+     *
+     * @param retryCount retryCount
+     * @return config self
+     */
+    public HttpGlobalConfig retryCount(int retryCount) {
+        this.retryCount = retryCount;
+        return this;
+    }
+
+    public HttpGlobalConfig interceptor(@NonNull Interceptor interceptor) {
+        RxPanda.getOkHttpBuilder().addInterceptor(interceptor);
+        return this;
+    }
+
+    public HttpGlobalConfig netInterceptor(@NonNull Interceptor netInterceptor) {
+        RxPanda.getOkHttpBuilder().addNetworkInterceptor(netInterceptor);
+        return this;
+    }
+
+    public HttpGlobalConfig readTimeout(long readTimeout) {
+        RxPanda.getOkHttpBuilder().readTimeout(readTimeout, TimeUnit.MILLISECONDS);
+        return this;
+    }
+
+    public HttpGlobalConfig writeTimeout(long writeTimeout) {
+        RxPanda.getOkHttpBuilder().writeTimeout(writeTimeout, TimeUnit.MILLISECONDS);
+        return this;
+    }
+
+    public HttpGlobalConfig connectTimeout(long connectTimeout) {
+        RxPanda.getOkHttpBuilder().connectTimeout(connectTimeout, TimeUnit.MILLISECONDS);
+        return this;
+    }
+
+    public HttpGlobalConfig apiDataClazz(Class<? extends IApiData> clazz) {
+        apiDataClazz = clazz;
+        return this;
+    }
+
+//    ######################################## getter ########################################
+
+    public List<CallAdapter.Factory> getCallAdapterFactories() {
+        return callAdapterFactories;
+    }
+
+    public Converter.Factory getConverterFactory() {
+        return converterFactory;
+    }
+
+    public Call.Factory getCallFactory() {
+        return callFactory;
+    }
+
+    public SSLSocketFactory getSslSocketFactory() {
+        return sslSocketFactory;
+    }
+
+    public HostnameVerifier getHostnameVerifier() {
+        return hostnameVerifier;
+    }
+
+    public ConnectionPool getConnectionPool() {
+        return connectionPool;
+    }
+
+    public Map<String, String> getGlobalHeaders() {
+        return globalHeaders;
+    }
+
+    public Map<String, String> getGlobalParams() {
+        return globalParams;
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public long getRetryDelayMillis() {
+        return retryDelayMillis;
+    }
+
+    public int getRetryCount() {
+        return retryCount;
+    }
+
+    public boolean isDebug() {
+        return isDebug;
+    }
+
+    public HttpGlobalConfig debug(boolean debug) {
+        isDebug = debug;
+        return this;
+    }
+
+    public Class getApiDataClazz() {
+        return apiDataClazz;
+    }
+
+    public Long getApiSuccessCode() {
+        return apiSuccessCode;
+    }
+
+    public HttpGlobalConfig apiSuccessCode(Long apiSuccessCode) {
+        this.apiSuccessCode = apiSuccessCode;
+        return this;
+    }
+}
