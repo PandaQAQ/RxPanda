@@ -1,6 +1,7 @@
 package com.pandaq.rxpanda.entity;
 
-import com.pandaq.appcore.network.RxPanda;
+
+import com.pandaq.rxpanda.RxPanda;
 
 /**
  * Created by huxinyu on 2018/5/27.

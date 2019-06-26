@@ -1,6 +1,6 @@
 package com.pandaq.rxpanda.transformer;
 
-import com.pandaq.appcore.network.RxPanda;
+import com.pandaq.rxpanda.RxPanda;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;

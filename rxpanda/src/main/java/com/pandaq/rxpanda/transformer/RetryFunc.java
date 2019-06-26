@@ -1,6 +1,6 @@
 package com.pandaq.rxpanda.transformer;
 
-import com.pandaq.appcore.network.exception.ApiException;
+import com.pandaq.rxpanda.exception.ApiException;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.functions.Function;

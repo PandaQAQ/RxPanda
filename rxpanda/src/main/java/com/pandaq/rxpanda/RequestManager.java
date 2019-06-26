@@ -1,7 +1,7 @@
 package com.pandaq.rxpanda;
 
+import android.util.Log;
 import androidx.annotation.NonNull;
-import com.pandaq.appcore.utils.log.PLogger;
 import io.reactivex.disposables.Disposable;
 
 import java.util.HashMap;
@@ -31,7 +31,7 @@ public class RequestManager {
 
     public void addTag(@NonNull Object tag, @NonNull Disposable disposable) {
         if (subscribers.containsKey(tag)) {
-            PLogger.w("the tag: " + tag + " has been used by another request !!!");
+            Log.w("RxPanda","the tag: " + tag + " has been used by another request !!!");
         }
         subscribers.put(tag, disposable);
     }
@@ -39,7 +39,7 @@ public class RequestManager {
     public void addTags(@NonNull Map<Object, Disposable> tags) {
         for (Object key : tags.keySet()) {
             if (subscribers.containsKey(key)) {
-                PLogger.w("the tag: " + key + " has been used by another request !!!");
+                Log.w("RxPanda","the tag: " + key + " has been used by another request !!!");
             }
         }
         subscribers.putAll(tags);
