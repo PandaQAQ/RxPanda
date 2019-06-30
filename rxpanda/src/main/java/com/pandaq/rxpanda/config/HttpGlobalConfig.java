@@ -2,6 +2,7 @@ package com.pandaq.rxpanda.config;
 
 import androidx.annotation.NonNull;
 import com.pandaq.rxpanda.RxPanda;
+import com.pandaq.rxpanda.converter.PandaConvertFactory;
 import com.pandaq.rxpanda.entity.ApiData;
 import com.pandaq.rxpanda.entity.IApiData;
 import com.pandaq.rxpanda.ssl.SSLManager;
@@ -26,7 +27,7 @@ public class HttpGlobalConfig {
 
     //todo cache 和 cookie 暂时未做
     private List<CallAdapter.Factory> callAdapterFactories = new ArrayList<>();//Call适配器工厂
-    private Converter.Factory converterFactory;//转换工厂
+    private Converter.Factory converterFactory = PandaConvertFactory.create();//转换工厂,默认为 PandaConvertFactory
     private Call.Factory callFactory;//Call工厂
     private SSLSocketFactory sslSocketFactory;//SSL工厂
     private HostnameVerifier hostnameVerifier;//主机域名验证

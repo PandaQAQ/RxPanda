@@ -15,6 +15,7 @@
  */
 package com.pandaq.rxpanda.interceptor;
 
+import com.pandaq.rxpanda.BuildConfig;
 import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.log.LogEntity;
 import okhttp3.*;
@@ -103,7 +104,7 @@ public final class HttpLoggingInterceptor implements Interceptor {
      */
     public HttpLoggingInterceptor setLevel(Level level) {
         // 非debug模式直接返回 NONE 级别
-        if (!RxPanda.globalConfig().isDebug()) return this;
+        if (!BuildConfig.DEBUG) return this;
 
         if (level == null) throw new NullPointerException("level == null. Use Level.NONE instead.");
         this.level = level;

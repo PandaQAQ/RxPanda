@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.config.CONFIG;
 import com.pandaq.rxpanda.config.HttpGlobalConfig;
+import com.pandaq.rxpanda.converter.PandaConvertFactory;
 import com.pandaq.rxpanda.interceptor.HeaderInterceptor;
 import com.pandaq.rxpanda.ssl.SSLManager;
 import com.pandaq.rxpanda.utils.CastUtils;
@@ -192,7 +193,7 @@ public class Request<T extends Request> {
             throw new IllegalArgumentException("base url can not be empty !!!");
         }
         if (mGlobalConfig.getConverterFactory() == null) {
-            mGlobalConfig.converterFactory(GsonConverterFactory.create());
+            mGlobalConfig.converterFactory(PandaConvertFactory.create());
         }
         retrofitBuilder.addConverterFactory(mGlobalConfig.getConverterFactory());
         if (mGlobalConfig.getCallAdapterFactories().isEmpty()) {

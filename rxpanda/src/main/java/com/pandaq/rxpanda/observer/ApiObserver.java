@@ -1,5 +1,6 @@
 package com.pandaq.rxpanda.observer;
 
+import android.util.Log;
 import com.pandaq.rxpanda.HttpCode;
 import com.pandaq.rxpanda.exception.ApiException;
 import io.reactivex.observers.DisposableObserver;
@@ -26,6 +27,7 @@ public abstract class ApiObserver<T> extends DisposableObserver<T> {
         } else {
             onError(new ApiException(t, HttpCode.FRAME_WORK.UNKNOWN));
         }
+        t.printStackTrace();
         success = false;
         finished(false);
     }
