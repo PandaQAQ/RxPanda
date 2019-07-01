@@ -1,6 +1,7 @@
 package com.pandaq.rxpanda.ssl;
 
 import androidx.collection.ArraySet;
+import com.pandaq.rxpanda.RxPanda;
 
 import javax.net.ssl.*;
 import java.io.IOException;
@@ -128,9 +129,10 @@ public class SSLManager {
             this.hosts.addAll(hosts);
         }
 
-        public SafeHostnameVerifier(String ... hosts) {
+        public SafeHostnameVerifier(String... hosts) {
             this.hosts.addAll(Arrays.asList(hosts));
         }
+
         /**
          * 添加一个 host
          *
@@ -161,6 +163,8 @@ public class SSLManager {
 
         @Override
         public boolean verify(String hostname, SSLSession session) {
+            // if allow all return true
+            if (RxPanda.globalConfig().isAllowAllHost()) return true;
             if (this.hosts == null || hosts.isEmpty()) return false;
             for (String host : hosts) {
                 if (host.contains(hostname)) {
