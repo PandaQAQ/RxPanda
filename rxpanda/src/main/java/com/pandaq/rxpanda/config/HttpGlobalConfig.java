@@ -40,6 +40,8 @@ public class HttpGlobalConfig {
     private static HttpGlobalConfig sHttpGlobalConfig;
     private boolean isDebug;
     private Long apiSuccessCode = -1L;
+    // 不验证 host 允许所有的 host
+    private boolean allowAllHost = false;
     private Class<? extends IApiData> apiDataClazz = ApiData.class;
 
     private HttpGlobalConfig() {
@@ -254,7 +256,16 @@ public class HttpGlobalConfig {
         return this;
     }
 
-//    ######################################## getter ########################################
+    public boolean isAllowAllHost() {
+        return allowAllHost;
+    }
+
+    public HttpGlobalConfig allowAllHost(boolean allowAllHost) {
+        this.allowAllHost = allowAllHost;
+        return this;
+    }
+
+    //    ######################################## getter ########################################
 
     public List<CallAdapter.Factory> getCallAdapterFactories() {
         return callAdapterFactories;
