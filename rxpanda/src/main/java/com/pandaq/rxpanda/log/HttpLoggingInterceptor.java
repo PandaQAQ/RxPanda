@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.pandaq.rxpanda.interceptor;
+package com.pandaq.rxpanda.log;
 
-import com.pandaq.rxpanda.BuildConfig;
 import com.pandaq.rxpanda.RxPanda;
-import com.pandaq.rxpanda.log.LogEntity;
 import okhttp3.*;
 import okio.Buffer;
 import okio.BufferedSource;
@@ -102,15 +100,12 @@ public final class HttpLoggingInterceptor implements Interceptor {
     /**
      * Change the level at which this interceptor logs.<br/><br/>
      * Debug is false default.if you want print the logs，
-     * you must call RxPanda.globalConfig().debug() first.<br/><br/>
+     * you must call RxPanda.globalConfig().debug().<br/><br/>
      *
      * @param level log level
      * @return log interceptor
      */
     public HttpLoggingInterceptor setLevel(Level level) {
-        // 非debug模式直接返回 NONE 级别
-        if (!RxPanda.globalConfig().isDebug()) return this;
-
         if (level == null) throw new NullPointerException("level == null. Use Level.NONE instead.");
         this.level = level;
         return this;
@@ -124,7 +119,7 @@ public final class HttpLoggingInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Level level = this.level;
         Request request = chain.request();
-        if (level == Level.NONE) {
+        if (level == Level.NONE || !RxPanda.globalConfig().isDebug()) {
             return chain.proceed(request);
         }
         LogEntity entity = new LogEntity();

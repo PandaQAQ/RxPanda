@@ -3,7 +3,8 @@ package com.pandaq.rxpanda.utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapterFactory;
-import com.pandaq.rxpanda.gsonadapter.ObjectTypeAdapter;
+import com.google.gson.internal.bind.ObjectTypeAdapter;
+import com.pandaq.rxpanda.gsonadapter.PandaTypeAdapter;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
@@ -38,8 +39,8 @@ public class GsonUtil {
                     Field listField = c.getDeclaredField("list");
                     listField.setAccessible(true);
                     List<TypeAdapterFactory> list = (List<TypeAdapterFactory>) listField.get(o);
-                    int i = list.indexOf(com.google.gson.internal.bind.ObjectTypeAdapter.FACTORY);
-                    list.set(i, ObjectTypeAdapter.FACTORY);
+                    int i = list.indexOf(ObjectTypeAdapter.FACTORY);
+                    list.set(i, PandaTypeAdapter.FACTORY);
                     break;
                 }
             }

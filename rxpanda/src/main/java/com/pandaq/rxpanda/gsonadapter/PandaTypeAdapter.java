@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.internal.bind.ObjectTypeAdapter;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
@@ -17,16 +18,16 @@ import java.util.Map;
 /**
  * Created by huxinyu on 2019/7/5.
  * Email : panda.h@foxmail.com
- * Description :自定义的 ObjectTypeAdapter 类，用于处理为 number 时的按String 都被解析为 double
+ * Description :自定义的 PandaTypeAdapter 类，用于处理为 number 时的按String 都被解析为 double
  */
-public class ObjectTypeAdapter extends TypeAdapter<Object> {
+public class PandaTypeAdapter extends TypeAdapter<Object> {
 
     public static final TypeAdapterFactory FACTORY = new TypeAdapterFactory() {
         @SuppressWarnings("unchecked")
         @Override
         public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
             if (type.getRawType() == Object.class) {
-                return (TypeAdapter<T>) new ObjectTypeAdapter(gson);
+                return (TypeAdapter<T>) new PandaTypeAdapter(gson);
             }
             return null;
         }
@@ -34,7 +35,7 @@ public class ObjectTypeAdapter extends TypeAdapter<Object> {
 
     private final Gson gson;
 
-    private ObjectTypeAdapter(Gson gson) {
+    private PandaTypeAdapter(Gson gson) {
         this.gson = gson;
     }
 
@@ -92,7 +93,7 @@ public class ObjectTypeAdapter extends TypeAdapter<Object> {
         }
         //noinspection unchecked
         TypeAdapter<Object> typeAdapter = (TypeAdapter<Object>) gson.getAdapter(value.getClass());
-        if (typeAdapter instanceof com.google.gson.internal.bind.ObjectTypeAdapter) {
+        if (typeAdapter instanceof ObjectTypeAdapter) {
             out.beginObject();
             out.endObject();
             return;

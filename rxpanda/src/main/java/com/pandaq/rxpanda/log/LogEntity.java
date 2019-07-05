@@ -1,7 +1,7 @@
 package com.pandaq.rxpanda.log;
 
 import android.util.Log;
-import com.pandaq.rxpanda.BuildConfig;
+import com.pandaq.rxpanda.RxPanda;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,9 +16,9 @@ import java.util.Objects;
  * <p>
  * Description :日志暂存对象
  */
-public class LogEntity {
+class LogEntity {
 
-    public LogEntity() {
+    LogEntity() {
         addLog(" ");
         addLog("╔════════════════════════  HTTP  START  ══════════════════════════");
         addLog("");
@@ -34,7 +34,7 @@ public class LogEntity {
      * @param log 日志
      */
     public void addLog(String log) {
-        if (!BuildConfig.DEBUG) return;
+        if (!RxPanda.globalConfig().isDebug()) return;
         if (log == null) return;
         if (log.equals(" ") || log.startsWith("{")
                 || log.startsWith("╔") || log.startsWith("╚")) {
@@ -48,7 +48,7 @@ public class LogEntity {
      * 输出日志到控制台
      */
     public void printLog() {
-        if (!BuildConfig.DEBUG) return;
+        if (!RxPanda.globalConfig().isDebug()) return;
         addLog("");
         addLog("╚════════════════════════  HTTP  END  ═══════════════════════════");
         addLog(" ");
@@ -75,14 +75,14 @@ public class LogEntity {
                 message = jsonArray.toString(2);
             } else {
                 message = msg;
-                if (BuildConfig.DEBUG) {
+                if (RxPanda.globalConfig().isDebug()) {
                     Log.d(tag, message);
                 }
                 return;
             }
         } catch (JSONException e) {
             message = msg;
-            if (BuildConfig.DEBUG) {
+            if (RxPanda.globalConfig().isDebug()) {
                 Log.d(tag, message);
             }
             return;
@@ -92,7 +92,7 @@ public class LogEntity {
         message = LINE_SEPARATOR + message;
         String[] lines = message.split(LINE_SEPARATOR);
         for (String line : lines) {
-            if (!line.isEmpty() && BuildConfig.DEBUG) {
+            if (!line.isEmpty() && RxPanda.globalConfig().isDebug()) {
                 Log.d(tag, "║ " + line);
             }
         }
@@ -106,12 +106,12 @@ public class LogEntity {
      */
     private void printLine(boolean isTop) {
         if (isTop) {
-            if (BuildConfig.DEBUG) {
+            if (RxPanda.globalConfig().isDebug()) {
                 Log.d(tag, "║");
                 Log.d(tag, "║——————————————————JSON START——————————————————");
             }
         } else {
-            if (BuildConfig.DEBUG) {
+            if (RxPanda.globalConfig().isDebug()) {
                 Log.d(tag, "║——————————————————JSON END———————————————————");
                 Log.d(tag, "║");
             }
