@@ -15,6 +15,7 @@ class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         RxPanda.globalConfig()
+            .debug(BuildConfig.DEBUG)
             .baseUrl("https://www.panda.sss")
             .hosts("www.easy-mock.com")
             .netInterceptor(
