@@ -7,6 +7,7 @@ import com.google.gson.reflect.TypeToken;
 import com.pandaq.rxpanda.annotation.ApiData;
 import com.pandaq.rxpanda.annotation.RealEntity;
 import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.*;
+import com.pandaq.rxpanda.utils.GsonUtil;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
@@ -24,7 +25,7 @@ import java.lang.reflect.Type;
 public class PandaConvertFactory extends Converter.Factory {
 
     public static PandaConvertFactory create() {
-        return create(new Gson());
+        return create(GsonUtil.gson());
     }
 
     private Gson gson;

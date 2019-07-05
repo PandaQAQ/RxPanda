@@ -36,5 +36,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation project(path: ':rxpanda')
+//    implementation project(path: ':rxpanda')
+    compile 'com.pandaq:RxPanda:0.0.8'
 }
