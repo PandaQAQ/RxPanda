@@ -218,8 +218,8 @@ public class Request<T extends Request> {
 
         // 添加请求头
         if (mGlobalConfig.getGlobalHeaders() != null) {
-            // 全局的请求头设置进去,将本地 header 加入到全局中（本地同名覆盖全局）
-            mGlobalConfig.getGlobalHeaders().putAll(headers);
+            // 全局的请求头设置进去,将全局加入到本地 header 中（本地同名覆盖全局）
+            headers.putAll(mGlobalConfig.getGlobalHeaders());
         }
         if (!headers.isEmpty()) {
             okHttpBuilder.addInterceptor(new HeaderInterceptor(headers));
