@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
+import com.pandaq.rxpanda.HttpCode;
 import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.entity.EmptyData;
 import com.pandaq.rxpanda.entity.IApiData;
@@ -51,7 +52,7 @@ public class PandaResponseBodyConverter<T> implements Converter<ResponseBody, T>
          */
         if (apiData.getCode() == null) {
             try {
-                return typeAdapter.fromJson(response);
+                throw new ApiException(HttpCode.FRAME_WORK.SHELL_FORMAT_ERROR, response, response);
             } finally {
                 value.close();
             }

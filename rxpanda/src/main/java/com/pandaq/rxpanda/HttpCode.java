@@ -93,20 +93,23 @@ public class HttpCode {
         public static final int HTTP_VERSION_UNSUPPORT = 505;
 
     }
+
     /**
      * 请求返回成功后，框架层处理错误
      */
-    public static class FRAME_WORK{
-            //未知错误
-            public static final int UNKNOWN = 1000;
-            //解析错误
-            public static final int PARSE_ERROR = 1001;
-            //网络错误
-            public static final int NETWORK_ERROR = 1002;
-            //证书出错
-            public static final int SSL_ERROR = 1003;
-            //连接超时
-            public static final int TIMEOUT_ERROR = 1004;
+    public static class FRAME_WORK {
+        //未知错误
+        public static final int UNKNOWN = 1000;
+        //解析错误
+        public static final int PARSE_ERROR = 1001;
+        //网络错误
+        public static final int NETWORK_ERROR = 1002;
+        //证书出错
+        public static final int SSL_ERROR = 1003;
+        //连接超时
+        public static final int TIMEOUT_ERROR = 1004;
+        //解析壳错误
+        public static final int SHELL_FORMAT_ERROR = 1005;
     }
 
 }
