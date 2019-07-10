@@ -19,7 +19,7 @@ public class PatchRequest extends HttpRequest<PatchRequest> {
 
     @Override
     protected <T> Observable<T> execute(Type type) {
-        return mApi.patch(url, globalParams)
+        return mApi.patch(url, localParams)
                 .doOnSubscribe(disposable -> {
                     if (tag != null) {
                         RxPanda.manager().addTag(tag, disposable);

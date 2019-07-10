@@ -32,8 +32,8 @@ public class PostFormRequest extends HttpRequest<PostFormRequest> {
         if (stringBuilder.length() != 0) {
             url = url + stringBuilder.toString();
         }
-        if (globalParams.size() > 0) {
-            forms.putAll(globalParams);
+        if (localParams.size() > 0) {
+            forms.putAll(localParams);
             return mApi.postForm(url, forms)
                     .doOnSubscribe(disposable -> {
                         if (tag != null) {
@@ -42,7 +42,7 @@ public class PostFormRequest extends HttpRequest<PostFormRequest> {
                     })
                     .compose(httpTransformer(type));
         }
-        return mApi.post(url, globalParams)
+        return mApi.post(url, localParams)
                 .doOnSubscribe(disposable -> {
                     if (tag != null) {
                         RxPanda.manager().addTag(tag, disposable);

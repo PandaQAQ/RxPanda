@@ -21,7 +21,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         normalData.setOnClickListener(this)
         newJsonKeyData.setOnClickListener(this)
         stringData.setOnClickListener(this)

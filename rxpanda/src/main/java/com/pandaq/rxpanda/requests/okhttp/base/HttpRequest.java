@@ -30,7 +30,7 @@ public abstract class HttpRequest<R extends HttpRequest> extends Request<R> {
     protected String url = "";
     // request tag
     protected Object tag;
-    protected Map<String, String> globalParams = new LinkedHashMap<>();//请求参数
+    protected Map<String, String> localParams = new LinkedHashMap<>();//请求参数
     private long retryDelayMillis;//请求失败重试间隔时间
 
     /**
@@ -64,11 +64,64 @@ public abstract class HttpRequest<R extends HttpRequest> extends Request<R> {
 
     protected abstract void execute(ApiObserver callback);
 
+    /**
+     * 添加请求参数
+     *
+     * @param paramKey
+     * @param paramValue
+     * @return
+     */
+    public R addParam(String paramKey, String paramValue) {
+        if (paramKey != null && paramValue != null) {
+            this.localParams.put(paramKey, paramValue);
+        }
+        return CastUtils.cast(this);
+    }
+
+    /**
+     * 添加请求参数
+     *
+     * @param params
+     * @return
+     */
+    public R addParams(Map<String, String> params) {
+        if (params != null) {
+            this.localParams.putAll(params);
+        }
+        return CastUtils.cast(this);
+    }
+
+    /**
+     * 移除请求参数
+     *
+     * @param paramKey
+     * @return
+     */
+    public R removeParam(String paramKey) {
+        if (paramKey != null) {
+            this.localParams.remove(paramKey);
+        }
+        return CastUtils.cast(this);
+    }
+
+    /**
+     * 设置请求参数
+     *
+     * @param params
+     * @return
+     */
+    public R params(Map<String, String> params) {
+        if (params != null) {
+            this.localParams = params;
+        }
+        return CastUtils.cast(this);
+    }
+
     @Override
     protected void injectLocalParams() {
         super.injectLocalParams();
         if (mGlobalConfig.getGlobalParams() != null) {
-            globalParams.putAll(mGlobalConfig.getGlobalParams());
+            localParams.putAll(mGlobalConfig.getGlobalParams());
         }
         if (retryDelayMillis <= 0) {
             retryDelayMillis = mGlobalConfig.getRetryDelayMillis();

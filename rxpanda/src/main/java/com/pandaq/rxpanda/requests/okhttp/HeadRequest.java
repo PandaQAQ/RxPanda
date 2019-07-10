@@ -21,7 +21,7 @@ public class HeadRequest extends HttpRequest<HeadRequest> {
 
     @Override
     protected <T> Observable<T> execute(Type type) {
-        return mApi.head(url, globalParams)
+        return mApi.head(url, localParams)
                 .doOnSubscribe(disposable -> {
                     if (tag != null) {
                         RxPanda.manager().addTag(tag, disposable);

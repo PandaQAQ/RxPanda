@@ -21,7 +21,7 @@ public class PutRequest extends HttpRequest<PutRequest> {
 
     @Override
     protected <T> Observable<T> execute(Type type) {
-        return mApi.put(url, globalParams)
+        return mApi.put(url, localParams)
                 .doOnSubscribe(disposable -> {
                     if (tag != null) {
                         RxPanda.manager().addTag(tag, disposable);

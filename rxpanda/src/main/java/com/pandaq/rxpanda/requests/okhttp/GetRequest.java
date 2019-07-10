@@ -21,7 +21,7 @@ public class GetRequest extends HttpRequest<GetRequest> {
 
     @Override
     protected <T> Observable<T> execute(Type type) {
-        return mApi.get(url, globalParams)
+        return mApi.get(url, localParams)
                 .doOnSubscribe(disposable -> {
                     if (tag != null) {
                         RxPanda.manager().addTag(tag, disposable);

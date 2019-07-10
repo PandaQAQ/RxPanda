@@ -58,7 +58,7 @@ public class PostBodyRequest extends HttpRequest<PostBodyRequest> {
                     })
                     .compose(httpTransformer(type));
         }
-        return mApi.post(url, globalParams)
+        return mApi.post(url, localParams)
                 .doOnSubscribe(disposable -> {
                     if (tag != null) {
                         RxPanda.manager().addTag(tag, disposable);

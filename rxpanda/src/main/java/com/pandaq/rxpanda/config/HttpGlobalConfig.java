@@ -171,7 +171,7 @@ public class HttpGlobalConfig {
     }
 
     /**
-     * add globalParams,the params will be added with every HttpRequest exclude RetrofitRequest
+     * add localParams,the params will be added with every HttpRequest exclude RetrofitRequest
      *
      * @param params the params
      * @return config self

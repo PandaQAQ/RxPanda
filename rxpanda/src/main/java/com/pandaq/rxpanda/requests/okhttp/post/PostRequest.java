@@ -29,7 +29,7 @@ public class PostRequest extends HttpRequest<PostRequest> {
         if (stringBuilder.length() != 0) {
             url = url + stringBuilder.toString();
         }
-        return mApi.post(url, globalParams)
+        return mApi.post(url, localParams)
                 .doOnSubscribe(disposable -> {
                     if (tag != null) {
                         RxPanda.manager().addTag(tag, disposable);
