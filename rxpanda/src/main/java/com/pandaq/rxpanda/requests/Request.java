@@ -31,9 +31,6 @@ import java.util.concurrent.TimeUnit;
  * Description :base http request
  */
 public class Request<T extends Request> {
-
-    // local basUrl
-    private String baseUrl = "";
     // local readTimeout
     private Long readTimeout = 0L;
     // local writeTimeout
@@ -49,17 +46,7 @@ public class Request<T extends Request> {
     protected HttpGlobalConfig mGlobalConfig;
 
     protected Retrofit retrofit;
-
-    /**
-     * set request base url
-     *
-     * @param baseUrl base url
-     * @return request
-     */
-    public T baseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
-        return CastUtils.cast(this);
-    }
+    protected OkHttpClient.Builder builder;
 
     /**
      * 添加 header map
@@ -160,7 +147,7 @@ public class Request<T extends Request> {
      */
     private void resetGlobalParams() {
         mGlobalConfig = RxPanda.globalConfig();
-        OkHttpClient.Builder builder = RxPanda.getOkHttpBuilder();
+        builder = RxPanda.getOkHttpBuilder();
 
         // http client config
         if (mGlobalConfig.getConnectionPool() == null) {
@@ -212,7 +199,6 @@ public class Request<T extends Request> {
     protected void injectLocalParams() {
         // 注入本地配置前先重置现有配置为全局默认配置
         resetGlobalParams();
-        OkHttpClient.Builder okHttpBuilder = RxPanda.getOkHttpBuilder();
 
         // 添加请求头
         if (mGlobalConfig.getGlobalHeaders() != null) {
@@ -220,50 +206,29 @@ public class Request<T extends Request> {
             headers.putAll(mGlobalConfig.getGlobalHeaders());
         }
         if (!headers.isEmpty()) {
-            okHttpBuilder.addInterceptor(new HeaderInterceptor(headers));
+            builder.addInterceptor(new HeaderInterceptor(headers));
         }
         // 添加请求拦截器
         if (!interceptors.isEmpty()) {
             for (Interceptor interceptor : interceptors) {
-                okHttpBuilder.addInterceptor(interceptor);
+                builder.addInterceptor(interceptor);
             }
         }
         // 添加请求网络拦截器
         if (!networkInterceptors.isEmpty()) {
             for (Interceptor interceptor : networkInterceptors) {
-                okHttpBuilder.addInterceptor(interceptor);
+                builder.addInterceptor(interceptor);
             }
         }
         //设置局部超时时间和重试次数
         if (readTimeout > 0) {
-            okHttpBuilder.readTimeout(readTimeout, TimeUnit.MILLISECONDS);
+            builder.readTimeout(readTimeout, TimeUnit.MILLISECONDS);
         }
         if (writeTimeout > 0) {
-            okHttpBuilder.writeTimeout(writeTimeout, TimeUnit.MILLISECONDS);
+            builder.writeTimeout(writeTimeout, TimeUnit.MILLISECONDS);
         }
         if (connectTimeout > 0) {
-            okHttpBuilder.connectTimeout(connectTimeout, TimeUnit.MILLISECONDS);
-        }
-        if (!TextUtils.isEmpty(baseUrl)) { // 如果基础地址改了者需要重新构建个 Retrofit 对象，避免影响默认请求的配置
-            Retrofit.Builder newRetrofitBuilder = new Retrofit.Builder();
-            newRetrofitBuilder.baseUrl(baseUrl);
-            if (mGlobalConfig.getConverterFactory() != null) {
-                newRetrofitBuilder.addConverterFactory(mGlobalConfig.getConverterFactory());
-            }
-            if (!mGlobalConfig.getCallAdapterFactories().isEmpty()) {
-                for (CallAdapter.Factory factory : mGlobalConfig.getCallAdapterFactories()) {
-                    newRetrofitBuilder.addCallAdapterFactory(factory);
-                }
-            }
-            if (mGlobalConfig.getCallFactory() != null) {
-                newRetrofitBuilder.callFactory(mGlobalConfig.getCallFactory());
-            }
-            okHttpBuilder.hostnameVerifier(new SSLManager.SafeHostnameVerifier(baseUrl));
-            newRetrofitBuilder.client(okHttpBuilder.build());
-            retrofit = newRetrofitBuilder.build();
-        } else { // 使用默认配置的对象
-            RxPanda.getRetrofitBuilder().client(okHttpBuilder.build());
-            retrofit = RxPanda.getRetrofitBuilder().build();
+            builder.connectTimeout(connectTimeout, TimeUnit.MILLISECONDS);
         }
     }
 

@@ -3,6 +3,7 @@ package com.pandaq.rxpanda.requests.okhttp.base;
 import android.text.TextUtils;
 import androidx.annotation.NonNull;
 
+import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.api.Api;
 import com.pandaq.rxpanda.observer.ApiObserver;
 import com.pandaq.rxpanda.requests.Request;
@@ -120,6 +121,8 @@ public abstract class HttpRequest<R extends HttpRequest> extends Request<R> {
     @Override
     protected void injectLocalParams() {
         super.injectLocalParams();
+        RxPanda.getRetrofitBuilder().client(builder.build());
+        retrofit = RxPanda.getRetrofitBuilder().build();
         if (mGlobalConfig.getGlobalParams() != null) {
             localParams.putAll(mGlobalConfig.getGlobalParams());
         }

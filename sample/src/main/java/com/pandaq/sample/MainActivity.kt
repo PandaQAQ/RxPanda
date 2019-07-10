@@ -5,6 +5,9 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.pandaq.app_launcher.entites.ZhihuData
 import com.pandaq.rxpanda.RxPanda
+import com.pandaq.rxpanda.entity.ApiData
+import com.pandaq.rxpanda.exception.ApiException
+import com.pandaq.rxpanda.observer.ApiObserver
 import com.pandaq.rxpanda.transformer.RxScheduler
 import com.pandaq.rxpanda.utils.GsonUtil
 import com.pandaq.sample.apis.ApiService
@@ -16,7 +19,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
-    private val apiService = RxPanda.retrofit().create(ApiService::class.java)
+    private val apiService = RxPanda
+        .retrofit()
+        .create(ApiService::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -18,7 +18,7 @@ import java.util.List;
 public interface ApiService {
 
     // 在线 mock 正常使用 ApiData 数据壳
-    @GET("https://www.easy-mock.com/mock/5cef4b3e651e4075bad237f8/example/zooData")
+    @GET("zooData")
     Observable<List<ZooData>> getZooList();
 
     // 数据结构不变但是数据壳 jsonKey 与框架默认不一致时使用此注解，也可在 Config 配置全局使用此数据壳
