@@ -1,5 +1,6 @@
 package com.pandaq.rxpanda.ssl;
 
+import android.util.Log;
 import androidx.collection.ArraySet;
 import com.pandaq.rxpanda.RxPanda;
 
@@ -178,10 +179,12 @@ public class SSLManager {
     private static class UnSafeTrustManager implements X509TrustManager {
         @Override
         public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+            Log.d("SSLManager", authType);
         }
 
         @Override
         public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+            Log.d("SSLManager", authType);
         }
 
         @Override
@@ -203,7 +206,7 @@ public class SSLManager {
 
         @Override
         public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-
+            Log.d("SSLManager", authType);
         }
 
         @Override

@@ -22,13 +22,13 @@ import java.util.List;
  */
 public class RxPanda {
 
-    private RxPanda(){
-
-    }
-
     private static OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
     private static Retrofit.Builder retrofitBuilder = new Retrofit.Builder();
     private static OkHttpClient okHttpClient;
+
+    private RxPanda(){
+
+    }
 
     public static HttpGlobalConfig globalConfig() {
         return HttpGlobalConfig.getInstance();

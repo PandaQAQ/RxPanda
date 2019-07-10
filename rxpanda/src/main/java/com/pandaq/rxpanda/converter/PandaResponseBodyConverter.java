@@ -68,6 +68,7 @@ public class PandaResponseBodyConverter<T> implements Converter<ResponseBody, T>
                     jsonReader.setLenient(true);
                     return typeAdapter.read(jsonReader);
                 } catch (Exception e) {
+                    e.printStackTrace();
                     // 原始数据解析不通返回 EmptyData对象解析
                     try {
                         return typeAdapter.fromJson(new Gson().toJson(new EmptyData()));

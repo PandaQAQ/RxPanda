@@ -1,5 +1,6 @@
 package com.pandaq.rxpanda.converter;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
@@ -24,14 +25,13 @@ import java.lang.reflect.Type;
  */
 public class PandaConvertFactory extends Converter.Factory {
 
+    private Gson gson;
+
     public static PandaConvertFactory create() {
         return create(GsonUtil.gson());
     }
 
-    private Gson gson;
-
-    private static PandaConvertFactory create(Gson gson) {
-        if (gson == null) throw new NullPointerException("gson is null");
+    private static PandaConvertFactory create(@NonNull Gson gson) {
         return new PandaConvertFactory(gson);
     }
 
