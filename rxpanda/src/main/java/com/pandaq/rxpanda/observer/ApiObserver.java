@@ -1,6 +1,5 @@
 package com.pandaq.rxpanda.observer;
 
-import android.util.Log;
 import com.pandaq.rxpanda.HttpCode;
 import com.pandaq.rxpanda.exception.ApiException;
 import io.reactivex.observers.DisposableObserver;

@@ -2,7 +2,6 @@ package com.pandaq.rxpanda.requests;
 
 import android.text.TextUtils;
 import androidx.annotation.NonNull;
-
 import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.config.CONFIG;
 import com.pandaq.rxpanda.config.HttpGlobalConfig;
@@ -16,7 +15,6 @@ import okhttp3.OkHttpClient;
 import retrofit2.CallAdapter;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -218,8 +216,8 @@ public class Request<T extends Request> {
 
         // 添加请求头
         if (mGlobalConfig.getGlobalHeaders() != null) {
-            // 全局的请求头设置进去,将本地 header 加入到全局中（本地同名覆盖全局）
-            mGlobalConfig.getGlobalHeaders().putAll(headers);
+            // 全局的请求头设置进去,将全局加入到本地 header 中（本地同名覆盖全局）
+            headers.putAll(mGlobalConfig.getGlobalHeaders());
         }
         if (!headers.isEmpty()) {
             okHttpBuilder.addInterceptor(new HeaderInterceptor(headers));

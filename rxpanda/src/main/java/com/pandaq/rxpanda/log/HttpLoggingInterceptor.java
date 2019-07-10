@@ -106,7 +106,9 @@ public final class HttpLoggingInterceptor implements Interceptor {
      * @return log interceptor
      */
     public HttpLoggingInterceptor setLevel(Level level) {
-        if (level == null) throw new NullPointerException("level == null. Use Level.NONE instead.");
+        if (level == null) {
+            level = Level.NONE;
+        }
         this.level = level;
         return this;
     }
@@ -205,7 +207,8 @@ public final class HttpLoggingInterceptor implements Interceptor {
 
         if (logHeaders) {
             Headers headers = response.headers();
-            for (int i = 0, count = headers.size(); i < count; i++) {
+            int count = headers.size();
+            for (int i = 0; i < count; i++) {
                 entity.addLog(headers.name(i) + ": " + headers.value(i));
             }
 

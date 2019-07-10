@@ -18,22 +18,22 @@ import java.util.Objects;
  */
 class LogEntity {
 
+    private final String tag = "RxPanda";
+    private List<String> logs = new ArrayList<>();
+    private final String LINE_SEPARATOR = Objects.requireNonNull(System.getProperty("line.separator"));
+
     LogEntity() {
         addLog(" ");
         addLog("╔════════════════════════  HTTP  START  ══════════════════════════");
         addLog("");
     }
 
-    private final String tag = "RxPanda";
-    private List<String> logs = new ArrayList<>();
-    private final String LINE_SEPARATOR = Objects.requireNonNull(System.getProperty("line.separator"));
-
     /**
      * 临时保存日志
      *
      * @param log 日志
      */
-    public void addLog(String log) {
+    void addLog(String log) {
         if (!RxPanda.globalConfig().isDebug()) return;
         if (log == null) return;
         if (log.equals(" ") || log.startsWith("{")
@@ -47,7 +47,7 @@ class LogEntity {
     /**
      * 输出日志到控制台
      */
-    public void printLog() {
+    void printLog() {
         if (!RxPanda.globalConfig().isDebug()) return;
         addLog("");
         addLog("╚════════════════════════  HTTP  END  ═══════════════════════════");
