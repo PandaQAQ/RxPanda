@@ -95,21 +95,21 @@ public class HttpCode {
     }
 
     /**
-     * 请求返回成功后，框架层处理错误
+     * 请求返回成功后，框架层处理错误.避免与服务端定义错误重复使用负数
      */
     public static class FRAME_WORK {
         //未知错误
-        public static final int UNKNOWN = 1000;
+        public static final int UNKNOWN = -0x1000;
         //解析错误
-        public static final int PARSE_ERROR = 1001;
+        public static final int PARSE_ERROR = -0x1001;
         //网络错误
-        public static final int NETWORK_ERROR = 1002;
+        public static final int NETWORK_ERROR = -0x1002;
         //证书出错
-        public static final int SSL_ERROR = 1003;
+        public static final int SSL_ERROR = -0x1003;
         //连接超时
-        public static final int TIMEOUT_ERROR = 1004;
+        public static final int TIMEOUT_ERROR = -0x1004;
         //解析壳错误
-        public static final int SHELL_FORMAT_ERROR = 1005;
+        public static final int SHELL_FORMAT_ERROR = -0x1005;
     }
 
 }
