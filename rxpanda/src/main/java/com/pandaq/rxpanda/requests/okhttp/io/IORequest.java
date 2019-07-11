@@ -1,16 +1,14 @@
-package com.pandaq.rxpanda.requests.okhttp.base;
+package com.pandaq.rxpanda.requests.okhttp.io;
 
 import android.text.TextUtils;
 import androidx.annotation.NonNull;
-
 import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.api.Api;
-import com.pandaq.rxpanda.observer.ApiObserver;
+import com.pandaq.rxpanda.callbacks.TransmitCallback;
 import com.pandaq.rxpanda.requests.Request;
 import com.pandaq.rxpanda.transformer.CastFunc;
 import com.pandaq.rxpanda.transformer.RxScheduler;
 import com.pandaq.rxpanda.utils.CastUtils;
-import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
 import okhttp3.ResponseBody;
 
@@ -19,12 +17,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Created by huxinyu on 2019/1/11.
+ * Created by huxinyu on 2019/7/11.
  * Email : panda.h@foxmail.com
- * <p>
- * Description : baseRequest for use okHttp lib, also can return an observable response
+ * Description :
  */
-public abstract class HttpRequest<R extends HttpRequest> extends Request<R> {
+public abstract class IORequest<R extends IORequest> extends Request<R> {
 
     // http api,兼容 rxJava 观察者模式，需要返回观察对象时，将请求转换成 Retrofit 去请求
     protected Api mApi;
@@ -45,25 +42,13 @@ public abstract class HttpRequest<R extends HttpRequest> extends Request<R> {
         return CastUtils.cast(this);
     }
 
-    public HttpRequest(String url) {
+    public IORequest(String url) {
         if (!TextUtils.isEmpty(url)) {
             this.url = url;
         }
     }
 
-    public <T> Observable<T> request(Type type) {
-        injectLocalParams();
-        return execute(type);
-    }
-
-    public void  request(ApiObserver callback) {
-        injectLocalParams();
-        execute(callback);
-    }
-
-    protected abstract <T> Observable<T> execute(Type type);
-
-    protected abstract void execute(ApiObserver callback);
+    protected abstract <T extends TransmitCallback> void execute(T callback);
 
     /**
      * 添加请求参数
@@ -130,11 +115,5 @@ public abstract class HttpRequest<R extends HttpRequest> extends Request<R> {
             retryDelayMillis = mGlobalConfig.getRetryDelayMillis();
         }
         mApi = retrofit.create(Api.class);
-    }
-
-    protected <T> ObservableTransformer<ResponseBody, T> httpTransformer(final Type type) {
-        return apiResultObservable -> apiResultObservable
-                .compose(RxScheduler.retrySync())
-                .map(new CastFunc<T>(type));
     }
 }

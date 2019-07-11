@@ -216,6 +216,7 @@ public final class HttpLoggingInterceptor implements Interceptor {
                 entity.addLog("Info : encoded body omitted");
             } else {
                 if (responseBody == null) {
+                    entity.printLog();
                     return response;
                 }
                 BufferedSource source = responseBody.source();
@@ -248,6 +249,7 @@ public final class HttpLoggingInterceptor implements Interceptor {
                 if (!isPlaintext(buffer)) {
                     entity.addLog("");
                     entity.addLog("Info: binary " + buffer.size() + "-byte body omitted)");
+                    entity.printLog();
                     return response;
                 }
 
@@ -269,7 +271,7 @@ public final class HttpLoggingInterceptor implements Interceptor {
      * Returns true if the body in question probably contains human readable text. Uses a small sample
      * of code points to detect unicode control characters commonly used in binary file signatures.
      */
-    static boolean isPlaintext(Buffer buffer) {
+    private static boolean isPlaintext(Buffer buffer) {
         try {
             Buffer prefix = new Buffer();
             long byteCount = buffer.size() < 64 ? buffer.size() : 64;

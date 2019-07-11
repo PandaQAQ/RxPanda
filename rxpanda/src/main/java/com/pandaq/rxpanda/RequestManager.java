@@ -22,7 +22,7 @@ public class RequestManager {
 
     }
 
-    static synchronized RequestManager get() {
+    public static synchronized RequestManager get() {
         if (sManager == null) {
             sManager = new RequestManager();
         }

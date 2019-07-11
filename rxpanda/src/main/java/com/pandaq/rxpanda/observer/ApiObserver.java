@@ -12,10 +12,12 @@ import io.reactivex.observers.DisposableObserver;
 public abstract class ApiObserver<T> extends DisposableObserver<T> {
 
     private boolean success;
+    protected T data;
 
     @Override
     public void onNext(T t) {
         onSuccess(t);
+        data = t;
         success = true;
     }
 

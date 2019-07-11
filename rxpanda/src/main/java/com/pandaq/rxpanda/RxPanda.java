@@ -1,7 +1,10 @@
 package com.pandaq.rxpanda;
 
+import androidx.annotation.NonNull;
 import com.pandaq.rxpanda.config.HttpGlobalConfig;
 import com.pandaq.rxpanda.requests.okhttp.GetRequest;
+import com.pandaq.rxpanda.requests.okhttp.io.DownloadRequest;
+import com.pandaq.rxpanda.requests.okhttp.io.UploadRequest;
 import com.pandaq.rxpanda.requests.okhttp.post.PostBodyRequest;
 import com.pandaq.rxpanda.requests.okhttp.post.PostFormRequest;
 import com.pandaq.rxpanda.requests.okhttp.post.PostRequest;
@@ -11,6 +14,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.TlsVersion;
 import retrofit2.Retrofit;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +30,7 @@ public class RxPanda {
     private static Retrofit.Builder retrofitBuilder = new Retrofit.Builder();
     private static OkHttpClient okHttpClient;
 
-    private RxPanda(){
+    private RxPanda() {
 
     }
 
@@ -60,6 +64,24 @@ public class RxPanda {
      */
     public static PostBodyRequest postBody(String url) {
         return new PostBodyRequest(url);
+    }
+
+
+    /**
+     * download request
+     *
+     * @param url      download url
+     */
+    public static DownloadRequest download(String url) {
+        return new DownloadRequest(url);
+    }
+
+    /**
+     * 上传文件
+     * @param url 上传地址
+     */
+    public static UploadRequest upload(String url) {
+        return new UploadRequest(url);
     }
 
     /**
