@@ -7,6 +7,13 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity">
 
+    <ImageView
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:id="@+id/iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
     <Button
             android:layout_width="160dp"
             android:textSize="14sp"
@@ -66,7 +73,7 @@
             android:layout_marginTop="8dp"
             app:layout_constraintTop_toBottomOf="@+id/stringData">
 
-        <TextView
+        <com.pandaq.sample.TextTest
                 android:id="@+id/dataString"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>

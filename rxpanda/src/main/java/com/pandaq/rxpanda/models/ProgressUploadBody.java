@@ -2,6 +2,7 @@ package com.pandaq.rxpanda.models;
 
 import androidx.annotation.NonNull;
 import com.pandaq.rxpanda.callbacks.TransmitCallback;
+import com.pandaq.rxpanda.utils.ThreadUtils;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okio.*;
@@ -94,15 +95,16 @@ public class ProgressUploadBody extends RequestBody {
                 }
                 //增加当前写入的字节数
                 bytesWritten += byteCount;
-                //回调
-                if (mCallback != null) {
-                    int progress = (int) ((bytesWritten * 1f / contentLength) * 100);
-                    mCallback.inProgress(progress);
-                    if (bytesWritten == contentLength) {
-                        mCallback.done();
-                    }
-                }
+                //回调\
+                ThreadUtils.getMainHandler().post(() -> sendStatus(bytesWritten, contentLength));
             }
         };
+    }
+
+    private void sendStatus(long bytesWritten, long contentLength) {
+        if (mCallback != null) {
+            int progress = (int) ((bytesWritten * 1f / contentLength) * 100);
+            mCallback.inProgress(progress);
+        }
     }
 }

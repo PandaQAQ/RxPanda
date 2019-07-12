@@ -94,84 +94,45 @@ public class UploadRequest extends IORequest<UploadRequest> {
         return this;
     }
 
-    public UploadRequest addFile(String key, File file) {
-        return addFile(key, file, null);
-    }
 
-    public UploadRequest addFile(String key, File file, TransmitCallback callback) {
+    public UploadRequest addFile(String key, File file) {
         if (key == null || file == null) {
             return this;
         }
         RequestBody requestBody = RequestBody.create(MediaTypes.APPLICATION_OCTET_STREAM_TYPE, file);
-        if (callback != null) {
-            ProgressUploadBody uploadBody = new ProgressUploadBody(requestBody, callback);
-            MultipartBody.Part part = MultipartBody.Part.createFormData(key, file.getName(), uploadBody);
-            this.multipartBodyParts.add(part);
-        } else {
-            MultipartBody.Part part = MultipartBody.Part.createFormData(key, file.getName(), requestBody);
-            this.multipartBodyParts.add(part);
-        }
+        MultipartBody.Part part = MultipartBody.Part.createFormData(key, file.getName(), requestBody);
+        this.multipartBodyParts.add(part);
         return this;
     }
 
     public UploadRequest addImageFile(String key, File file) {
-        return addImageFile(key, file, null);
-    }
-
-    public UploadRequest addImageFile(String key, File file, TransmitCallback callback) {
         if (key == null || file == null) {
             return this;
         }
         RequestBody requestBody = RequestBody.create(MediaTypes.IMAGE_TYPE, file);
-        if (callback != null) {
-            ProgressUploadBody uploadBody = new ProgressUploadBody(requestBody, callback);
-            MultipartBody.Part part = MultipartBody.Part.createFormData(key, file.getName(), uploadBody);
-            this.multipartBodyParts.add(part);
-        } else {
-            MultipartBody.Part part = MultipartBody.Part.createFormData(key, file.getName(), requestBody);
-            this.multipartBodyParts.add(part);
-        }
+        MultipartBody.Part part = MultipartBody.Part.createFormData(key, file.getName(), requestBody);
+        this.multipartBodyParts.add(part);
         return this;
     }
 
     public UploadRequest addBytes(String key, byte[] bytes, String name) {
-        return addBytes(key, bytes, name, null);
-    }
-
-    public UploadRequest addBytes(String key, byte[] bytes, String name, TransmitCallback callback) {
         if (key == null || bytes == null || name == null) {
             return this;
         }
         RequestBody requestBody = RequestBody.create(MediaTypes.APPLICATION_OCTET_STREAM_TYPE, bytes);
-        if (callback != null) {
-            ProgressUploadBody uploadBody = new ProgressUploadBody(requestBody, callback);
-            MultipartBody.Part part = MultipartBody.Part.createFormData(key, name, uploadBody);
-            this.multipartBodyParts.add(part);
-        } else {
-            MultipartBody.Part part = MultipartBody.Part.createFormData(key, name, requestBody);
-            this.multipartBodyParts.add(part);
-        }
+        MultipartBody.Part part = MultipartBody.Part.createFormData(key, name, requestBody);
+        this.multipartBodyParts.add(part);
         return this;
     }
 
     public UploadRequest addStream(String key, InputStream inputStream, String name) {
-        return addStream(key, inputStream, name, null);
-    }
-
-    public UploadRequest addStream(String key, InputStream inputStream, String name, TransmitCallback callback) {
         if (key == null || inputStream == null || name == null) {
             return this;
         }
 
         RequestBody requestBody = create(MediaTypes.APPLICATION_OCTET_STREAM_TYPE, inputStream);
-        if (callback != null) {
-            ProgressUploadBody uploadBody = new ProgressUploadBody(requestBody, callback);
-            MultipartBody.Part part = MultipartBody.Part.createFormData(key, name, uploadBody);
-            this.multipartBodyParts.add(part);
-        } else {
-            MultipartBody.Part part = MultipartBody.Part.createFormData(key, name, requestBody);
-            this.multipartBodyParts.add(part);
-        }
+        MultipartBody.Part part = MultipartBody.Part.createFormData(key, name, requestBody);
+        this.multipartBodyParts.add(part);
         return this;
     }
 
@@ -204,7 +165,7 @@ public class UploadRequest extends IORequest<UploadRequest> {
         };
     }
 
-    public void request(DownloadCallBack callback) {
+    public void request(UploadCallBack callback) {
         netInterceptor(new UploadInterceptor(callback));
         injectLocalParams();
         execute(callback);

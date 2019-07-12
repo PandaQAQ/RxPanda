@@ -2,6 +2,7 @@ package com.pandaq.rxpanda.callbacks;
 
 import com.pandaq.rxpanda.exception.ApiException;
 import com.pandaq.rxpanda.observer.ApiObserver;
+import com.pandaq.rxpanda.utils.ThreadUtils;
 import okhttp3.ResponseBody;
 
 import java.io.*;
@@ -52,12 +53,12 @@ public abstract class DownloadCallBack extends ApiObserver<ResponseBody> impleme
 
     @Override
     protected void onError(ApiException e) {
-        onFailed(e);
+        ThreadUtils.getMainHandler().post(() -> onFailed(e));
     }
 
     @Override
     protected void finished(boolean success) {
-
+        done(success);
     }
 
 }

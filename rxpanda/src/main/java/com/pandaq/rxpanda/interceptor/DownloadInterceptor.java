@@ -1,5 +1,6 @@
 package com.pandaq.rxpanda.interceptor;
 
+import android.util.Log;
 import androidx.annotation.NonNull;
 import com.pandaq.rxpanda.callbacks.DownloadCallBack;
 import com.pandaq.rxpanda.callbacks.TransmitCallback;

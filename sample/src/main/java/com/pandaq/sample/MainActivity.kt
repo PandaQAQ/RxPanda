@@ -1,12 +1,15 @@
 package com.pandaq.sample
 
+import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.pandaq.app_launcher.entites.ZhihuData
 import com.pandaq.rxpanda.RxPanda
 import com.pandaq.rxpanda.callbacks.DownloadCallBack
+import com.pandaq.rxpanda.callbacks.UploadCallBack
 import com.pandaq.rxpanda.exception.ApiException
 import com.pandaq.rxpanda.transformer.RxScheduler
 import com.pandaq.rxpanda.utils.GsonUtil
@@ -32,6 +35,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         newJsonKeyData.setOnClickListener(this)
         stringData.setOnClickListener(this)
         noShellData.setOnClickListener(this)
+        dataString.text = "2222"
     }
 
     override fun onClick(v: View?) {
@@ -56,29 +60,42 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 //                    })
                 val target = filesDir.absolutePath + "download"
                 RxPanda.download(
-                    "http://www.shijieditu.net/ditu/allimg/170730/2254393013-0.jpg"
+                    "http://www.shijieditu.net/ditu/allimg/170730/2254393013-x0.jpg"
                 )
                     .target(target, "worldmap.jpg")
                     .request(object : DownloadCallBack() {
                         override fun done() {
-                            dataString.post {
-                                dataString.text = "done"
-                            }
+                            dataString.text = "done"
                         }
 
                         override fun onFailed(e: Exception) {
-                            dataString.post {
-                                Toast.makeText(this@MainActivity, e.message.toString(), Toast.LENGTH_SHORT).show()
-                            }
+                            Toast.makeText(this@MainActivity, e.message.toString(), Toast.LENGTH_SHORT).show()
                         }
 
                         override fun inProgress(progress: Int) {
-                            dataString.post {
-                                dataString.text = "$progress"
-                            }
+                            dataString.text = "$progress"
+                            dataString.setBackgroundColor(Color.parseColor("#aa00ff"))
                         }
 
                     })
+//                val file = File(filesDir.absolutePath + "download/worldmap.jpg")
+//                RxPanda.upload("http://192.168.0.34:8080/TestServlet")
+//                    .addImageFile("map", file)
+//                    .request(object : UploadCallBack() {
+//                        override fun done() {
+//                            dataString.text = "done"
+//                        }
+//
+//                        override fun onFailed(e: Exception) {
+//                            Toast.makeText(this@MainActivity, e.message.toString(), Toast.LENGTH_SHORT).show()
+//                        }
+//
+//                        override fun inProgress(progress: Int) {
+//                            dataString.text = "$progress"
+//                            dataString.setBackgroundColor(Color.parseColor("#aa00ff"))
+//                        }
+//
+//                    })
             }
 
             R.id.newJsonKeyData -> {

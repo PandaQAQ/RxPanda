@@ -9,9 +9,9 @@ package com.pandaq.rxpanda.callbacks;
 public interface TransmitCallback {
 
     /**
-     * 上传/下载成功
+     * 读写完成
      */
-    void done();
+    void done(boolean success);
 
 
     /**

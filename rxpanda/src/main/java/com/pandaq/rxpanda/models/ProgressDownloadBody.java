@@ -3,6 +3,7 @@ package com.pandaq.rxpanda.models;
 
 import androidx.annotation.NonNull;
 import com.pandaq.rxpanda.callbacks.TransmitCallback;
+import com.pandaq.rxpanda.utils.ThreadUtils;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import okio.*;
@@ -87,14 +88,15 @@ public class ProgressDownloadBody extends ResponseBody {
                 //增加当前读取的字节数，如果读取完成了bytesRead会返回-1
                 totalBytesRead += bytesRead != -1 ? bytesRead : 0;
                 //回调，如果contentLength()不知道长度，会返回-1
-                if (mCallback != null) {
-                    mCallback.inProgress((int) ((totalBytesRead * 1f / contentLength()) * 100));
-                    if (bytesRead == -1) {
-                        mCallback.done();
-                    }
-                }
+                ThreadUtils.getMainHandler().post(() -> sendStatus(totalBytesRead, bytesRead));
                 return bytesRead;
             }
         };
+    }
+
+    private void sendStatus(long totalBytesRead, long bytesRead) {
+        if (mCallback != null) {
+            mCallback.inProgress((int) ((totalBytesRead * 1f / contentLength()) * 100));
+        }
     }
 }

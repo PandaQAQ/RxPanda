@@ -7,6 +7,7 @@ import com.pandaq.rxpanda.callbacks.DownloadCallBack;
 import com.pandaq.rxpanda.callbacks.TransmitCallback;
 import com.pandaq.rxpanda.interceptor.DownloadInterceptor;
 import com.pandaq.rxpanda.transformer.RxScheduler;
+import io.reactivex.schedulers.Schedulers;
 
 import java.io.File;
 import java.io.IOException;
