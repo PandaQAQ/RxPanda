@@ -1,7 +1,6 @@
 package com.pandaq.rxpanda.requests;
 
 import android.text.TextUtils;
-import androidx.annotation.NonNull;
 import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.config.CONFIG;
 import com.pandaq.rxpanda.config.HttpGlobalConfig;
@@ -9,6 +8,7 @@ import com.pandaq.rxpanda.converter.PandaConvertFactory;
 import com.pandaq.rxpanda.interceptor.HeaderInterceptor;
 import com.pandaq.rxpanda.ssl.SSLManager;
 import com.pandaq.rxpanda.utils.CastUtils;
+import io.reactivex.annotations.NonNull;
 import okhttp3.ConnectionPool;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;

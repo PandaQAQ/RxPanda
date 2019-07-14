@@ -1,7 +1,7 @@
 package com.pandaq.rxpanda.ssl;
 
+import android.util.ArraySet;
 import android.util.Log;
-import androidx.collection.ArraySet;
 import com.pandaq.rxpanda.RxPanda;
 
 import javax.net.ssl.*;

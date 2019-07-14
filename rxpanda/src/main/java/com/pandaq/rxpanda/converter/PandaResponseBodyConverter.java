@@ -1,6 +1,5 @@
 package com.pandaq.rxpanda.converter;
 
-import androidx.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -9,6 +8,7 @@ import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.entity.EmptyData;
 import com.pandaq.rxpanda.entity.IApiData;
 import com.pandaq.rxpanda.exception.ApiException;
+import io.reactivex.annotations.NonNull;
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
 
