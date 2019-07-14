@@ -1,7 +1,6 @@
 package com.pandaq.rxpanda.requests.okhttp.base;
 
 import android.text.TextUtils;
-import androidx.annotation.NonNull;
 
 import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.api.Api;
@@ -12,6 +11,7 @@ import com.pandaq.rxpanda.transformer.RxScheduler;
 import com.pandaq.rxpanda.utils.CastUtils;
 import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
+import io.reactivex.annotations.NonNull;
 import okhttp3.ResponseBody;
 
 import java.lang.reflect.Type;

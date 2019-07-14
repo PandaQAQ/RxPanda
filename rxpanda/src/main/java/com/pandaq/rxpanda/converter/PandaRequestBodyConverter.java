@@ -1,9 +1,10 @@
 package com.pandaq.rxpanda.converter;
 
-import androidx.annotation.NonNull;
+
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonWriter;
+import io.reactivex.annotations.NonNull;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okio.Buffer;

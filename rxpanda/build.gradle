@@ -34,7 +34,7 @@ publish {
     userOrg = 'huxinyu' //注册时候的用户名
     groupId = 'com.pandaq'// //compile引用时的第1部分
     artifactId = 'rxpanda'////发布到JCenter上的项目名字，compile引用时的第2部分项目名
-    publishVersion = '0.1.4'//版本号 ，compile引用时的最后部分
+    publishVersion = '0.1.5'//版本号 ，compile引用时的最后部分
     desc = 'An Android network lib, base on rxjava2,retrofit2,okhttp3'//描述，不重要
     website = 'https://github.com/PandaQAQ/RxPanda' //项目的GitHub网站
 }
@@ -42,11 +42,9 @@ publish {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'androidx.appcompat:appcompat:1.0.2'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     // rxJava 2
     api "io.reactivex.rxjava2:rxandroid:2.1.1"
     api "io.reactivex.rxjava2:rxjava:2.2.7"

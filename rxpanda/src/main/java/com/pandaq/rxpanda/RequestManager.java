@@ -1,7 +1,7 @@
 package com.pandaq.rxpanda;
 
 import android.util.Log;
-import androidx.annotation.NonNull;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 
 import java.util.HashMap;

@@ -1,11 +1,11 @@
 package com.pandaq.rxpanda.config;
 
-import androidx.annotation.NonNull;
 import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.converter.PandaConvertFactory;
 import com.pandaq.rxpanda.entity.ApiData;
 import com.pandaq.rxpanda.entity.IApiData;
 import com.pandaq.rxpanda.ssl.SSLManager;
+import io.reactivex.annotations.NonNull;
 import okhttp3.Call;
 import okhttp3.ConnectionPool;
 import okhttp3.Interceptor;
