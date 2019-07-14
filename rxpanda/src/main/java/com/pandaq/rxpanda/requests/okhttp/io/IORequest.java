@@ -1,7 +1,7 @@
 package com.pandaq.rxpanda.requests.okhttp.io;
 
 import android.text.TextUtils;
-import androidx.annotation.NonNull;
+import io.reactivex.annotations.NonNull;
 import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.api.Api;
 import com.pandaq.rxpanda.callbacks.TransmitCallback;

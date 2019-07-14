@@ -1,6 +1,5 @@
 package com.pandaq.rxpanda.ssl;
 
-import android.util.ArraySet;
 import android.util.Log;
 import com.pandaq.rxpanda.RxPanda;
 
@@ -12,6 +11,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -120,7 +120,7 @@ public class SSLManager {
     }
 
     public static class SafeHostnameVerifier implements HostnameVerifier {
-        private Set<String> hosts = new ArraySet<>();
+        private Set<String> hosts = new HashSet<>();
 
         public SafeHostnameVerifier(String host) {
             this.hosts.add(host);

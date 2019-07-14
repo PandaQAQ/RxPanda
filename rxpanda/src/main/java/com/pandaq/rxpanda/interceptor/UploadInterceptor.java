@@ -1,6 +1,6 @@
 package com.pandaq.rxpanda.interceptor;
 
-import androidx.annotation.NonNull;
+import io.reactivex.annotations.NonNull;
 import com.pandaq.rxpanda.callbacks.TransmitCallback;
 import com.pandaq.rxpanda.callbacks.UploadCallBack;
 import com.pandaq.rxpanda.models.ProgressUploadBody;

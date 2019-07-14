@@ -1,11 +1,9 @@
 package com.pandaq.sample;
 
 import android.content.Context;
-import android.graphics.Rect;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.TextView;
-import androidx.annotation.Nullable;
 
 /**
  * Created by huxinyu on 2019/7/12.

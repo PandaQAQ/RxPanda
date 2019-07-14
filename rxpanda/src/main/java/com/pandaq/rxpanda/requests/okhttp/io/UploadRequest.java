@@ -1,14 +1,12 @@
 package com.pandaq.rxpanda.requests.okhttp.io;
 
-import androidx.annotation.NonNull;
 import com.pandaq.rxpanda.RequestManager;
-import com.pandaq.rxpanda.callbacks.DownloadCallBack;
 import com.pandaq.rxpanda.callbacks.TransmitCallback;
 import com.pandaq.rxpanda.callbacks.UploadCallBack;
 import com.pandaq.rxpanda.constants.MediaTypes;
 import com.pandaq.rxpanda.interceptor.UploadInterceptor;
-import com.pandaq.rxpanda.models.ProgressUploadBody;
 import com.pandaq.rxpanda.transformer.RxScheduler;
+import io.reactivex.annotations.NonNull;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;

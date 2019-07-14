@@ -1,6 +1,6 @@
 package com.pandaq.rxpanda;
 
-import androidx.annotation.NonNull;
+import io.reactivex.annotations.NonNull;
 import com.pandaq.rxpanda.config.HttpGlobalConfig;
 import com.pandaq.rxpanda.requests.okhttp.GetRequest;
 import com.pandaq.rxpanda.requests.okhttp.io.DownloadRequest;

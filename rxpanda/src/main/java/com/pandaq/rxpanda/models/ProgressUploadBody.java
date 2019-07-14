@@ -1,6 +1,6 @@
 package com.pandaq.rxpanda.models;
 
-import androidx.annotation.NonNull;
+import io.reactivex.annotations.NonNull;
 import com.pandaq.rxpanda.callbacks.TransmitCallback;
 import com.pandaq.rxpanda.utils.ThreadUtils;
 import okhttp3.MediaType;
