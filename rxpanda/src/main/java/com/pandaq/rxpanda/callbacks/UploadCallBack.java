@@ -24,7 +24,8 @@ public abstract class UploadCallBack extends ApiObserver<ResponseBody> implement
 
     @Override
     protected void finished(boolean success) {
-        done(success);
+        ThreadUtils.getMainHandler().postDelayed(() -> done(success)
+                , 500);
     }
 
 }

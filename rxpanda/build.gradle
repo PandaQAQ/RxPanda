@@ -11,7 +11,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
 
@@ -34,7 +34,7 @@ publish {
     userOrg = 'huxinyu' //注册时候的用户名
     groupId = 'com.pandaq'// //compile引用时的第1部分
     artifactId = 'rxpanda'////发布到JCenter上的项目名字，compile引用时的第2部分项目名
-    publishVersion = '0.1.6'//版本号 ，compile引用时的最后部分
+    publishVersion = '0.1.7'//版本号 ，compile引用时的最后部分
     desc = 'An Android network lib, base on rxjava2,retrofit2,okhttp3'//描述，不重要
     website = 'https://github.com/PandaQAQ/RxPanda' //项目的GitHub网站
 }

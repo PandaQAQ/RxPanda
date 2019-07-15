@@ -5,7 +5,10 @@ import com.pandaq.rxpanda.observer.ApiObserver;
 import com.pandaq.rxpanda.utils.ThreadUtils;
 import okhttp3.ResponseBody;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created by huxinyu on 2019/7/11.
@@ -58,7 +61,9 @@ public abstract class DownloadCallBack extends ApiObserver<ResponseBody> impleme
 
     @Override
     protected void finished(boolean success) {
-        done(success);
+        // Rx回调是下载完就走 complete，需要延迟一下等写入本地文件后再触发结果
+        ThreadUtils.getMainHandler().postDelayed(() -> done(success)
+                , 500);
     }
 
 }

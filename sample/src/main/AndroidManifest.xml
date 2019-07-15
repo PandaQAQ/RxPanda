@@ -23,7 +23,7 @@
         </activity>
 
         <provider
-                android:name="androidx.core.content.FileProvider"
+                android:name="android.support.v4.content.FileProvider"
                 android:authorities="${applicationId}.file.path.share"
                 android:exported="false"
                 android:grantUriPermissions="true">

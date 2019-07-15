@@ -21,20 +21,20 @@
 #-renamesourcefileattribute SourceFile
 
 # custom keep annotated resource
--keep @androidx.annotation.Keep class * {*;}
+-keep @android.support.annotation.Keep class * {*;}
 
--keep class androidx.annotation.Keep
+-keep class android.support.annotation.Keep
 
 -keepclasseswithmembers class * {
-    @androidx.annotation.Keep <methods>;
+    @android.support.annotation.Keep <methods>;
 }
 
 -keepclasseswithmembers class * {
-    @androidx.annotation.Keep <fields>;
+    @android.support.annotation.Keep <fields>;
 }
 
 -keepclasseswithmembers class * {
-    @androidx.annotation.Keep <init>(...);
+    @android.support.annotation.Keep <init>(...);
 }
 
 ########### OkHttp3 ###########
