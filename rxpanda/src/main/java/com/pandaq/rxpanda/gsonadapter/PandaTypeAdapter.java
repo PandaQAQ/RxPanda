@@ -64,16 +64,15 @@ public class PandaTypeAdapter extends TypeAdapter<Object> {
             case STRING:
                 return in.nextString();
             case NUMBER:
-                String s = in.nextString();
-                if (s.isEmpty()) return 0;
-                if (s.contains(".")) {
-                    return Double.valueOf(s);
+                double dbNum = in.nextDouble();
+                if (dbNum > Long.MAX_VALUE) {
+                    return dbNum;
+                }
+                // 如果是整数
+                if (dbNum == (long) dbNum) {
+                    return (long) dbNum;
                 } else {
-                    try {
-                        return Integer.valueOf(s);
-                    } catch (Exception e) {
-                        return Long.valueOf(s);
-                    }
+                    return dbNum;
                 }
             case BOOLEAN:
                 return in.nextBoolean();
