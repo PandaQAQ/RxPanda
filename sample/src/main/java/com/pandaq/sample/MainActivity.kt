@@ -77,7 +77,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 //
 //                    })
                 val file = File(filesDir.absolutePath + "download/worldmap.jpg")
-                RxPanda.upload("http://192.168.0.34:8080/TestServlet")
+                RxPanda.upload("http://192.168.0.34:8080/up")
+                    .addHeader("Content-Disposition","attachment;filename=FileName.jpeg")
                     .addImageFile("map", file)
                     .request(object : UploadCallBack() {
                         override fun done(success: Boolean) {
