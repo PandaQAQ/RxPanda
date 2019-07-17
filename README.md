@@ -10,11 +10,15 @@
 > - 支持日志格式化及并发按序输出
 > - 支持 data 为基本数据类型
 > - 支持 int 类型 json 解析为 String 不会 0 变成 0.0
+> - 支持基本的文件下载上传功能（不支持断点续传）
 
 # TODO
-> - 1、下载上传文件支持
-> - 2、简单缓存支持
-> - 3、cookie 支持
+> - 1、简单缓存支持
+> - 2、cookie 支持
+
+# release log
+0.1.6：fix 数字解析为 String 类型时变成 double 类型字符串（1 按 String 解析变为 1.0 bug）
+0.1.7：文件上传下载支持
 
 # 基本用法
 #### 一、全局配置推荐在 Application 初始化时配置
@@ -137,4 +141,48 @@ data class ZooApiData<T>(
         }
 
     })
+```
+
+### proguard-rules
+``` java
+-keep @android.support.annotation.Keep class * {*;}
+
+-keep class android.support.annotation.Keep
+
+-keepclasseswithmembers class * {
+    @android.support.annotation.Keep <methods>;
+}
+
+-keepclasseswithmembers class * {
+    @android.support.annotation.Keep <fields>;
+}
+
+-keepclasseswithmembers class * {
+    @android.support.annotation.Keep <init>(...);
+}
+
+########### OkHttp3 ###########
+-dontwarn okhttp3.logging.**
+-keep class okhttp3.internal.**{*;}
+-dontwarn okio.**
+
+########### RxJava RxAndroid ###########
+-dontwarn sun.misc.**
+-keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
+    long producerIndex;
+    long consumerIndex;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode producerNode;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode consumerNode;
+}
+
+########### Gson ###########
+-keep class com.google.gson.stream.** { *; }
+-keepattributes EnclosingMethod
+# Gson 自定义相关
+-keep class com.pandaq.rxpanda.entity.**{*;}
+-keep class com.pandaq.rxpanda.gsonadapter.**{*;}
 ```

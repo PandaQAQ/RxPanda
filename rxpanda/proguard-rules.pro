@@ -58,5 +58,6 @@
 ########### Gson ###########
 -keep class com.google.gson.stream.** { *; }
 -keepattributes EnclosingMethod
-# Gson 定义的实体类
+# Gson 自定义相关
 -keep class com.pandaq.rxpanda.entity.**{*;}
+-keep class com.pandaq.rxpanda.gsonadapter.**{*;}
