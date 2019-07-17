@@ -21,8 +21,8 @@
 > - 2、cookie 支持
 
 # Release Logs
-> - 0.1.6：fix 数字解析为 String 类型时变成 double 类型字符串（1 按 String 解析变为 1.0 bug）
 > - 0.1.7：文件上传下载支持
+> - 0.1.6：fix 数字解析为 String 类型时变成 double 类型字符串（1 按 String 解析变为 1.0 bug）
 
 # 基本用法
 #### 一、全局配置推荐在 Application 初始化时配置
@@ -97,7 +97,7 @@ data class ZooApiData<T>(
 ```
 ### 三、请求使用
 
-#### Retrofit 方式
+### Retrofit 方式
 ``` kotlin
     private val apiService = RxPanda.retrofit().create(ApiService::class.java)
 	
@@ -124,7 +124,7 @@ data class ZooApiData<T>(
 	
 ```
 
-#### Http 请求方式
+### Http 请求方式
 此方式直接使用，不需要第二部的接口定义
 ``` kotlin
 	// 以 get 请求为例
