@@ -11,6 +11,10 @@
 > - 支持 data 为基本数据类型
 > - 支持 int 类型 json 解析为 String 不会 0 变成 0.0
 > - 支持基本的文件下载上传功能（不支持断点续传）
+### gradle dependencies
+```java
+    implementation 'com.pandaq:rxpanda:x.x.x'(download tag version)
+```
 
 # TODO
 > - 1、简单缓存支持
@@ -141,6 +145,49 @@ data class ZooApiData<T>(
         }
 
     })
+
+```
+### 文件上传
+```kotlin
+        RxPanda.upload("url")
+            .addImageFile("key",file)
+//            .addBytes("key",bytes)
+//            .addStream("key",stream)
+//            .addImageFile("key",file)
+            .request(object : UploadCallBack() {
+                override fun done(success: Boolean) {
+
+                }
+
+                override fun onFailed(e: Exception?) {
+
+                }
+
+                override fun inProgress(progress: Int) {
+
+                }
+
+            })
+```
+### 文件下载
+```kotlin
+        RxPanda.download("url")
+            .target(file)
+//            .target(path,fileName)
+            .request(object : UploadCallBack() {
+                override fun done(success: Boolean) {
+
+                }
+
+                override fun onFailed(e: Exception?) {
+
+                }
+
+                override fun inProgress(progress: Int) {
+
+                }
+
+            })
 ```
 
 # proguard-rules
