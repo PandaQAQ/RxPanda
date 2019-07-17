@@ -1,6 +1,5 @@
 package com.pandaq.rxpanda;
 
-import io.reactivex.annotations.NonNull;
 import com.pandaq.rxpanda.config.HttpGlobalConfig;
 import com.pandaq.rxpanda.requests.okhttp.GetRequest;
 import com.pandaq.rxpanda.requests.okhttp.io.DownloadRequest;
@@ -14,7 +13,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.TlsVersion;
 import retrofit2.Retrofit;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,7 +68,7 @@ public class RxPanda {
     /**
      * download request
      *
-     * @param url      download url
+     * @param url download url
      */
     public static DownloadRequest download(String url) {
         return new DownloadRequest(url);
@@ -78,6 +76,7 @@ public class RxPanda {
 
     /**
      * 上传文件
+     *
      * @param url 上传地址
      */
     public static UploadRequest upload(String url) {

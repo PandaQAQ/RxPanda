@@ -1,10 +1,8 @@
 package com.pandaq.rxpanda.interceptor;
 
-import android.util.Log;
-import io.reactivex.annotations.NonNull;
-import com.pandaq.rxpanda.callbacks.DownloadCallBack;
 import com.pandaq.rxpanda.callbacks.TransmitCallback;
 import com.pandaq.rxpanda.models.ProgressDownloadBody;
+import io.reactivex.annotations.NonNull;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 
