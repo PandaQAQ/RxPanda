@@ -1,12 +1,15 @@
 package com.pandaq.sample.apis;
 
 import com.pandaq.app_launcher.entites.ZhihuData;
+import com.pandaq.rxpanda.entity.EmptyData;
 import com.pandaq.sample.entities.apidata.ZooApiData;
 import com.pandaq.rxpanda.annotation.ApiData;
 import com.pandaq.rxpanda.annotation.RealEntity;
 import com.pandaq.sample.entities.ZooData;
 import io.reactivex.Observable;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 
 import java.util.List;
 
