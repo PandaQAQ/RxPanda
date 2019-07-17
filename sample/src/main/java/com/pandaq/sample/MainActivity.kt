@@ -1,15 +1,10 @@
 package com.pandaq.sample
 
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import android.widget.Toast
 import com.pandaq.app_launcher.entites.ZhihuData
 import com.pandaq.rxpanda.RxPanda
-import com.pandaq.rxpanda.callbacks.DownloadCallBack
-import com.pandaq.rxpanda.callbacks.UploadCallBack
-import com.pandaq.rxpanda.entity.EmptyData
 import com.pandaq.rxpanda.transformer.RxScheduler
 import com.pandaq.rxpanda.utils.GsonUtil
 import com.pandaq.sample.apis.ApiService
@@ -17,8 +12,6 @@ import com.pandaq.sample.apis.AppCallBack
 import com.pandaq.sample.entities.ZooData
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
-import java.io.File
-import java.lang.Exception
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
