@@ -143,7 +143,7 @@ data class ZooApiData<T>(
     })
 ```
 
-### proguard-rules
+# proguard-rules
 ``` java
 -keep @android.support.annotation.Keep class * {*;}
 
