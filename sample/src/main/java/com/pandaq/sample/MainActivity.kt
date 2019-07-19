@@ -37,45 +37,23 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.normalData -> {
-//                apiService.zooList
-//                    .doOnSubscribe { t -> compositeDisposable.add(t) }
-//                    .compose(RxScheduler.sync())
-//                    .subscribe(object : AppCallBack<List<ZooData>>() {
-//                        override fun success(data: List<ZooData>?) {
-//                            dataString.text = GsonUtil.gson().toJson(data)
-//                        }
-//
-//                        override fun fail(code: Long?, msg: String?) {
-//                            dataString.text = msg
-//                        }
-//
-//                        override fun finish(success: Boolean) {
-//
-//                        }
-//
-//                    })
-
-                val target = filesDir.absolutePath + "/" + Environment.DIRECTORY_DOWNLOADS + "/rxpanda"
-                RxPanda.download(
-                    "http://www.shijieditu.net/ditu/allimg/170730/2254393013-0.jpg"
-                )
-                    .target(target, "worldmap.jpg")
-                    .request(object : DownloadCallBack() {
-                        override fun done(success: Boolean) {
-                            dataString.text = "done and download success :$success"
+                apiService.zooList
+                    .doOnSubscribe { t -> compositeDisposable.add(t) }
+                    .compose(RxScheduler.sync())
+                    .subscribe(object : AppCallBack<List<ZooData>>() {
+                        override fun success(data: List<ZooData>?) {
+                            dataString.text = GsonUtil.gson().toJson(data)
                         }
 
-                        override fun onFailed(e: Exception) {
-                            Toast.makeText(this@MainActivity, e.message.toString(), Toast.LENGTH_SHORT).show()
+                        override fun fail(code: Long?, msg: String?) {
+                            dataString.text = msg
                         }
 
-                        override fun inProgress(progress: Int) {
-                            dataString.text = "$progress"
-                            dataString.setBackgroundColor(Color.parseColor("#aa00ff"))
+                        override fun finish(success: Boolean) {
+
                         }
 
                     })
-
             }
 
             R.id.newJsonKeyData -> {
