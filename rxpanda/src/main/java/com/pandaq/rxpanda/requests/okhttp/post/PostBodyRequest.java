@@ -5,6 +5,7 @@ import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.constants.MediaTypes;
 import com.pandaq.rxpanda.observer.ApiObserver;
 import com.pandaq.rxpanda.requests.okhttp.base.HttpRequest;
+import com.pandaq.rxpanda.utils.GsonUtil;
 import io.reactivex.Observable;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -28,7 +29,7 @@ public class PostBodyRequest extends HttpRequest<PostBodyRequest> {
     // body post 参数类型
     private MediaType mediaType;
     // body post 内容
-    protected String content;
+    private String content;
 
     public PostBodyRequest(String url) {
         super(url);
@@ -79,7 +80,7 @@ public class PostBodyRequest extends HttpRequest<PostBodyRequest> {
     /**
      * post url 中添加参数
      *
-     * @param paramKey key
+     * @param paramKey   key
      * @param paramValue value
      * @return self
      */
@@ -101,15 +102,45 @@ public class PostBodyRequest extends HttpRequest<PostBodyRequest> {
         return this;
     }
 
+    /**
+     * 设置 postBody 对象
+     *
+     * @param body post 对象
+     * @return self
+     */
+    public PostBodyRequest setBody(Object body) {
+        this.content = GsonUtil.gson().toJson(body);
+        this.mediaType = MediaTypes.APPLICATION_JSON_TYPE;
+        return this;
+    }
+
     public PostBodyRequest setString(String string) {
         this.content = string;
         this.mediaType = MediaTypes.TEXT_PLAIN_TYPE;
         return this;
     }
 
+    public PostBodyRequest setHtml(String string) {
+        this.content = string;
+        this.mediaType = MediaTypes.TEXT_HTML_TYPE;
+        return this;
+    }
+
     public PostBodyRequest setString(String string, MediaType mediaType) {
         this.content = string;
         this.mediaType = mediaType;
+        return this;
+    }
+
+    public PostBodyRequest setXml(String xml) {
+        this.content = xml;
+        this.mediaType = MediaTypes.APPLICATION_XML_TYPE;
+        return this;
+    }
+
+    public PostBodyRequest setXmlText(String xml) {
+        this.content = xml;
+        this.mediaType = MediaTypes.TEXT_XML_TYPE;
         return this;
     }
 

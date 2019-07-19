@@ -15,6 +15,7 @@
  */
 package com.pandaq.rxpanda.log;
 
+import android.util.Log;
 import com.pandaq.rxpanda.RxPanda;
 import okhttp3.*;
 import okio.Buffer;
@@ -36,6 +37,7 @@ import java.util.concurrent.TimeUnit;
 public final class HttpLoggingInterceptor implements Interceptor {
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
+    public static final String IO_FLAG_HEADER = "ioRequest";
 
     public enum Level {
         /**
@@ -121,7 +123,18 @@ public final class HttpLoggingInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Level level = this.level;
         Request request = chain.request();
-        if (level == Level.NONE || !RxPanda.globalConfig().isDebug()) {
+
+
+        // 如果是上传、下载请求不打印 log （会导致上传、下载失败）
+        String ioFlag = request.header(IO_FLAG_HEADER);
+        boolean isIoRequest = (ioFlag != null && !ioFlag.isEmpty());
+        if (isIoRequest) {
+            // 判定后将 header 移除
+            request = request.newBuilder().removeHeader(IO_FLAG_HEADER).build();
+        }
+
+        if (level == Level.NONE ||
+                !RxPanda.globalConfig().isDebug()) {
             return chain.proceed(request);
         }
         LogEntity entity = new LogEntity();
@@ -159,7 +172,7 @@ public final class HttpLoggingInterceptor implements Interceptor {
                 }
             }
 
-            if (!logBody || !hasRequestBody) {
+            if (!logBody || !hasRequestBody || isIoRequest) {
                 entity.addLog("Info: " + request.method());
             } else if (bodyHasUnknownEncoding(request.headers())) {
                 entity.addLog("Info: " + request.method() + " (encoded body omitted)");
@@ -210,6 +223,12 @@ public final class HttpLoggingInterceptor implements Interceptor {
             int count = headers.size();
             for (int i = 0; i < count; i++) {
                 entity.addLog(headers.name(i) + ": " + headers.value(i));
+            }
+
+            // if is io request just log header
+            if (isIoRequest) {
+                entity.printLog();
+                return response;
             }
 
             if (bodyHasUnknownEncoding(response.headers())) {

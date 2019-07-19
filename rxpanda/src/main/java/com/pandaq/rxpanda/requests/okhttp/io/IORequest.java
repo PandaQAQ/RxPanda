@@ -1,20 +1,17 @@
 package com.pandaq.rxpanda.requests.okhttp.io;
 
 import android.text.TextUtils;
-import io.reactivex.annotations.NonNull;
 import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.api.Api;
 import com.pandaq.rxpanda.callbacks.TransmitCallback;
 import com.pandaq.rxpanda.requests.Request;
-import com.pandaq.rxpanda.transformer.CastFunc;
-import com.pandaq.rxpanda.transformer.RxScheduler;
 import com.pandaq.rxpanda.utils.CastUtils;
-import io.reactivex.ObservableTransformer;
-import okhttp3.ResponseBody;
+import io.reactivex.annotations.NonNull;
 
-import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static com.pandaq.rxpanda.log.HttpLoggingInterceptor.IO_FLAG_HEADER;
 
 /**
  * Created by huxinyu on 2019/7/11.
@@ -46,6 +43,7 @@ public abstract class IORequest<R extends IORequest> extends Request<R> {
         if (!TextUtils.isEmpty(url)) {
             this.url = url;
         }
+        addHeader(IO_FLAG_HEADER, "IORequest ignore print log !!!");
     }
 
     protected abstract <T extends TransmitCallback> void execute(T callback);

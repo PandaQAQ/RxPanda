@@ -1,10 +1,14 @@
 package com.pandaq.sample
 
+import android.graphics.Color
 import android.os.Bundle
+import android.os.Environment
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.widget.Toast
 import com.pandaq.app_launcher.entites.ZhihuData
 import com.pandaq.rxpanda.RxPanda
+import com.pandaq.rxpanda.callbacks.DownloadCallBack
 import com.pandaq.rxpanda.transformer.RxScheduler
 import com.pandaq.rxpanda.utils.GsonUtil
 import com.pandaq.sample.apis.ApiService
@@ -27,25 +31,47 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         newJsonKeyData.setOnClickListener(this)
         stringData.setOnClickListener(this)
         noShellData.setOnClickListener(this)
+        this.javaClass.isAnonymousClass
     }
 
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.normalData -> {
-                apiService.zooList
-                    .doOnSubscribe { t -> compositeDisposable.add(t) }
-                    .compose(RxScheduler.sync())
-                    .subscribe(object : AppCallBack<List<ZooData>>() {
-                        override fun success(data: List<ZooData>?) {
-                            dataString.text = GsonUtil.gson().toJson(data)
+//                apiService.zooList
+//                    .doOnSubscribe { t -> compositeDisposable.add(t) }
+//                    .compose(RxScheduler.sync())
+//                    .subscribe(object : AppCallBack<List<ZooData>>() {
+//                        override fun success(data: List<ZooData>?) {
+//                            dataString.text = GsonUtil.gson().toJson(data)
+//                        }
+//
+//                        override fun fail(code: Long?, msg: String?) {
+//                            dataString.text = msg
+//                        }
+//
+//                        override fun finish(success: Boolean) {
+//
+//                        }
+//
+//                    })
+
+                val target = filesDir.absolutePath + "/" + Environment.DIRECTORY_DOWNLOADS + "/rxpanda"
+                RxPanda.download(
+                    "http://www.shijieditu.net/ditu/allimg/170730/2254393013-0.jpg"
+                )
+                    .target(target, "worldmap.jpg")
+                    .request(object : DownloadCallBack() {
+                        override fun done(success: Boolean) {
+                            dataString.text = "done and download success :$success"
                         }
 
-                        override fun fail(code: Long?, msg: String?) {
-                            dataString.text = msg
+                        override fun onFailed(e: Exception) {
+                            Toast.makeText(this@MainActivity, e.message.toString(), Toast.LENGTH_SHORT).show()
                         }
 
-                        override fun finish(success: Boolean) {
-
+                        override fun inProgress(progress: Int) {
+                            dataString.text = "$progress"
+                            dataString.setBackgroundColor(Color.parseColor("#aa00ff"))
                         }
 
                     })

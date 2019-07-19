@@ -34,15 +34,8 @@ public class PostFormRequest extends HttpRequest<PostFormRequest> {
         }
         if (localParams.size() > 0) {
             forms.putAll(localParams);
-            return mApi.postForm(url, forms)
-                    .doOnSubscribe(disposable -> {
-                        if (tag != null) {
-                            RxPanda.manager().addTag(tag, disposable);
-                        }
-                    })
-                    .compose(httpTransformer(type));
         }
-        return mApi.post(url, localParams)
+        return mApi.postForm(url, forms)
                 .doOnSubscribe(disposable -> {
                     if (tag != null) {
                         RxPanda.manager().addTag(tag, disposable);
@@ -63,7 +56,7 @@ public class PostFormRequest extends HttpRequest<PostFormRequest> {
     /**
      * post url 中添加参数
      *
-     * @param paramKey key
+     * @param paramKey   key
      * @param paramValue value
      * @return self
      */
@@ -86,12 +79,7 @@ public class PostFormRequest extends HttpRequest<PostFormRequest> {
      */
     public PostFormRequest formParams(String paramKey, Object paramValue) {
         if (paramKey != null && paramValue != null) {
-            if (stringBuilder.length() == 0) {
-                stringBuilder.append("?");
-            } else {
-                stringBuilder.append("&");
-            }
-            stringBuilder.append(paramKey).append("=").append(paramValue);
+            forms.put(paramKey, paramValue);
         }
         return this;
     }

@@ -1,8 +1,9 @@
 package com.pandaq.rxpanda.callbacks;
 
+import com.pandaq.rxpanda.HttpCode;
 import com.pandaq.rxpanda.exception.ApiException;
-import com.pandaq.rxpanda.observer.ApiObserver;
 import com.pandaq.rxpanda.utils.ThreadUtils;
+import io.reactivex.observers.DisposableObserver;
 import okhttp3.ResponseBody;
 
 import java.io.File;
@@ -15,17 +16,20 @@ import java.io.InputStream;
  * Email : panda.h@foxmail.com
  * Description :
  */
-public abstract class DownloadCallBack extends ApiObserver<ResponseBody> implements TransmitCallback {
+public abstract class DownloadCallBack extends DisposableObserver<ResponseBody> implements TransmitCallback {
 
     private File targetFile;
+    private boolean success = true;
 
     public void setTargetFile(File targetFile) {
         this.targetFile = targetFile;
     }
 
     @Override
-    protected void onSuccess(ResponseBody body) {
+    public void onNext(ResponseBody body) {
         if (body == null || targetFile == null) {
+            success = false;
+            onError(new IOException());
             return;
         }
         InputStream is = body.byteStream();
@@ -38,8 +42,9 @@ public abstract class DownloadCallBack extends ApiObserver<ResponseBody> impleme
                 fos.write(buffer, 0, len);
             }
         } catch (IOException e) {
-            e.printStackTrace();
-            onFailed(e);
+            success = false;
+            onError(e);
+            return;
         } finally {
             try {
                 if (fos != null) {
@@ -47,23 +52,31 @@ public abstract class DownloadCallBack extends ApiObserver<ResponseBody> impleme
                     fos.close();
                 }
                 is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-                onFailed(e);
+            } catch (Exception e) {
+                success = false;
+                onError(e);
             }
         }
+        // 成功
+        ThreadUtils.getMainHandler().post(() -> done(success));
     }
 
     @Override
-    protected void onError(ApiException e) {
-        ThreadUtils.getMainHandler().post(() -> onFailed(e));
+    public void onError(Throwable e) {
+        ThreadUtils.getMainHandler().post(() -> {
+            if (e instanceof ApiException) {
+                onFailed((ApiException) e);
+            } else {
+                onFailed(new ApiException(e, HttpCode.FRAME_WORK.UNKNOWN));
+            }
+            done(false);
+        });
+        e.printStackTrace();
     }
 
     @Override
-    protected void finished(boolean success) {
-        // Rx回调是下载完就走 complete，需要延迟一下等写入本地文件后再触发结果
-        ThreadUtils.getMainHandler().postDelayed(() -> done(success)
-                , 500);
+    public void onComplete() {
+
     }
 
 }

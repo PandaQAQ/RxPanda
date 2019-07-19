@@ -1,5 +1,6 @@
 package com.pandaq.rxpanda.converter;
 
+import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -69,6 +70,7 @@ public class PandaResponseBodyConverter<T> implements Converter<ResponseBody, T>
                     return typeAdapter.read(jsonReader);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    Log.w("errorData: ", response);
                     // 原始数据解析不通返回 EmptyData对象解析
                     try {
                         return typeAdapter.fromJson(new Gson().toJson(new EmptyData()));

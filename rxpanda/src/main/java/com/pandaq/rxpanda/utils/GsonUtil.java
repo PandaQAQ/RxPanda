@@ -4,9 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.internal.bind.ObjectTypeAdapter;
-import com.pandaq.rxpanda.gsonadapter.PandaTypeAdapter;
+import com.pandaq.rxpanda.gsonadapter.DefaultTypeAdapters;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,27 +28,20 @@ public class GsonUtil {
     }
 
     private static Gson create() {
-        Gson gson = new GsonBuilder().create();
-        try {
-            Field factories = Gson.class.getDeclaredField("factories");
-            factories.setAccessible(true);
-            Object o = factories.get(gson);
-            // 反射替换 Gson 的解析 FACTORY
-            Class<?>[] declaredClasses = Collections.class.getDeclaredClasses();
-            for (Class c : declaredClasses) {
-                if ("java.util.Collections$UnmodifiableList".equals(c.getName())) {
-                    Field listField = c.getDeclaredField("list");
-                    listField.setAccessible(true);
-                    List<TypeAdapterFactory> list = (List<TypeAdapterFactory>) listField.get(o);
-                    int i = list.indexOf(ObjectTypeAdapter.FACTORY);
-                    list.set(i, PandaTypeAdapter.FACTORY);
-                    break;
-                }
-            }
-        } catch (
-                Exception e) {
-            e.printStackTrace();
-        }
-        return gson;
+        return new GsonBuilder()
+                .registerTypeAdapter(Boolean.class, DefaultTypeAdapters.BOOLEAN)
+                .registerTypeAdapter(Boolean.class, DefaultTypeAdapters.BOOLEAN_AS_STRING)
+                .registerTypeAdapter(Byte.class, DefaultTypeAdapters.BYTE)
+                .registerTypeAdapter(Short.class, DefaultTypeAdapters.SHORT)
+                .registerTypeAdapter(Integer.class, DefaultTypeAdapters.INTEGER)
+                .registerTypeAdapter(Long.class, DefaultTypeAdapters.LONG)
+                .registerTypeAdapter(Float.class, DefaultTypeAdapters.FLOAT)
+                .registerTypeAdapter(Double.class, DefaultTypeAdapters.DOUBLE)
+                .registerTypeAdapter(Number.class, DefaultTypeAdapters.NUMBER)
+                .registerTypeAdapter(String.class, DefaultTypeAdapters.STRING)
+                .registerTypeAdapter(BigDecimal.class, DefaultTypeAdapters.BIG_DECIMAL)
+                .registerTypeAdapter(StringBuilder.class, DefaultTypeAdapters.STRING_BUILDER)
+                .registerTypeAdapter(StringBuffer.class, DefaultTypeAdapters.STRING_BUFFER)
+                .create();
     }
 }

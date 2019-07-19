@@ -4,6 +4,8 @@ import com.pandaq.rxpanda.HttpCode;
 import com.pandaq.rxpanda.exception.ApiException;
 import io.reactivex.observers.DisposableObserver;
 
+import java.io.IOException;
+
 /**
  * Created by huxinyu on 2019/3/8.
  * Email : panda.h@foxmail.com
@@ -23,13 +25,13 @@ public abstract class ApiObserver<T> extends DisposableObserver<T> {
 
     @Override
     public void onError(Throwable t) {
+        success = false;
         if (t instanceof ApiException) {
             onError((ApiException) t);
         } else {
             onError(new ApiException(t, HttpCode.FRAME_WORK.UNKNOWN));
         }
         t.printStackTrace();
-        success = false;
         finished(false);
     }
 
