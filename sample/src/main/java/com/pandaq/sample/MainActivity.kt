@@ -80,9 +80,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 apiService.stringData()
                     .doOnSubscribe { t -> compositeDisposable.add(t) }
                     .compose(RxScheduler.sync())
-                    .subscribe(object : AppCallBack<String>() {
-                        override fun success(data: String) {
-                            dataString.text = GsonUtil.gson().toJson(data)
+                    .subscribe(object : AppCallBack<Boolean>() {
+                        override fun success(data: Boolean) {
+                            dataString.text = data.toString()
                         }
 
                         override fun fail(code: Long?, msg: String?) {

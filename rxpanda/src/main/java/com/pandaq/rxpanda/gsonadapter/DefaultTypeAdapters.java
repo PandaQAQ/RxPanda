@@ -51,6 +51,9 @@ public class DefaultTypeAdapters {
                 in.nextNull();
                 return false;
             }
+            if (in.peek() == JsonToken.BOOLEAN) {
+                return in.nextBoolean();
+            }
             return Boolean.valueOf(in.nextString());
         }
 
