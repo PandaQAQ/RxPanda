@@ -1,14 +1,10 @@
 package com.pandaq.sample
 
-import android.graphics.Color
 import android.os.Bundle
-import android.os.Environment
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import android.widget.Toast
 import com.pandaq.app_launcher.entites.ZhihuData
 import com.pandaq.rxpanda.RxPanda
-import com.pandaq.rxpanda.callbacks.DownloadCallBack
 import com.pandaq.rxpanda.transformer.RxScheduler
 import com.pandaq.rxpanda.utils.GsonUtil
 import com.pandaq.sample.apis.ApiService
@@ -37,23 +33,25 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.normalData -> {
-                apiService.zooList
-                    .doOnSubscribe { t -> compositeDisposable.add(t) }
-                    .compose(RxScheduler.sync())
-                    .subscribe(object : AppCallBack<List<ZooData>>() {
-                        override fun success(data: List<ZooData>?) {
-                            dataString.text = GsonUtil.gson().toJson(data)
-                        }
+                for (i in 0..5) {
+                    apiService.zhihu()
+                        .doOnSubscribe { t -> compositeDisposable.add(t) }
+                        .compose(RxScheduler.sync())
+                        .subscribe(object : AppCallBack<ZhihuData>() {
+                            override fun success(data: ZhihuData) {
+                                dataString.text = GsonUtil.gson().toJson(data)
+                            }
 
-                        override fun fail(code: Long?, msg: String?) {
-                            dataString.text = msg
-                        }
+                            override fun fail(code: Long?, msg: String?) {
+                                dataString.text = msg
+                            }
 
-                        override fun finish(success: Boolean) {
+                            override fun finish(success: Boolean) {
 
-                        }
+                            }
 
-                    })
+                        })
+                }
             }
 
             R.id.newJsonKeyData -> {

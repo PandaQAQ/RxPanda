@@ -15,7 +15,6 @@
  */
 package com.pandaq.rxpanda.log;
 
-import android.util.Log;
 import com.pandaq.rxpanda.RxPanda;
 import okhttp3.*;
 import okio.Buffer;
@@ -227,7 +226,7 @@ public final class HttpLoggingInterceptor implements Interceptor {
 
             // if is io request just log header
             if (isIoRequest) {
-                entity.printLog();
+                LogPrinter.printLog(entity);
                 return response;
             }
 
@@ -235,7 +234,7 @@ public final class HttpLoggingInterceptor implements Interceptor {
                 entity.addLog("Info : encoded body omitted");
             } else {
                 if (responseBody == null) {
-                    entity.printLog();
+                    LogPrinter.printLog(entity);
                     return response;
                 }
                 BufferedSource source = responseBody.source();
@@ -268,7 +267,7 @@ public final class HttpLoggingInterceptor implements Interceptor {
                 if (!isPlaintext(buffer)) {
                     entity.addLog("");
                     entity.addLog("Info: binary " + buffer.size() + "-byte body omitted)");
-                    entity.printLog();
+                    LogPrinter.printLog(entity);
                     return response;
                 }
 
@@ -282,7 +281,7 @@ public final class HttpLoggingInterceptor implements Interceptor {
                 }
             }
         }
-        entity.printLog();
+        LogPrinter.printLog(entity);
         return response;
     }
 
