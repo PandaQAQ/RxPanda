@@ -18,10 +18,11 @@
 
 # TODO
 > - 1、简单缓存支持
-> - 2、cookie 支持
-> - 3、详细的 wiki 文档
 
 # Release Logs
+> - 0.2.0: 使用 LogPrinter 同步输出并发请求日志，避免日志错乱
+> - 0.1.9: 兼容 boolean 类型的 data
+> - 0.1.8: 兼容 Android 9.0 移除反射方式替换 GsonAdapter，改用注册方式
 > - 0.1.7：文件上传下载支持
 > - 0.1.6：fix 数字解析为 String 类型时变成 double 类型字符串（1 按 String 解析变为 1.0 bug）
 
