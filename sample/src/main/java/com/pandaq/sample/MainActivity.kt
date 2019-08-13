@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.pandaq.app_launcher.entites.ZhihuData
 import com.pandaq.rxpanda.RxPanda
+import com.pandaq.rxpanda.entity.ApiData
+import com.pandaq.rxpanda.interceptor.HeaderInterceptor
 import com.pandaq.rxpanda.transformer.RxScheduler
 import com.pandaq.rxpanda.utils.GsonUtil
 import com.pandaq.sample.apis.ApiService
