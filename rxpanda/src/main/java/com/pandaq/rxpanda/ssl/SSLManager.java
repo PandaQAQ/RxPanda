@@ -165,7 +165,7 @@ public class SSLManager {
         @Override
         public boolean verify(String hostname, SSLSession session) {
             // if allow all return true
-            if (RxPanda.globalConfig().isAllowAllHost()) return true;
+            if (RxPanda.globalConfig().isTrustAllHost()) return true;
             if (this.hosts == null || hosts.isEmpty()) return false;
             for (String host : hosts) {
                 if (host.contains(hostname)) {

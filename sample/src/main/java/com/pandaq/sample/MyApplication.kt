@@ -18,7 +18,7 @@ class MyApplication : Application() {
         RxPanda.globalConfig()
             .baseUrl("https://www.easy-mock.com/mock/5cef4b3e651e4075bad237f8/example/")
             .hosts("www.easy-mock.com")
-            .allowAllHost(true)
+            .trustAllHost(true)
             .netInterceptor(
                 HttpLoggingInterceptor()
                     .setLevel(HttpLoggingInterceptor.Level.BODY)

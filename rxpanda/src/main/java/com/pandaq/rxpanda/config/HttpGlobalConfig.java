@@ -41,7 +41,7 @@ public class HttpGlobalConfig {
     private boolean isDebug;
     private Long apiSuccessCode = -1L;
     // 不验证 host 允许所有的 host
-    private boolean allowAllHost = false;
+    private boolean trustAll = false;
     private Class<? extends IApiData> apiDataClazz = ApiData.class;
 
     private HttpGlobalConfig() {
@@ -256,12 +256,18 @@ public class HttpGlobalConfig {
         return this;
     }
 
-    public boolean isAllowAllHost() {
-        return allowAllHost;
+    public boolean isTrustAllHost() {
+        return trustAll;
     }
 
-    public HttpGlobalConfig allowAllHost(boolean allowAllHost) {
-        this.allowAllHost = allowAllHost;
+    /**
+     * 配置是否允许所有 host
+     *
+     * @param trustAll 是否允许所有host
+     * @return config
+     */
+    public HttpGlobalConfig trustAllHost(boolean trustAll) {
+        this.trustAll = trustAll;
         return this;
     }
 
