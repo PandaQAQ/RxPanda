@@ -31,31 +31,31 @@
 
 **全部配置**
 
-| 方法                                                        | 说明                                                                         | 是否必须																								|
+| 方法                                                        | 说明                                                                                                        | 是否必须		    |
 | ----------------------------------------------------------- | ---------------------------------------------------------- | -------------------------- |
-| baseUrl()                                                   | 基础域名配置                                                                 | true				|
-| hosts(String... hosts)                                      | 添加信任域名未配置默认只允许 baseUrl 配置的地址                                                                 | false				|
-| trustAllHost(boolean trustAll)                              | 是否信任所有域名优先级大于 hosts，配置此为 true 则信任所有 host 不管是否添加 | false				|
-| hostVerifier(@NonNull HostnameVerifier verifier)            | 配置 Host 验证规则对象，未配置默认为 `SafeHostnameVerifier`  **(与 hosts()、trustAllHost() 方法冲突，添加此配置后另两个配置失效，验证规则以此配置为准)**                                                 | false				|
-| addCallAdapterFactory(@NonNull CallAdapter.Factory factory) | 添加 CallAdapterFactory 未添加默认值为 `RxJava2CallAdapterFactory`           | false				|
+| baseUrl()                                                   | 基础域名配置                                                                                                 | true				|
+| hosts(String... hosts)                                      | 添加信任域名未配置默认只允许 baseUrl 配置的地址                                                                  | false				|
+| trustAllHost(boolean trustAll)                              | 是否信任所有域名优先级大于 hosts，配置此为 true 则信任所有 host 不管是否添加                                         | false		    |
+| hostVerifier(@NonNull HostnameVerifier verifier)            | 配置 Host 验证规则对象，未配置默认为 `SafeHostnameVerifier`  **(与 hosts()、trustAllHost() 方法冲突，添加此配置后另两个配置失效，验证规则以此配置为准)** | false				|
+| addCallAdapterFactory(@NonNull CallAdapter.Factory factory) | 添加 CallAdapterFactory 未添加默认值为 `RxJava2CallAdapterFactory`                                            | false				|
 | converterFactory(@NonNull Converter.Factory factory)        | 配置 ConverterFactory 未添加默认值为 `PandaConvertFactory`                   | false				|
 | callFactory(@NonNull Call.Factory factory)                  | 配置 CallFactory                                                             | false				|
 | sslFactory(@NonNull SSLSocketFactory factory)               | 配置 SSLFactory 未添加则通过 SSLManager 配置一个初始参数全为 null 的默认对象 | false				|
 | connectionPool(@NonNull ConnectionPool pool)                | 配置连接池，未配置则使用 Okhttp 默认                                         | false				|
 | addGlobalHeader(@NonNull String key, String header)         | 添加一个全局的请求头                                                                      | false				|
-| globalHeader(@NonNull Map<String, String> headers)         | 设置全局请求头，会将已有数据清除再添加                                                                         | false				|
-| addGlobalParam(@NonNull String key, String param)       	  | 添加一个全局的请求参数                                                                           | false				|
-| globalParams(@NonNull Map<String, String> params)         | 设置全局请求参数，会将已有数据清除再添加                                                                             | false				|
-| retryDelayMillis(long retryDelay)         									| 重试间隔时间                                                                             | false				|
-| retryCount(int retryCount)         | 重试次数                                                                             | false				|
-| interceptor(@NonNull Interceptor interceptor)        | 添加全局拦截器                                                                          | false				|
-| netInterceptor(@NonNull Interceptor interceptor)        | 添加全局网络拦截器                                                                          | false				|
-| readTimeout(long readTimeout)       | 全局读取超时时间                                                                          | false				|
-| writeTimeout(long writeTimeout)        | 全局写超时时间                                                                          | false				|
-| connectTimeout(long connectTimeout)        | 全局连接超时时间                                                                          | false				|
-| apiDataClazz(Class<? extends IApiData> clazz)  | Json解析接口数据结构外壳对象 参考 `ApiData`，未配置默认按 `ApiData` 解析，如结构不变 key 不一致则可以通过自定义 | false				|
-| apiSuccessCode(Long apiSuccessCode)             | Json解析接口数据结构外壳对象为 `ApiData` 结构时，配置成功 Code，默认值为 `0L`				| false |
-| debug(boolean debug)             | 配置是否为 debug 模式，非 debug 模式网络库将不会输出 日志 | false |
+| globalHeader(@NonNull Map<String, String> headers)          | 设置全局请求头，会将已有数据清除再添加                                                                         | false				|
+| addGlobalParam(@NonNull String key, String param)           |添加一个全局的请求参数                                                                           | false				|
+| globalParams(@NonNull Map<String, String> params)           | 设置全局请求参数，会将已有数据清除再添加                                                                             | false				|
+| retryDelayMillis(long retryDelay)                           | 重试间隔时间                                                                             | false				|
+| retryCount(int retryCount)                                  | 重试次数                                                                             | false				|
+| interceptor(@NonNull Interceptor interceptor)               | 添加全局拦截器                                                                          | false				|
+| netInterceptor(@NonNull Interceptor interceptor)            | 添加全局网络拦截器                                                                          | false				|
+| readTimeout(long readTimeout)                               | 全局读取超时时间                                                                          | false				|
+| writeTimeout(long writeTimeout)                             | 全局写超时时间                                                                          | false				|
+| connectTimeout(long connectTimeout)                         | 全局连接超时时间                                                                          | false				|
+| apiDataClazz(Class<? extends IApiData> clazz)               | Json解析接口数据结构外壳对象 参考 `ApiData`，未配置默认按 `ApiData` 解析，如结构不变 key 不一致则可以通过自定义 | false				|
+| apiSuccessCode(Long apiSuccessCode)                         | Json解析接口数据结构外壳对象为 `ApiData` 结构时，配置成功 Code，默认值为 `0L`				| false |
+| debug(boolean debug)                                        | 配置是否为 debug 模式，非 debug 模式网络库将不会输出 日志 | false |
 
 ### 二、接口定义
 ``` kotlin
