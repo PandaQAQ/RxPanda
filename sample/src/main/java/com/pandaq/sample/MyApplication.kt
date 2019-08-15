@@ -4,6 +4,8 @@ import android.app.Application
 import com.pandaq.rxpanda.RxPanda
 import com.pandaq.rxpanda.log.HttpLoggingInterceptor
 import com.pandaq.sample.entities.apidata.ZooApiData
+import javax.net.ssl.HostnameVerifier
+import javax.net.ssl.SSLSession
 
 /**
  * Created by huxinyu on 2019/6/30.

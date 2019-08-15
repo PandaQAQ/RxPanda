@@ -70,7 +70,7 @@ public class HttpGlobalConfig {
     }
 
     /**
-     * add a Converter.Factory,if never add ,will add a GsonConverterFactory as default
+     * add a Converter.Factory,if never add ,will add a PandaConvertFactory as default
      *
      * @param factory the factory to add
      * @return Config self
@@ -81,8 +81,6 @@ public class HttpGlobalConfig {
     }
 
     /**
-     * add a Converter.Factory,if never add ,will add a GsonConverterFactory as default
-     *
      * @param factory the factory to add
      * @return Config self
      */
@@ -92,8 +90,6 @@ public class HttpGlobalConfig {
     }
 
     /**
-     * add a Converter.Factory,if never add ,will add a GsonConverterFactory as default
-     *
      * @param factory the factory to add
      * @return Config self
      */
@@ -166,7 +162,8 @@ public class HttpGlobalConfig {
      * @return Config self
      */
     public HttpGlobalConfig globalHeader(@NonNull Map<String, String> headers) {
-        this.globalHeaders = headers;
+        this.globalHeaders.clear();
+        this.globalHeaders.putAll(headers);
         return this;
     }
 
@@ -177,7 +174,8 @@ public class HttpGlobalConfig {
      * @return config self
      */
     public HttpGlobalConfig globalParams(@NonNull Map<String, String> params) {
-        this.globalParams = params;
+        this.globalParams.clear();
+        this.globalParams.putAll(params);
         return this;
     }
 
