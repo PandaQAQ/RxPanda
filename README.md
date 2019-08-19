@@ -17,9 +17,9 @@
 
 # Release Logs
 > - 0.2.1:
->   1、新增 http 错误类型分组功能
->   2、retrofit 进行 post、get 请求适配公共参数添加
->   3、日志打印通过拦截器添加的参数信息缺失问题
+> 1、新增 http 错误类型分组功能
+> 2、retrofit 进行 post、get 请求适配公共参数添加
+> 3、日志打印通过拦截器添加的参数信息缺失问题
 > - 0.2.0: 使用 LogPrinter 同步输出并发请求日志，避免日志错乱
 > - 0.1.9: 兼容 boolean 类型的 data
 > - 0.1.8: 兼容 Android 9.0 移除反射方式替换 GsonAdapter，改用注册方式
