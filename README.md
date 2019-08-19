@@ -6,6 +6,7 @@
 # RxPanda
 基于 `RxJava2` `Retrofit2` `Okhttp3` 封装的网络库，处理了数据格式封装，gson 数据类型处理，gson 类解析空安全问题
 
+
 > 1、支持解析数据壳 key 自定义
 > 2、支持接口单独配置禁用脱壳返回接口定义的原始对象
 > 3、支持多 host 校验
@@ -14,10 +15,7 @@
 > 6、支持 int 类型 json 解析为 String 不会 0 变成 0.0
 
 # Release Log
-> - 0.2.1:
-> 1、新增 http 错误类型分组功能
-> 2、retrofit 进行 post、get 请求适配公共参数添加
-> 3、日志打印通过拦截器添加的参数信息缺失问题
+> - 0.2.1:新增 http 错误类型分组功能、retrofit 进行 post、get 请求适配公共参数添加、日志打印通过拦截器添加的参数信息缺失问题
 > - 0.2.0: 使用 LogPrinter 同步输出并发请求日志，避免日志错乱
 > - 0.1.9: 兼容 boolean 类型的 data
 > - 0.1.8: 兼容 Android 9.0 移除反射方式替换 GsonAdapter，改用注册方式
