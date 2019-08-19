@@ -20,6 +20,7 @@ public class ApiException extends IOException {
     private final long code;
     private String message;
     private String data;
+    private ExceptionType exceptionType = ExceptionType.UNKNOWN;
 
     public ApiException(Throwable throwable, int code) {
         super(throwable);
@@ -27,11 +28,24 @@ public class ApiException extends IOException {
         this.message = throwable.getMessage();
     }
 
+    public ApiException(long code) {
+        this.code = code;
+        this.data = "";
+        this.message = "";
+    }
 
     public ApiException(long code, String msg, String data) {
         this.code = code;
         this.data = data;
         this.message = msg;
+    }
+
+    public ExceptionType getExceptionType() {
+        return exceptionType;
+    }
+
+    public void setExceptionType(ExceptionType exceptionType) {
+        this.exceptionType = exceptionType;
     }
 
     public long getCode() {
@@ -86,6 +100,7 @@ public class ApiException extends IOException {
                 case HttpCode.HTTP.GATEWAY_TIME_OUT:
                 case HttpCode.HTTP.HTTP_VERSION_UNSUPPORT:
                 default:
+                    ex.setExceptionType(ExceptionType.SERVER);
                     ex.message = "NETWORK_ERROR";
                     break;
             }
@@ -93,23 +108,30 @@ public class ApiException extends IOException {
         } else if (e instanceof JsonParseException || e instanceof JSONException || e instanceof ParseException) {
             ex = new ApiException(e, HttpCode.FRAME_WORK.PARSE_ERROR);
             ex.message = e.getMessage();
+            ex.setExceptionType(ExceptionType.LOCAL);
             return ex;
         } else if (e instanceof ConnectException) {
             ex = new ApiException(e, HttpCode.FRAME_WORK.NETWORK_ERROR);
+            ex.setExceptionType(ExceptionType.NETWORK);
             ex.message = "NETWORK_ERROR";
             return ex;
         } else if (e instanceof javax.net.ssl.SSLHandshakeException) {
             ex = new ApiException(e, HttpCode.FRAME_WORK.SSL_ERROR);
+            ex.setExceptionType(ExceptionType.NETWORK);
             ex.message = "SSL_ERROR";
             return ex;
         } else if (e instanceof SocketTimeoutException) {
             ex = new ApiException(e, HttpCode.FRAME_WORK.TIMEOUT_ERROR);
+            ex.setExceptionType(ExceptionType.NETWORK);
             ex.message = "TIMEOUT_ERROR";
             return ex;
         } else if (e instanceof ApiException) {
-            return (ApiException) e;
+            ApiException exception = (ApiException) e;
+            exception.setExceptionType(ExceptionType.API);
+            return exception;
         } else {
             ex = new ApiException(e, HttpCode.FRAME_WORK.UNKNOWN);
+            ex.setExceptionType(ExceptionType.UNKNOWN);
             ex.message = e.getMessage();
             return ex;
         }

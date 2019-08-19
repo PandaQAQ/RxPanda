@@ -4,6 +4,7 @@ import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.converter.PandaConvertFactory;
 import com.pandaq.rxpanda.entity.ApiData;
 import com.pandaq.rxpanda.entity.IApiData;
+import com.pandaq.rxpanda.log.HttpLoggingInterceptor;
 import com.pandaq.rxpanda.ssl.SSLManager;
 import io.reactivex.annotations.NonNull;
 import okhttp3.Call;
@@ -43,6 +44,7 @@ public class HttpGlobalConfig {
     // 不验证 host 允许所有的 host
     private boolean trustAll = false;
     private Class<? extends IApiData> apiDataClazz = ApiData.class;
+    private HttpLoggingInterceptor loggingInterceptor;
 
     private HttpGlobalConfig() {
     }
@@ -225,12 +227,22 @@ public class HttpGlobalConfig {
     }
 
     public HttpGlobalConfig interceptor(@NonNull Interceptor interceptor) {
-        RxPanda.getOkHttpBuilder().addInterceptor(interceptor);
+        // 日志拦截器最后添加（避免其他拦截器添加的数据打印缺失）
+        if (interceptor instanceof HttpLoggingInterceptor) {
+            loggingInterceptor = (HttpLoggingInterceptor) interceptor;
+        } else {
+            RxPanda.getOkHttpBuilder().addInterceptor(interceptor);
+        }
         return this;
     }
 
     public HttpGlobalConfig netInterceptor(@NonNull Interceptor netInterceptor) {
-        RxPanda.getOkHttpBuilder().addNetworkInterceptor(netInterceptor);
+        // 日志拦截器最后添加（避免其他拦截器添加的数据打印缺失）
+        if (netInterceptor instanceof HttpLoggingInterceptor) {
+            loggingInterceptor = (HttpLoggingInterceptor) netInterceptor;
+        } else {
+            RxPanda.getOkHttpBuilder().addNetworkInterceptor(netInterceptor);
+        }
         return this;
     }
 
@@ -335,5 +347,9 @@ public class HttpGlobalConfig {
     public HttpGlobalConfig apiSuccessCode(Long apiSuccessCode) {
         this.apiSuccessCode = apiSuccessCode;
         return this;
+    }
+
+    public HttpLoggingInterceptor getLoggingInterceptor() {
+        return loggingInterceptor;
     }
 }

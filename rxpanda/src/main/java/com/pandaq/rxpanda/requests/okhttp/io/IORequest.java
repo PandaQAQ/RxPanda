@@ -104,6 +104,10 @@ public abstract class IORequest<R extends IORequest> extends Request<R> {
     @Override
     protected void injectLocalParams() {
         super.injectLocalParams();
+        // 添加日志拦截器
+        if (RxPanda.globalConfig().getLoggingInterceptor()!=null){
+            builder.addNetworkInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
+        }
         RxPanda.getRetrofitBuilder().client(builder.build());
         retrofit = RxPanda.getRetrofitBuilder().build();
         if (mGlobalConfig.getGlobalParams() != null) {

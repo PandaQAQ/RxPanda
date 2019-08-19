@@ -1,6 +1,5 @@
 package com.pandaq.rxpanda.observer;
 
-import com.pandaq.rxpanda.HttpCode;
 import com.pandaq.rxpanda.exception.ApiException;
 import io.reactivex.observers.DisposableSingleObserver;
 
@@ -18,11 +17,7 @@ public abstract class ApiSingleObserver<T> extends DisposableSingleObserver<T> {
 
     @Override
     public void onError(Throwable e) {
-        if (e instanceof ApiException) {
-            onError((ApiException) e);
-        } else {
-            onError(new ApiException(e, HttpCode.FRAME_WORK.UNKNOWN));
-        }
+        onError(ApiException.handleException(e));
         finished(false);
     }
 

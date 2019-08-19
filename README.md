@@ -1,5 +1,5 @@
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1a9236f222ac4293a509c9db710a13f5)](https://app.codacy.com/app/PandaQAQ/RxPanda?utm_source=github.com&utm_medium=referral&utm_content=PandaQAQ/RxPanda&utm_campaign=Badge_Grade_Dashboard)  [![License](https://img.shields.io/github/license/PandaQAQ/RxPanda.svg)](https://github.com/PandaQAQ/RxPanda/blob/master/LICENSE)  [![Download](https://api.bintray.com/packages/huxinyu/maven/rxpanda/images/download.svg?version=0.2.0)](https://bintray.com/huxinyu/maven/rxpanda/0.2.0/link)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1a9236f222ac4293a509c9db710a13f5)](https://app.codacy.com/app/PandaQAQ/RxPanda?utm_source=github.com&utm_medium=referral&utm_content=PandaQAQ/RxPanda&utm_campaign=Badge_Grade_Dashboard)  [![License](https://img.shields.io/github/license/PandaQAQ/RxPanda.svg)](https://github.com/PandaQAQ/RxPanda/blob/master/LICENSE)  [![Download](https://api.bintray.com/packages/huxinyu/maven/rxpanda/images/download.svg?version=0.2.1)](https://bintray.com/huxinyu/maven/rxpanda/0.2.1/link)
 
 # 项目地址
 [RxPanda](https://github.com/PandaQAQ/RxPanda)，欢迎使用和 star，提出的问题我会及时回复并处理。
@@ -12,6 +12,19 @@
 > 4、支持日志格式化及并发按序输出
 > 5、支持 data 为基本数据类型
 > 6、支持 int 类型 json 解析为 String 不会 0 变成 0.0
+
+# 更新日志
+
+# Release Logs
+> - 0.2.1:
+>   1、新增 http 错误类型分组功能
+>   2、retrofit 进行 post、get 请求适配公共参数添加
+>   3、日志打印通过拦截器添加的参数信息缺失问题
+> - 0.2.0: 使用 LogPrinter 同步输出并发请求日志，避免日志错乱
+> - 0.1.9: 兼容 boolean 类型的 data
+> - 0.1.8: 兼容 Android 9.0 移除反射方式替换 GsonAdapter，改用注册方式
+> - 0.1.7：文件上传下载支持
+> - 0.1.6：fix 数字解析为 String 类型时变成 double 类型字符串（1 按 String 解析变为 1.0 bug）
 
 # 基本用法
 ### 一、全局配置推荐在 Application 初始化时配置
