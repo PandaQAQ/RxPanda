@@ -13,7 +13,7 @@
 > 5、支持 data 为基本数据类型
 > 6、支持 int 类型 json 解析为 String 不会 0 变成 0.0
 
-# Release Logs
+# Release Log
 > - 0.2.1:
 > 1、新增 http 错误类型分组功能
 > 2、retrofit 进行 post、get 请求适配公共参数添加
