@@ -13,8 +13,6 @@
 > 5、支持 data 为基本数据类型
 > 6、支持 int 类型 json 解析为 String 不会 0 变成 0.0
 
-# 更新日志
-
 # Release Logs
 > - 0.2.1:
 > 1、新增 http 错误类型分组功能
