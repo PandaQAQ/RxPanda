@@ -123,7 +123,9 @@ public abstract class HttpRequest<R extends HttpRequest> extends Request<R> {
         super.injectLocalParams();
         // 添加日志拦截器
         if (RxPanda.globalConfig().getLoggingInterceptor() != null) {
-            builder.addNetworkInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
+            if (!builder.networkInterceptors().contains(RxPanda.globalConfig().getLoggingInterceptor())) {
+                builder.addNetworkInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
+            }
         }
         RxPanda.getRetrofitBuilder().client(builder.build());
         retrofit = RxPanda.getRetrofitBuilder().build();

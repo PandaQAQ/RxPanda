@@ -82,7 +82,9 @@ public class RetrofitRequest extends Request<RetrofitRequest> {
         builder.addNetworkInterceptor(paramsInterceptor);
         // 添加日志拦截器
         if (RxPanda.globalConfig().getLoggingInterceptor() != null) {
-            builder.addNetworkInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
+            if (!builder.networkInterceptors().contains(RxPanda.globalConfig().getLoggingInterceptor())) {
+                builder.addNetworkInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
+            }
         }
     }
 
