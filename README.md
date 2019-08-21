@@ -1,5 +1,5 @@
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1a9236f222ac4293a509c9db710a13f5)](https://app.codacy.com/app/PandaQAQ/RxPanda?utm_source=github.com&utm_medium=referral&utm_content=PandaQAQ/RxPanda&utm_campaign=Badge_Grade_Dashboard)  [![License](https://img.shields.io/github/license/PandaQAQ/RxPanda.svg)](https://github.com/PandaQAQ/RxPanda/blob/master/LICENSE)  [![Download](https://api.bintray.com/packages/huxinyu/maven/rxpanda/images/download.svg?version=0.2.1)](https://bintray.com/huxinyu/maven/rxpanda/0.2.1/link)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1a9236f222ac4293a509c9db710a13f5)](https://app.codacy.com/app/PandaQAQ/RxPanda?utm_source=github.com&utm_medium=referral&utm_content=PandaQAQ/RxPanda&utm_campaign=Badge_Grade_Dashboard)  [![License](https://img.shields.io/github/license/PandaQAQ/RxPanda.svg)](https://github.com/PandaQAQ/RxPanda/blob/master/LICENSE)  [![Download](https://api.bintray.com/packages/huxinyu/maven/rxpanda/images/download.svg?version=0.2.2)](https://bintray.com/huxinyu/maven/rxpanda/0.2.2/link)
 
 # 项目地址
 [RxPanda](https://github.com/PandaQAQ/RxPanda)，欢迎使用和 star，提出的问题我会及时回复并处理。
