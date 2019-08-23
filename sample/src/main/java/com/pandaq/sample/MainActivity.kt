@@ -1,6 +1,5 @@
 package com.pandaq.sample
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -96,25 +95,23 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             R.id.noShellData -> {
-                val intent = Intent(this,MainActivity1::class.java)
-                startActivity(intent)
-//                apiService.zhihu()
-//                    .doOnSubscribe { t -> compositeDisposable.add(t) }
-//                    .compose(RxScheduler.sync())
-//                    .subscribe(object : AppCallBack<ZhihuData>() {
-//                        override fun success(data: ZhihuData) {
-//                            dataString.text = GsonUtil.gson().toJson(data)
-//                        }
-//
-//                        override fun fail(code: Long?, msg: String?) {
-//                            dataString.text = msg
-//                        }
-//
-//                        override fun finish(success: Boolean) {
-//
-//                        }
-//
-//                    })
+                apiService.zhihu()
+                    .doOnSubscribe { t -> compositeDisposable.add(t) }
+                    .compose(RxScheduler.sync())
+                    .subscribe(object : AppCallBack<ZhihuData>() {
+                        override fun success(data: ZhihuData) {
+                            dataString.text = GsonUtil.gson().toJson(data)
+                        }
+
+                        override fun fail(code: Long?, msg: String?) {
+                            dataString.text = msg
+                        }
+
+                        override fun finish(success: Boolean) {
+
+                        }
+
+                    })
             }
         }
     }
