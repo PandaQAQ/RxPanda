@@ -1,10 +1,7 @@
 package com.pandaq.rxpanda.observer;
 
-import com.pandaq.rxpanda.HttpCode;
 import com.pandaq.rxpanda.exception.ApiException;
 import io.reactivex.observers.DisposableObserver;
-
-import java.io.IOException;
 
 /**
  * Created by huxinyu on 2019/3/8.
@@ -18,7 +15,11 @@ public abstract class ApiObserver<T> extends DisposableObserver<T> {
 
     @Override
     public void onNext(T t) {
-        onSuccess(t);
+        try {
+            onSuccess(t);
+        } catch (Exception e) {
+            onError(e);
+        }
         data = t;
         success = true;
     }

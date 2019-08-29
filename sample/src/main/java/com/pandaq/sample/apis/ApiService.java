@@ -30,7 +30,7 @@ public interface ApiService {
     Observable<List<ZooData>> newJsonKeyData();
 
     @GET("https://www.easy-mock.com/mock/5cef4b3e651e4075bad237f8/example/boolean")
-    Observable<Boolean> stringData();
+    Observable<ZhihuData> stringData();
 
     // 与 ApiData 结构完全不一样使用 RealEntity 标准不做脱壳处理，返回 ZhihuData 就解析为 ZhihuData
     @RealEntity

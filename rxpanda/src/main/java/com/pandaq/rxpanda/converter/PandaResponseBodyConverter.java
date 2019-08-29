@@ -59,7 +59,7 @@ public class PandaResponseBodyConverter<T> implements Converter<ResponseBody, T>
             }
         } else {
             // 获取解析数据,无 data 数据，默认以空对象替代
-            String data = apiData.getData() != null ? new Gson().toJson(apiData.getData()) : "data";
+            String data = new Gson().toJson(apiData.getData());
             if (!apiData.isSuccess()) {
                 throw new ApiException(apiData.getCode(), apiData.getMsg(), data);
             } else {
@@ -70,7 +70,6 @@ public class PandaResponseBodyConverter<T> implements Converter<ResponseBody, T>
                     return typeAdapter.read(jsonReader);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.w("errorData: ", response);
                     // 原始数据解析不通返回 EmptyData对象解析
                     try {
                         return typeAdapter.fromJson(new Gson().toJson(new EmptyData()));

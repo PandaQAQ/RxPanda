@@ -78,8 +78,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 apiService.stringData()
                     .doOnSubscribe { t -> compositeDisposable.add(t) }
                     .compose(RxScheduler.sync())
-                    .subscribe(object : AppCallBack<Boolean>() {
-                        override fun success(data: Boolean) {
+                    .subscribe(object : AppCallBack<ZhihuData>() {
+                        override fun success(data: ZhihuData) {
                             dataString.text = data.toString()
                         }
 
