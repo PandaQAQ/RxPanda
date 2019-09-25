@@ -11,7 +11,11 @@ import io.reactivex.observers.DisposableSingleObserver;
 public abstract class ApiSingleObserver<T> extends DisposableSingleObserver<T> {
     @Override
     public void onSuccess(T t) {
-        success(t);
+        try {
+            success(t);
+        } catch (Exception e) {
+            onError(e);
+        }
         finished(true);
     }
 
