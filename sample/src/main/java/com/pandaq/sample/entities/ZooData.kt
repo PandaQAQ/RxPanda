@@ -11,6 +11,6 @@ data class ZooData(
     val englishName: String?,
     val name: String?,
     val tel: String?,
-    val zooId: String?,
+    val zooId: Int?,
     val price: String?
 )

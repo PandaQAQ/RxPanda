@@ -33,33 +33,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.normalData -> {
-                for (i in 0..5) {
-                    apiService.zhihu()
-                        .doOnSubscribe { t -> compositeDisposable.add(t) }
-                        .compose(RxScheduler.sync())
-                        .subscribe(object : AppCallBack<ZhihuData>() {
-                            override fun success(data: ZhihuData) {
-                                dataString.text = GsonUtil.gson().toJson(data)
-                            }
-
-                            override fun fail(code: Long?, msg: String?) {
-                                dataString.text = msg
-                            }
-
-                            override fun finish(success: Boolean) {
-
-                            }
-
-                        })
-                }
-            }
-
-            R.id.newJsonKeyData -> {
-                apiService.newJsonKeyData()
+                apiService.zooList
                     .doOnSubscribe { t -> compositeDisposable.add(t) }
                     .compose(RxScheduler.sync())
                     .subscribe(object : AppCallBack<List<ZooData>>() {
-                        override fun success(data: List<ZooData>?) {
+                        override fun success(data: List<ZooData>) {
                             dataString.text = GsonUtil.gson().toJson(data)
                         }
 
@@ -72,6 +50,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                         }
 
                     })
+            }
+
+            R.id.newJsonKeyData -> {
+
             }
 
             R.id.stringData -> {

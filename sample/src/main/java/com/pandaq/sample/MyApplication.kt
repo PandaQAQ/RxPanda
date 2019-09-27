@@ -25,7 +25,7 @@ class MyApplication : Application() {
                 HttpLoggingInterceptor()
                     .setLevel(HttpLoggingInterceptor.Level.BODY)
             )
-            .apiSuccessCode(0L)
+            .apiSuccessCode(100L)
             .debug(BuildConfig.DEBUG)
     }
 }

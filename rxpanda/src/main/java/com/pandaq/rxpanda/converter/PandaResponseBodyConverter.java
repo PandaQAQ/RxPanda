@@ -1,6 +1,5 @@
 package com.pandaq.rxpanda.converter;
 
-import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -59,7 +58,10 @@ public class PandaResponseBodyConverter<T> implements Converter<ResponseBody, T>
             }
         } else {
             // 获取解析数据,无 data 数据，默认以空对象替代
-            String data = new Gson().toJson(apiData.getData());
+            String data = "";
+            if (apiData.getData() != null) {
+                data = new Gson().toJson(apiData.getData());
+            }
             if (!apiData.isSuccess()) {
                 throw new ApiException(apiData.getCode(), apiData.getMsg(), data);
             } else {

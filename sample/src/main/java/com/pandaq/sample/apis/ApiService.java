@@ -26,7 +26,7 @@ public interface ApiService {
 
     // 数据结构不变但是数据壳 jsonKey 与框架默认不一致时使用此注解，也可在 Config 配置全局使用此数据壳
     @ApiData(clazz = ZooApiData.class)
-    @GET("https://www.easy-mock.com/mock/5cef4b3e651e4075bad237f8/example/customApiData")
+    @GET("https://www.easy-mock.com/mock/5cef4b3e651e4075bad237f8/example/zooData")
     Observable<List<ZooData>> newJsonKeyData();
 
     @GET("https://www.easy-mock.com/mock/5cef4b3e651e4075bad237f8/example/boolean")

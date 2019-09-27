@@ -101,7 +101,7 @@ public class ApiException extends IOException {
                 case HttpCode.HTTP.HTTP_VERSION_UNSUPPORT:
                 default:
                     ex.setExceptionType(ExceptionType.SERVER);
-                    ex.message = "NETWORK_ERROR";
+                    ex.message = "请检查网络连接";
                     break;
             }
             return ex;
@@ -113,7 +113,7 @@ public class ApiException extends IOException {
         } else if (e instanceof ConnectException) {
             ex = new ApiException(e, HttpCode.FRAME_WORK.NETWORK_ERROR);
             ex.setExceptionType(ExceptionType.NETWORK);
-            ex.message = "NETWORK_ERROR";
+            ex.message = "请检查网络连接";
             return ex;
         } else if (e instanceof javax.net.ssl.SSLHandshakeException) {
             ex = new ApiException(e, HttpCode.FRAME_WORK.SSL_ERROR);
@@ -123,7 +123,7 @@ public class ApiException extends IOException {
         } else if (e instanceof SocketTimeoutException) {
             ex = new ApiException(e, HttpCode.FRAME_WORK.TIMEOUT_ERROR);
             ex.setExceptionType(ExceptionType.NETWORK);
-            ex.message = "TIMEOUT_ERROR";
+            ex.message = "请检查网络连接";
             return ex;
         } else if (e instanceof ApiException) {
             ApiException exception = (ApiException) e;
