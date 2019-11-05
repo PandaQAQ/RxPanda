@@ -1,11 +1,13 @@
 package com.pandaq.sample.apis;
 
+import com.google.gson.JsonObject;
 import com.pandaq.app_launcher.entites.ZhihuData;
 import com.pandaq.rxpanda.entity.EmptyData;
 import com.pandaq.sample.entities.apidata.ZooApiData;
 import com.pandaq.rxpanda.annotation.ApiData;
 import com.pandaq.rxpanda.annotation.RealEntity;
 import com.pandaq.sample.entities.ZooData;
+
 import io.reactivex.Observable;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -36,4 +38,7 @@ public interface ApiService {
     @RealEntity
     @GET("http://news-at.zhihu.com/api/4/news/latest")
     Observable<ZhihuData> zhihu();
+
+    @GET("http://192.168.0.73:8082/user/login?account=1&password=1")
+    Observable<JsonObject> test();
 }

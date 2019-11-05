@@ -3,6 +3,7 @@ package com.pandaq.sample
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import com.google.gson.JsonObject
 import com.pandaq.app_launcher.entites.ZhihuData
 import com.pandaq.rxpanda.RxPanda
 import com.pandaq.rxpanda.transformer.RxScheduler
@@ -53,7 +54,23 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             R.id.newJsonKeyData -> {
+                apiService.test()
+                    .compose(RxScheduler.sync())
+                    .compose(RxScheduler.autoDispose())
+                    .subscribe(object : AppCallBack<JsonObject>() {
+                        override fun success(data: JsonObject) {
+                            dataString.text = data.toString()
+                        }
 
+                        override fun fail(code: Long?, msg: String?) {
+                            dataString.text = msg
+                        }
+
+                        override fun finish(success: Boolean) {
+
+                        }
+
+                    })
             }
 
             R.id.stringData -> {

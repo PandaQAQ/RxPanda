@@ -1,8 +1,12 @@
 package com.pandaq.rxpanda.transformer;
 
 import com.pandaq.rxpanda.RxPanda;
+
 import io.reactivex.ObservableTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -60,5 +64,22 @@ public class RxScheduler {
         return upstream -> upstream.subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io());
+    }
+
+    /**
+     * 调用结束后自动解除观察
+     *
+     * @param <T> 数据流对象
+     * @return
+     */
+    public static <T> ObservableTransformer<T, T> autoDispose() {
+        final Disposable[] disposables = new Disposable[1];
+        return upstream -> upstream
+                .doOnSubscribe(disposable -> disposables[0] = disposable)
+                .doOnComplete((Action) () -> {
+                    if (disposables[0] != null) {
+                        disposables[0].dispose();
+                    }
+                });
     }
 }

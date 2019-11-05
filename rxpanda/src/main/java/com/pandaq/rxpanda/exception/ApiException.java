@@ -1,14 +1,17 @@
 package com.pandaq.rxpanda.exception;
 
 import android.net.ParseException;
+
 import com.google.gson.JsonParseException;
 import com.pandaq.rxpanda.HttpCode;
+
 import org.json.JSONException;
-import retrofit2.HttpException;
 
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
+
+import retrofit2.HttpException;
 
 /**
  * Created by huxinyu on 2019/3/8.
@@ -53,7 +56,7 @@ public class ApiException extends IOException {
     }
 
     public String getMessage() {
-        return message;
+        return message == null ? "" : message;
     }
 
     public ApiException setMessage(String message) {
@@ -62,7 +65,7 @@ public class ApiException extends IOException {
     }
 
     public String getData() {
-        return data;
+        return data == null ? "" : data;
     }
 
     public void setData(String data) {
