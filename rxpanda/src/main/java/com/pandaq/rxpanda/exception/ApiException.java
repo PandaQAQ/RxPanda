@@ -115,17 +115,17 @@ public class ApiException extends IOException {
             return ex;
         } else if (e instanceof ConnectException) {
             ex = new ApiException(e, HttpCode.FRAME_WORK.NETWORK_ERROR);
-            ex.setExceptionType(ExceptionType.NETWORK);
+            ex.setExceptionType(ExceptionType.CONNECT);
             ex.message = "请检查网络连接";
             return ex;
         } else if (e instanceof javax.net.ssl.SSLHandshakeException) {
             ex = new ApiException(e, HttpCode.FRAME_WORK.SSL_ERROR);
-            ex.setExceptionType(ExceptionType.NETWORK);
+            ex.setExceptionType(ExceptionType.CONNECT);
             ex.message = "SSL_ERROR";
             return ex;
         } else if (e instanceof SocketTimeoutException) {
             ex = new ApiException(e, HttpCode.FRAME_WORK.TIMEOUT_ERROR);
-            ex.setExceptionType(ExceptionType.NETWORK);
+            ex.setExceptionType(ExceptionType.CONNECT);
             ex.message = "请检查网络连接";
             return ex;
         } else if (e instanceof ApiException) {
