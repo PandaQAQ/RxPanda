@@ -67,15 +67,7 @@ public class SSLManager {
                     getInstance(TrustManagerFactory.getDefaultAlgorithm());
             trustManagerFactory.init(keyStore);
 
-            TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
-
-            return trustManagers;
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
+            return trustManagerFactory.getTrustManagers();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -94,16 +86,6 @@ public class SSLManager {
             keyManagerFactory.init(clientKeyStore, password.toCharArray());
             return keyManagerFactory.getKeyManagers();
 
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (UnrecoverableKeyException e) {
-            e.printStackTrace();
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }

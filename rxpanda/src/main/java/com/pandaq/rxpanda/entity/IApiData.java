@@ -15,4 +15,5 @@ public interface IApiData<T> {
     T getData();
 
     boolean isSuccess();
+
 }

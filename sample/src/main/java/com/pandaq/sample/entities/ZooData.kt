@@ -8,9 +8,10 @@ package com.pandaq.sample.entities
  */
 data class ZooData(
     val address: String?,
-    val englishName: String?,
-    val name: String?,
-    val tel: String?,
-    val zooId: Int?,
-    val price: String?
+//    val englishName: String?,
+//    val name: String?,
+//    val tel: String?,
+//    val zooId: String?,
+//    val price: String?,
+    val nullFiled: String?="22"
 )

@@ -5,17 +5,26 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
 import com.pandaq.rxpanda.annotation.ApiData;
 import com.pandaq.rxpanda.annotation.RealEntity;
-import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.*;
+import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.BooleanResponseBodyConverter;
+import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.ByteResponseBodyConverter;
+import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.CharacterResponseBodyConverter;
+import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.DoubleResponseBodyConverter;
+import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.FloatResponseBodyConverter;
+import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.IntegerResponseBodyConverter;
+import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.LongResponseBodyConverter;
+import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.ShortResponseBodyConverter;
+import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.StringResponseBodyConverter;
 import com.pandaq.rxpanda.utils.GsonUtil;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+
 import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 
 /**
  * Created by huxinyu on 2018/5/31.
@@ -49,7 +58,6 @@ public class PandaConvertFactory extends Converter.Factory {
      */
     @Override
     public Converter<ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations, Retrofit retrofit) {
-        TypeAdapter<?> adapter = gson.getAdapter(TypeToken.get(type));
         for (Annotation annotation : annotations) {
             // PandaResponseBodyConverter 转换时不使用 ApiData 剥壳，直接转换为接口中定义的对象
             if (annotation instanceof RealEntity) {
@@ -72,15 +80,15 @@ public class PandaConvertFactory extends Converter.Factory {
                 } else if (type == Short.class || type == Short.TYPE) {
                     return ShortResponseBodyConverter.INSTANCE;
                 } else {
-                    return new GsonResponseBodyConverter<>(gson, adapter);
+                    return new GsonResponseBodyConverter<>(gson, type);
                 }
             }
             // 指定某一接口自己的 App壳
             if (annotation instanceof ApiData) {
-                return new PandaResponseBodyConverter<>(gson, adapter, ((ApiData) annotation).clazz());
+                return new PandaResponseBodyConverter<>(gson, type, ((ApiData) annotation).clazz());
             }
         }
-        return new PandaResponseBodyConverter<>(gson, adapter);
+        return new PandaResponseBodyConverter<>(gson, type);
     }
 
     @Nullable

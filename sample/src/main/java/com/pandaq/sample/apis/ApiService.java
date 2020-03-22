@@ -27,16 +27,15 @@ public interface ApiService {
     Observable<List<ZooData>> getZooList();
 
     // 数据结构不变但是数据壳 jsonKey 与框架默认不一致时使用此注解，也可在 Config 配置全局使用此数据壳
-    @ApiData(clazz = ZooApiData.class)
+//    @ApiData(clazz = ZooApiData.class)
     @GET("https://www.easy-mock.com/mock/5cef4b3e651e4075bad237f8/example/zooData")
     Observable<List<ZooData>> newJsonKeyData();
 
     @GET("https://www.easy-mock.com/mock/5cef4b3e651e4075bad237f8/example/boolean")
-    Observable<ZhihuData> stringData();
+    Observable<String> stringData();
 
     // 与 ApiData 结构完全不一样使用 RealEntity 标准不做脱壳处理，返回 ZhihuData 就解析为 ZhihuData
     @RealEntity
-    @GET("http://news-at.zhihu.com/api/4/news/latest")
     Observable<ZhihuData> zhihu();
 
     @GET("http://192.168.0.73:8082/user/login?account=1&password=1")

@@ -18,20 +18,24 @@ package com.pandaq.rxpanda.converter;
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.TypeAdapter;
+import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
+
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 
 final class GsonResponseBodyConverter<T> implements Converter<ResponseBody, T> {
     private final Gson gson;
     private final TypeAdapter<T> adapter;
 
-    GsonResponseBodyConverter(Gson gson, TypeAdapter<T> adapter) {
+    @SuppressWarnings("unchecked")
+    GsonResponseBodyConverter(Gson gson, Type type) {
         this.gson = gson;
-        this.adapter = adapter;
+        this.adapter = (TypeAdapter<T>) gson.getAdapter(TypeToken.get(type));
     }
 
     @Override
