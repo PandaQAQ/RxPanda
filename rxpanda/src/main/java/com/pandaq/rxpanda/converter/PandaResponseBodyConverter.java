@@ -5,9 +5,9 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
 import com.pandaq.rxpanda.HttpCode;
 import com.pandaq.rxpanda.RxPanda;
+import com.pandaq.rxpanda.annotation.AutoWired;
 import com.pandaq.rxpanda.config.HttpGlobalConfig;
 import com.pandaq.rxpanda.entity.EmptyData;
 import com.pandaq.rxpanda.entity.IApiData;
@@ -16,8 +16,6 @@ import com.pandaq.rxpanda.exception.ExceptionType;
 import com.pandaq.rxpanda.utils.GsonUtil;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -82,10 +80,14 @@ public class PandaResponseBodyConverter<T> implements Converter<ResponseBody, T>
                 throw exception;
             } else {
                 try {
-                    Reader reader = new StringReader(data);
-                    JsonReader jsonReader = gson.newJsonReader(reader);
-                    jsonReader.setLenient(true);
-                    return typeAdapter.read(jsonReader);
+                    T notWire = GsonUtil.gson().fromJson(data, dataType);
+                    boolean autoWire = notWire.getClass().getAnnotation(AutoWired.class) != null;
+                    if (autoWire) {
+                        String wireData = GsonUtil.gson().toJson(notWire);
+                        return GsonUtil.gson().fromJson(wireData, dataType);
+                    } else {
+                        return notWire;
+                    }
                 } catch (Exception e) {
                     if (HttpGlobalConfig.getInstance().isDebug()) {
                         e.printStackTrace();

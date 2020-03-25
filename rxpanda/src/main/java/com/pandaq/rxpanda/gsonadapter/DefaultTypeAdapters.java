@@ -32,7 +32,7 @@ public class DefaultTypeAdapters {
             if (peek == JsonToken.NULL) {
                 in.nextNull();
                 // 默认值为 false
-                return false;
+                return true;
             } else if (peek == JsonToken.STRING) {
                 // support strings for compatibility with GSON 1.7
                 return Boolean.parseBoolean(in.nextString());
@@ -51,7 +51,7 @@ public class DefaultTypeAdapters {
         public Boolean read(JsonReader in) throws IOException {
             if (in.peek() == JsonToken.NULL) {
                 in.nextNull();
-                return false;
+                return true;
             }
             if (in.peek() == JsonToken.BOOLEAN) {
                 return in.nextBoolean();
@@ -65,61 +65,10 @@ public class DefaultTypeAdapters {
         }
     };
 
-    public static final TypeAdapter<Number> BYTE = new TypeAdapter<Number>() {
-        @Override
-        public Number read(JsonReader in) throws IOException {
-            JsonToken jsonToken = in.peek();
-            switch (jsonToken) {
-                case NULL:
-                    in.nextNull();
-                    return (byte) -1;
-                case NUMBER:
-                    return (byte) in.nextInt();
-                case STRING:
-                    if (TextUtils.isEmpty(in.nextString())) {
-                        return (byte) -1;
-                    }
-                    return new LazilyParsedNumber(in.nextString());
-                default:
-                    throw new JsonSyntaxException("Expecting number, got: " + jsonToken);
-            }
-        }
 
+    public static final TypeAdapter<Integer> INTEGER = new TypeAdapter<Integer>() {
         @Override
-        public void write(JsonWriter out, Number value) throws IOException {
-            out.value(value);
-        }
-    };
-
-    public static final TypeAdapter<Number> SHORT = new TypeAdapter<Number>() {
-        @Override
-        public Number read(JsonReader in) throws IOException {
-            JsonToken jsonToken = in.peek();
-            switch (jsonToken) {
-                case NULL:
-                    in.nextNull();
-                    return (short) -1;
-                case NUMBER:
-                    return (short) in.nextInt();
-                case STRING:
-                    if (TextUtils.isEmpty(in.nextString())) {
-                        return (short) -1;
-                    }
-                    return new LazilyParsedNumber(in.nextString());
-                default:
-                    throw new JsonSyntaxException("Expecting number, got: " + jsonToken);
-            }
-        }
-
-        @Override
-        public void write(JsonWriter out, Number value) throws IOException {
-            out.value(value);
-        }
-    };
-
-    public static final TypeAdapter<Number> INTEGER = new TypeAdapter<Number>() {
-        @Override
-        public Number read(JsonReader in) throws IOException {
+        public Integer read(JsonReader in) throws IOException {
             JsonToken jsonToken = in.peek();
             switch (jsonToken) {
                 case NULL:
@@ -131,21 +80,21 @@ public class DefaultTypeAdapters {
                     if (TextUtils.isEmpty(in.nextString())) {
                         return -1;
                     }
-                    return new LazilyParsedNumber(in.nextString());
+                    return Integer.valueOf(in.nextString());
                 default:
                     throw new JsonSyntaxException("Expecting number, got: " + jsonToken);
             }
         }
 
         @Override
-        public void write(JsonWriter out, Number value) throws IOException {
+        public void write(JsonWriter out, Integer value) throws IOException {
             out.value(value);
         }
     };
 
-    public static final TypeAdapter<Number> LONG = new TypeAdapter<Number>() {
+    public static final TypeAdapter<Long> LONG = new TypeAdapter<Long>() {
         @Override
-        public Number read(JsonReader in) throws IOException {
+        public Long read(JsonReader in) throws IOException {
             JsonToken jsonToken = in.peek();
             switch (jsonToken) {
                 case NULL:
@@ -157,66 +106,66 @@ public class DefaultTypeAdapters {
                     if (TextUtils.isEmpty(in.nextString())) {
                         return -1L;
                     }
-                    return new LazilyParsedNumber(in.nextString());
+                    return Long.valueOf(in.nextString());
                 default:
                     throw new JsonSyntaxException("Expecting number, got: " + jsonToken);
             }
         }
 
         @Override
-        public void write(JsonWriter out, Number value) throws IOException {
+        public void write(JsonWriter out, Long value) throws IOException {
             out.value(value);
         }
     };
 
-    public static final TypeAdapter<Number> FLOAT = new TypeAdapter<Number>() {
+    public static final TypeAdapter<Float> FLOAT = new TypeAdapter<Float>() {
         @Override
-        public Number read(JsonReader in) throws IOException {
+        public Float read(JsonReader in) throws IOException {
             JsonToken jsonToken = in.peek();
             switch (jsonToken) {
                 case NULL:
                     in.nextNull();
-                    return -1;
+                    return -1f;
                 case NUMBER:
                     return (float) in.nextDouble();
                 case STRING:
                     if (TextUtils.isEmpty(in.nextString())) {
                         return -1.0f;
                     }
-                    return new LazilyParsedNumber(in.nextString());
+                    return Float.valueOf(in.nextString());
                 default:
                     throw new JsonSyntaxException("Expecting number, got: " + jsonToken);
             }
         }
 
         @Override
-        public void write(JsonWriter out, Number value) throws IOException {
+        public void write(JsonWriter out, Float value) throws IOException {
             out.value(value);
         }
     };
 
-    public static final TypeAdapter<Number> DOUBLE = new TypeAdapter<Number>() {
+    public static final TypeAdapter<Double> DOUBLE = new TypeAdapter<Double>() {
         @Override
-        public Number read(JsonReader in) throws IOException {
+        public Double read(JsonReader in) throws IOException {
             JsonToken jsonToken = in.peek();
             switch (jsonToken) {
                 case NULL:
                     in.nextNull();
-                    return -1;
+                    return -1.0;
                 case NUMBER:
                     return in.nextDouble();
                 case STRING:
                     if (TextUtils.isEmpty(in.nextString())) {
-                        return -1.0f;
+                        return -1.0;
                     }
-                    return new LazilyParsedNumber(in.nextString());
+                    return Double.valueOf(in.nextString());
                 default:
                     throw new JsonSyntaxException("Expecting number, got: " + jsonToken);
             }
         }
 
         @Override
-        public void write(JsonWriter out, Number value) throws IOException {
+        public void write(JsonWriter out, Double value) throws IOException {
             out.value(value);
         }
     };

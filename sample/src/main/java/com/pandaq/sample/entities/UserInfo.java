@@ -2,15 +2,18 @@ package com.pandaq.sample.entities;
 
 import android.support.annotation.NonNull;
 
+import com.pandaq.rxpanda.annotation.AutoWired;
 import com.pandaq.rxpanda.utils.GsonUtil;
 
+//@AutoWired
 public class UserInfo {
 
     private int userId;
     private String userName;
     private String nickName;
     private String companyId;
-    private int age;
+    private Integer age;
+    private Integer notExist;
 
     public int getUserId() {
         return userId;

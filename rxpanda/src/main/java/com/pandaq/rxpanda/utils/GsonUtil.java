@@ -26,8 +26,6 @@ public class GsonUtil {
         return new GsonBuilder()
                 .registerTypeAdapter(Boolean.class, DefaultTypeAdapters.BOOLEAN)
                 .registerTypeAdapter(Boolean.class, DefaultTypeAdapters.BOOLEAN_AS_STRING)
-                .registerTypeAdapter(Byte.class, DefaultTypeAdapters.BYTE)
-                .registerTypeAdapter(Short.class, DefaultTypeAdapters.SHORT)
                 .registerTypeAdapter(Integer.class, DefaultTypeAdapters.INTEGER)
                 .registerTypeAdapter(Long.class, DefaultTypeAdapters.LONG)
                 .registerTypeAdapter(Float.class, DefaultTypeAdapters.FLOAT)
