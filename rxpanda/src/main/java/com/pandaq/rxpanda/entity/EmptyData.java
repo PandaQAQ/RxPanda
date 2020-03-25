@@ -6,5 +6,5 @@ package com.pandaq.rxpanda.entity;
  * <p>
  * Description :无返回数据接口的解析对象
  */
-public class EmptyData {
+final public class EmptyData {
 }

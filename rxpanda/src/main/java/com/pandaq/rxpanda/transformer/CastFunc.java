@@ -34,7 +34,7 @@ public class CastFunc<T> implements Function<ResponseBody, T> {
         String json = responseBody.string();
         if (json == null || json.isEmpty()) {
             if (EmptyData.class.equals(type)) { // 如果接收的是空对象则回传 EmptyData
-                return typeAdapter.fromJson(new Gson().toJson(new EmptyData()));
+                return typeAdapter.fromJson(GsonUtil.gson().toJson(new EmptyData()));
             } else if (String.class.equals(type)) {
                 return (T) json;
             } else {

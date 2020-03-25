@@ -1,6 +1,7 @@
 package com.pandaq.rxpanda.observer;
 
 import com.pandaq.rxpanda.exception.ApiException;
+
 import io.reactivex.observers.DisposableObserver;
 
 /**

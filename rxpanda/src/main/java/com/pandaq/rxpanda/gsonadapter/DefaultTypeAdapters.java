@@ -2,6 +2,7 @@ package com.pandaq.rxpanda.gsonadapter;
 
 
 import android.text.TextUtils;
+
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.internal.LazilyParsedNumber;
@@ -360,4 +361,5 @@ public class DefaultTypeAdapters {
             out.value(value == null ? null : value.toString());
         }
     };
+
 }

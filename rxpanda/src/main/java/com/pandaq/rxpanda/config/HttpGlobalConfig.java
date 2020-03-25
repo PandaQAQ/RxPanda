@@ -6,17 +6,23 @@ import com.pandaq.rxpanda.entity.ApiData;
 import com.pandaq.rxpanda.entity.IApiData;
 import com.pandaq.rxpanda.log.HttpLoggingInterceptor;
 import com.pandaq.rxpanda.ssl.SSLManager;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSocketFactory;
+
 import io.reactivex.annotations.NonNull;
 import okhttp3.Call;
 import okhttp3.ConnectionPool;
 import okhttp3.Interceptor;
 import retrofit2.CallAdapter;
 import retrofit2.Converter;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSocketFactory;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by huxinyu on 2019/1/9.
@@ -26,7 +32,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class HttpGlobalConfig {
 
-    //todo cache 和 cookie 暂时未做
     private List<CallAdapter.Factory> callAdapterFactories = new ArrayList<>();//Call适配器工厂
     private Converter.Factory converterFactory = PandaConvertFactory.create();//转换工厂,默认为 PandaConvertFactory
     private Call.Factory callFactory;//Call工厂
@@ -47,6 +52,7 @@ public class HttpGlobalConfig {
     private HttpLoggingInterceptor loggingInterceptor;
 
     private HttpGlobalConfig() {
+
     }
 
     public static HttpGlobalConfig getInstance() {

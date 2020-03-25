@@ -21,11 +21,12 @@ class MyApplication : Application() {
             .baseUrl("https://www.easy-mock.com/mock/5cef4b3e651e4075bad237f8/example/")
             .hosts("www.easy-mock.com")
             .trustAllHost(true)
+//            .nullDataValue()
             .netInterceptor(
                 HttpLoggingInterceptor()
                     .setLevel(HttpLoggingInterceptor.Level.BODY)
             )
-            .apiSuccessCode(100L)
+            .apiSuccessCode(0L)
             .debug(BuildConfig.DEBUG)
     }
 }

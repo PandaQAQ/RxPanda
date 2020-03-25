@@ -9,6 +9,7 @@ import com.pandaq.rxpanda.transformer.RxScheduler
 import com.pandaq.rxpanda.utils.GsonUtil
 import com.pandaq.sample.apis.ApiService
 import com.pandaq.sample.apis.AppCallBack
+import com.pandaq.sample.entities.UserInfo
 import com.pandaq.sample.entities.ZooData
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
@@ -33,12 +34,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.normalData -> {
-                apiService.zooList
-                    .doOnSubscribe { t -> compositeDisposable.add(t) }
+                apiService.test()
                     .compose(RxScheduler.sync())
-                    .subscribe(object : AppCallBack<List<ZooData>>() {
-                        override fun success(data: List<ZooData>) {
-                            dataString.text = GsonUtil.gson().toJson(data)
+                    .subscribe(object : AppCallBack<UserInfo>() {
+                        override fun success(data: UserInfo) {
+                            dataString.text = data.toString()
                         }
 
                         override fun fail(code: Long?, msg: String?) {
