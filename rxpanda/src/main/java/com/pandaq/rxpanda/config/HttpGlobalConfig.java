@@ -4,6 +4,7 @@ import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.converter.PandaConvertFactory;
 import com.pandaq.rxpanda.entity.ApiData;
 import com.pandaq.rxpanda.entity.IApiData;
+import com.pandaq.rxpanda.entity.NullDataValue;
 import com.pandaq.rxpanda.log.HttpLoggingInterceptor;
 import com.pandaq.rxpanda.ssl.SSLManager;
 
@@ -48,6 +49,8 @@ public class HttpGlobalConfig {
     private Long apiSuccessCode = -1L;
     // 不验证 host 允许所有的 host
     private boolean trustAll = false;
+    // Gson 解析补空默认值
+    private NullDataValue defValues = new NullDataValue();
     private Class<? extends IApiData> apiDataClazz = ApiData.class;
     private HttpLoggingInterceptor loggingInterceptor;
 
@@ -200,6 +203,17 @@ public class HttpGlobalConfig {
     }
 
     /**
+     * 配置 Gson 解析的默认值
+     *
+     * @param defValues 默认值对象
+     * @return 默认值
+     */
+    public HttpGlobalConfig defaultValue(@NonNull NullDataValue defValues) {
+        this.defValues = defValues;
+        return this;
+    }
+
+    /**
      * if you use this http lib,must call it
      *
      * @param baseUrl RetrofitRequest's baseUrl,and this url will be added to HostnameVerifier
@@ -331,6 +345,10 @@ public class HttpGlobalConfig {
 
     public int getRetryCount() {
         return retryCount;
+    }
+
+    public NullDataValue getDefValues() {
+        return defValues;
     }
 
     public boolean isDebug() {

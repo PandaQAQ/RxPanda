@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import com.pandaq.rxpanda.annotation.AutoWired;
 import com.pandaq.rxpanda.utils.GsonUtil;
 
-//@AutoWired
+@AutoWired
 public class UserInfo {
 
     private int userId;
