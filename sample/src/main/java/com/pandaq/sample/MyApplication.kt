@@ -24,13 +24,13 @@ class MyApplication : Application() {
         defValues.defFloat = -0.0f
         defValues.defInt = -1
         defValues.defLong =0L
-        defValues.defString = "empty"
+        defValues.defString = ""
 
         RxPanda.globalConfig()
             .baseUrl("https://www.easy-mock.com/mock/5cef4b3e651e4075bad237f8/example/")
             .hosts("www.easy-mock.com")
             .trustAllHost(true)
-//            .nullDataValue()
+            .defaultValue(defValues)
             .netInterceptor(
                 HttpLoggingInterceptor()
                     .setLevel(HttpLoggingInterceptor.Level.BODY)
