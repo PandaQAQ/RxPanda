@@ -4,9 +4,6 @@ import android.app.Application
 import com.pandaq.rxpanda.RxPanda
 import com.pandaq.rxpanda.entity.NullDataValue
 import com.pandaq.rxpanda.log.HttpLoggingInterceptor
-import com.pandaq.sample.entities.apidata.ZooApiData
-import javax.net.ssl.HostnameVerifier
-import javax.net.ssl.SSLSession
 
 /**
  * Created by huxinyu on 2019/6/30.
@@ -23,7 +20,7 @@ class MyApplication : Application() {
         defValues.defDouble = -1.0
         defValues.defFloat = -0.0f
         defValues.defInt = -1
-        defValues.defLong =0L
+        defValues.defLong = 0L
         defValues.defString = ""
 
         RxPanda.globalConfig()

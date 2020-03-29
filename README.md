@@ -1,20 +1,22 @@
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1a9236f222ac4293a509c9db710a13f5)](https://app.codacy.com/app/PandaQAQ/RxPanda?utm_source=github.com&utm_medium=referral&utm_content=PandaQAQ/RxPanda&utm_campaign=Badge_Grade_Dashboard)  [![License](https://img.shields.io/github/license/PandaQAQ/RxPanda.svg)](https://github.com/PandaQAQ/RxPanda/blob/master/LICENSE)  [![Download](https://api.bintray.com/packages/huxinyu/maven/rxpanda/images/download.svg?version=0.2.4)](https://bintray.com/huxinyu/maven/rxpanda/0.2.4/link)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1a9236f222ac4293a509c9db710a13f5)](https://app.codacy.com/app/PandaQAQ/RxPanda?utm_source=github.com&utm_medium=referral&utm_content=PandaQAQ/RxPanda&utm_campaign=Badge_Grade_Dashboard)  [![License](https://img.shields.io/github/license/PandaQAQ/RxPanda.svg)](https://github.com/PandaQAQ/RxPanda/blob/master/LICENSE)  [![Download](https://api.bintray.com/packages/huxinyu/maven/rxpanda/images/download.svg?version=0.2.5)](https://bintray.com/huxinyu/maven/rxpanda/0.2.5/link)
 
 # 项目地址
 [RxPanda](https://github.com/PandaQAQ/RxPanda)，欢迎使用和 star，提出的问题我会及时回复并处理。
 # RxPanda
 基于 `RxJava2` `Retrofit2` `Okhttp3` 封装的网络库，处理了数据格式封装，gson 数据类型处理，gson 类解析空安全问题
 
-
-> - 1、支持解析数据壳 key 自定义
-> - 2、支持接口单独配置禁用脱壳返回接口定义的原始对象
-> - 3、支持多 host 校验
-> - 4、支持日志格式化及并发按序输出
-> - 5、支持 data 为基本数据类型
-> - 6、支持 int 类型 json 解析为 String 不会 0 变成 0.0
+> 1、支持解析数据壳 key 自定义
+> 2、支持接口单独配置禁用脱壳返回接口定义的原始对象
+> 3、支持多 host 校验
+> 4、支持日志格式化及并发按序输出
+> 5、支持 data 为基本数据类型
+> 6、支持 int 类型 json 解析为 String 不会 0 变成 0.0
+> 7、支持解析类型为 `int`、`String`、`float`、`double`、`long`、`BigDecima`、`EmptyData` 时 json 字段缺失。解析为对象时自动使用默认值。
+> 8、支持 json 解析时解析类型为第七条中的类型但是返回为 null 时替换为配置的默认值
 
 # Release Log
+> - 0.2.5: Json 解析为对象时，基本数据类型 null 值或缺失的情况下增加默认值兼容。
 > - 0.2.4: ApiException msg 空兼容性优化
 > - 0.2.3: 兼容 Number 类型 data，接口无数据时返回空字符串会解析报错的问题
 > - 0.2.2: 日志拦截器重复添加 bug 修复
@@ -28,6 +30,15 @@
 # 基本用法
 ### 一、全局配置推荐在 Application 初始化时配置
 ```java
+
+		val defValues = NullDataValue()
+        defValues.defBoolean = false
+        defValues.defDouble = -1.0
+        defValues.defFloat = -0.0f
+        defValues.defInt = -1
+        defValues.defLong =0L
+        defValues.defString = ""
+
         RxPanda.globalConfig()
                 .baseUrl(ApiService.BASE_URL) //配置基础域名
                 .netInterceptor(new HttpLoggingInterceptor()
@@ -37,37 +48,39 @@
                 .connectTimeout(10000) // 连接超时时间（ms）
                 .readTimeout(10000) // 读取超时时间（ms）
                 .writeTimeout(10000) // 写入超时时间（ms）
+				.defaultValue(defValues) // gson 返回字段为 null 或 字段缺失时，解析实体对象的基本类型默认值配置
                 .debug(BuildConfig.DEBUG);// 是否 dubug 模式（非 debug 模式不会输出日志）
 ```
 以上只是精简的配置，还可以通过 GlobalConfig 配置类进行更多的全局配置
 
 **全部配置**
 
-| 方法                                                        | 说明                                                                                                        | 是否必须		    |
+| 方法                                                        | 说明                                                                         | 是否必须																								|
 | ----------------------------------------------------------- | ---------------------------------------------------------- | -------------------------- |
-| baseUrl()                                                   | 基础域名配置                                                                                                 | true				|
-| hosts(String... hosts)                                      | 添加信任域名未配置默认只允许 baseUrl 配置的地址                                                                  | false				|
-| trustAllHost(boolean trustAll)                              | 是否信任所有域名优先级大于 hosts，配置此为 true 则信任所有 host 不管是否添加                                         | false		    |
-| hostVerifier(@NonNull HostnameVerifier verifier)            | 配置 Host 验证规则对象，未配置默认为 `SafeHostnameVerifier`  **(与 hosts()、trustAllHost() 方法冲突，添加此配置后另两个配置失效，验证规则以此配置为准)** | false				|
-| addCallAdapterFactory(@NonNull CallAdapter.Factory factory) | 添加 CallAdapterFactory 未添加默认值为 `RxJava2CallAdapterFactory`                                            | false				|
+| baseUrl()                                                   | 基础域名配置                                                                 | true				|
+| hosts(String... hosts)                                      | 添加信任域名未配置默认只允许 baseUrl 配置的地址                                                                 | false				|
+| trustAllHost(boolean trustAll)                              | 是否信任所有域名优先级大于 hosts，配置此为 true 则信任所有 host 不管是否添加 | false				|
+| hostVerifier(@NonNull HostnameVerifier verifier)            | 配置 Host 验证规则对象，未配置默认为 `SafeHostnameVerifier`  **(与 hosts()、trustAllHost() 方法冲突，添加此配置后另两个配置失效，验证规则以此配置为准)**                                                 | false				|
+| addCallAdapterFactory(@NonNull CallAdapter.Factory factory) | 添加 CallAdapterFactory 未添加默认值为 `RxJava2CallAdapterFactory`           | false				|
 | converterFactory(@NonNull Converter.Factory factory)        | 配置 ConverterFactory 未添加默认值为 `PandaConvertFactory`                   | false				|
 | callFactory(@NonNull Call.Factory factory)                  | 配置 CallFactory                                                             | false				|
 | sslFactory(@NonNull SSLSocketFactory factory)               | 配置 SSLFactory 未添加则通过 SSLManager 配置一个初始参数全为 null 的默认对象 | false				|
 | connectionPool(@NonNull ConnectionPool pool)                | 配置连接池，未配置则使用 Okhttp 默认                                         | false				|
 | addGlobalHeader(@NonNull String key, String header)         | 添加一个全局的请求头                                                                      | false				|
-| globalHeader(@NonNull Map<String, String> headers)          | 设置全局请求头，会将已有数据清除再添加                                                                         | false				|
-| addGlobalParam(@NonNull String key, String param)           |添加一个全局的请求参数                                                                           | false				|
-| globalParams(@NonNull Map<String, String> params)           | 设置全局请求参数，会将已有数据清除再添加                                                                             | false				|
-| retryDelayMillis(long retryDelay)                           | 重试间隔时间                                                                             | false				|
-| retryCount(int retryCount)                                  | 重试次数                                                                             | false				|
-| interceptor(@NonNull Interceptor interceptor)               | 添加全局拦截器                                                                          | false				|
-| netInterceptor(@NonNull Interceptor interceptor)            | 添加全局网络拦截器                                                                          | false				|
-| readTimeout(long readTimeout)                               | 全局读取超时时间                                                                          | false				|
-| writeTimeout(long writeTimeout)                             | 全局写超时时间                                                                          | false				|
-| connectTimeout(long connectTimeout)                         | 全局连接超时时间                                                                          | false				|
-| apiDataClazz(Class<? extends IApiData> clazz)               | Json解析接口数据结构外壳对象 参考 `ApiData`，未配置默认按 `ApiData` 解析，如结构不变 key 不一致则可以通过自定义 | false				|
-| apiSuccessCode(Long apiSuccessCode)                         | Json解析接口数据结构外壳对象为 `ApiData` 结构时，配置成功 Code，默认值为 `0L`				| false |
-| debug(boolean debug)                                        | 配置是否为 debug 模式，非 debug 模式网络库将不会输出 日志 | false |
+| globalHeader(@NonNull Map<String, String> headers)         | 设置全局请求头，会将已有数据清除再添加                                                                         | false				|
+| addGlobalParam(@NonNull String key, String param)       	  | 添加一个全局的请求参数                                                                           | false				|
+| globalParams(@NonNull Map<String, String> params)         | 设置全局请求参数，会将已有数据清除再添加                                                                             | false				|
+| retryDelayMillis(long retryDelay)         									| 重试间隔时间                                                                             | false				|
+| retryCount(int retryCount)         | 重试次数                                                                             | false				|
+| interceptor(@NonNull Interceptor interceptor)        | 添加全局拦截器                                                                          | false				|
+| netInterceptor(@NonNull Interceptor interceptor)        | 添加全局网络拦截器                                                                          | false				|
+| readTimeout(long readTimeout)       | 全局读取超时时间                                                                          | false				|
+| writeTimeout(long writeTimeout)        | 全局写超时时间                                                                          | false				|
+| connectTimeout(long connectTimeout)        | 全局连接超时时间                                                                          | false				|
+| apiDataClazz(Class<? extends IApiData> clazz)  | Json解析接口数据结构外壳对象 参考 `ApiData`，未配置默认按 `ApiData` 解析，如结构不变 key 不一致则可以通过自定义 | false				|
+| apiSuccessCode(Long apiSuccessCode)             | Json解析接口数据结构外壳对象为 `ApiData` 结构时，配置成功 Code，默认值为 `0L`				| false |
+| debug(boolean debug)             | 配置是否为 debug 模式，非 debug 模式网络库将不会输出 日志 | false |
+| defaultValue(NullDataValue defaultValue)             | 配置对应数据类型返回结果为 null 或对应数据接口未返回时的默认值| false |
 
 ### 二、接口定义
 ``` kotlin
@@ -125,6 +138,32 @@ data class ZooApiData<T>(
 ``` kotlin
   .apiDataClazz(ZooApiData::class.java)
 ```
+### 三、自动补全默认值数据实体对象
+
+本地需要解析的 UserInfo 对象如下
+``` java
+@AutoWired
+public class UserInfo {
+    private String userName;
+    private String nickName;
+    private Integer age;
+    private String notExist;
+}
+```
+```json
+// 接口返回的data
+{
+"code": 0,
+"msg": "获取成功",
+"data": {
+			"userName": "张三",
+			"nickName": "二狗子",
+			"age": "27"
+		}
+}
+```
+当接口返回的 json 缺少 notExits 时，解析结果的 UserInfo 对象中 `notExist` 中的值将是`null`。如果使用 @AutoWired 进行标注，则在解析后`notExist` 的值将会解析为 defaultValue 中的对应值。
+
 ### 三、请求使用
 
 #### Retrofit 方式

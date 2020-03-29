@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     .compose(RxScheduler.sync())
                     .subscribe(object : AppCallBack<String>() {
                         override fun success(data: String) {
-                            dataString.text = data.toString()
+                            dataString.text = data
                         }
 
                         override fun fail(code: Long?, msg: String?) {
