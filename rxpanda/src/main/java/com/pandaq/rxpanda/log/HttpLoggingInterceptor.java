@@ -99,9 +99,9 @@ public final class HttpLoggingInterceptor implements Interceptor {
     private volatile Level level = Level.NONE;
 
     /**
-     * Change the level at which this interceptor logs.<br/><br/>
+     * Change the level at which this interceptor logs.
      * Debug is false default.if you want print the logs，
-     * you must call RxPanda.globalConfig().debug().<br/><br/>
+     * you must call RxPanda.globalConfig().debug().
      *
      * @param level log level
      * @return log interceptor

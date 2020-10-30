@@ -37,21 +37,18 @@ import retrofit2.Converter;
 public class PandaResponseBodyConverter<T> implements Converter<ResponseBody, T> {
 
     private Gson gson;
-    private TypeAdapter<T> typeAdapter;
     private Class apiDataClazz;
     private Type dataType; //定义的解析类型
 
     @SuppressWarnings("unchecked")
     PandaResponseBodyConverter(Gson gson, Type dataType) {
         this.gson = gson;
-        this.typeAdapter = (TypeAdapter<T>) gson.getAdapter(TypeToken.get(dataType));
         this.dataType = dataType;
     }
 
     @SuppressWarnings("unchecked")
     PandaResponseBodyConverter(Gson gson, Type dataType, Class<? extends IApiData> clazz) {
         this.gson = gson;
-        this.typeAdapter = (TypeAdapter<T>) gson.getAdapter(TypeToken.get(dataType));
         this.apiDataClazz = clazz;
         this.dataType = dataType;
     }

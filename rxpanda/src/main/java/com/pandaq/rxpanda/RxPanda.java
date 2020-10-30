@@ -8,6 +8,7 @@ import com.pandaq.rxpanda.requests.okhttp.post.PostBodyRequest;
 import com.pandaq.rxpanda.requests.okhttp.post.PostFormRequest;
 import com.pandaq.rxpanda.requests.okhttp.post.PostRequest;
 import com.pandaq.rxpanda.requests.retrofit.RetrofitRequest;
+
 import okhttp3.ConnectionSpec;
 import okhttp3.OkHttpClient;
 import okhttp3.TlsVersion;
@@ -78,6 +79,7 @@ public class RxPanda {
      * 上传文件
      *
      * @param url 上传地址
+     * @return return a UploadRequest object
      */
     public static UploadRequest upload(String url) {
         return new UploadRequest(url);
@@ -85,6 +87,8 @@ public class RxPanda {
 
     /**
      * retrofit request
+     *
+     * @return return a RetrofitRequest object
      */
     public static RetrofitRequest retrofit() {
         return new RetrofitRequest();
