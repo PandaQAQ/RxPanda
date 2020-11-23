@@ -9,6 +9,8 @@ import java.util.List;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
 
 /**
  * Created by huxinyu on 2018/4/2.
@@ -33,6 +35,7 @@ public interface ApiService {
     @RealEntity
     Observable<ZhihuData> zhihu();
 
+    @Headers("compress:header")
     @GET("http://192.168.0.73:8082/user/hello")
     Observable<UserInfo> test();
 }
