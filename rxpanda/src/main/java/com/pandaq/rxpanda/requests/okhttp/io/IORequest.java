@@ -18,7 +18,7 @@ import static com.pandaq.rxpanda.log.HttpLoggingInterceptor.IO_FLAG_HEADER;
  * Email : panda.h@foxmail.com
  * Description :
  */
-public abstract class IORequest<R extends IORequest> extends Request<R> {
+public abstract class IORequest<R extends IORequest<R>> extends Request<R> {
 
     // http api,兼容 rxJava 观察者模式，需要返回观察对象时，将请求转换成 Retrofit 去请求
     protected Api mApi;

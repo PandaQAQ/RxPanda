@@ -4,6 +4,7 @@ package com.pandaq.rxpanda.requests.okhttp.post;
 import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.observer.ApiObserver;
 import com.pandaq.rxpanda.requests.okhttp.base.HttpRequest;
+
 import io.reactivex.Observable;
 
 import java.lang.reflect.Type;
@@ -46,11 +47,13 @@ public class PostFormRequest extends HttpRequest<PostFormRequest> {
 
     @SuppressWarnings("unchecked")
     @Override
-    protected void execute(ApiObserver callback) {
+    protected <T> void execute(ApiObserver<T> callback) {
         if (tag != null) {
             RxPanda.manager().addTag(tag, callback);
         }
-        this.execute(getType(callback)).subscribe(callback);
+        this.execute(getType(callback))
+                .map(o -> (T) o)
+                .subscribe(callback);
     }
 
     /**

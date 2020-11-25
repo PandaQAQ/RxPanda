@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
  * <p>
  * Description :base http request
  */
-public class Request<T extends Request> {
+public class Request<T extends Request<T>> {
     // local readTimeout
     private Long readTimeout = 0L;
     // local writeTimeout
@@ -190,7 +190,6 @@ public class Request<T extends Request> {
         if (mGlobalConfig.getCallFactory() != null) {
             retrofitBuilder.callFactory(mGlobalConfig.getCallFactory());
         }
-
     }
 
     /**

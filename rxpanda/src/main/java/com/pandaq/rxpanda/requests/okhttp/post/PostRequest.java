@@ -4,9 +4,10 @@ package com.pandaq.rxpanda.requests.okhttp.post;
 import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.observer.ApiObserver;
 import com.pandaq.rxpanda.requests.okhttp.base.HttpRequest;
-import io.reactivex.Observable;
 
 import java.lang.reflect.Type;
+
+import io.reactivex.Observable;
 
 /**
  * Created by huxinyu on 2019/1/11.
@@ -40,18 +41,20 @@ public class PostRequest extends HttpRequest<PostRequest> {
 
     @SuppressWarnings("unchecked")
     @Override
-    protected void execute(ApiObserver callback) {
+    protected <T> void execute(ApiObserver<T> callback) {
         if (tag != null) {
             RxPanda.manager().addTag(tag, callback);
         }
         //获取到callback 中的泛型类型
-        this.execute(getType(callback)).subscribe(callback);
+        this.execute(getType(callback))
+                .map(o -> (T) o)
+                .subscribe(callback);
     }
 
     /**
      * post url 中添加参数
      *
-     * @param paramKey key
+     * @param paramKey   key
      * @param paramValue value
      * @return self
      */

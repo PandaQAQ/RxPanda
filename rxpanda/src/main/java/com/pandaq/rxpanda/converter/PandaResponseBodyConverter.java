@@ -3,8 +3,6 @@ package com.pandaq.rxpanda.converter;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
-import com.google.gson.reflect.TypeToken;
 import com.pandaq.rxpanda.HttpCode;
 import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.annotation.AutoWired;
@@ -40,17 +38,15 @@ public class PandaResponseBodyConverter<T> implements Converter<ResponseBody, T>
     private Class apiDataClazz;
     private Type dataType; //定义的解析类型
 
-    @SuppressWarnings("unchecked")
     PandaResponseBodyConverter(Gson gson, Type dataType) {
         this.gson = gson;
         this.dataType = dataType;
     }
 
-    @SuppressWarnings("unchecked")
     PandaResponseBodyConverter(Gson gson, Type dataType, Class<? extends IApiData> clazz) {
         this.gson = gson;
-        this.apiDataClazz = clazz;
         this.dataType = dataType;
+        this.apiDataClazz = clazz;
     }
 
     @Override
@@ -59,7 +55,7 @@ public class PandaResponseBodyConverter<T> implements Converter<ResponseBody, T>
         if (apiDataClazz == null) {
             apiDataClazz = RxPanda.globalConfig().getApiDataClazz();
         }
-        IApiData apiData = gson.fromJson(response, (Type) apiDataClazz);
+        IApiData<T> apiData = gson.fromJson(response, (Type) apiDataClazz);
         /* 如是按约定格式返回数据 apiData 中的 code 是必须的。
          * 因此可以用 code 是否存在来判断数据是否合法
          */

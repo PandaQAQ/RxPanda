@@ -1,8 +1,11 @@
 package com.pandaq.sample.apis;
 
 import android.util.Log;
+
 import com.pandaq.rxpanda.exception.ApiException;
 import com.pandaq.rxpanda.observer.ApiObserver;
+
+import io.reactivex.annotations.NonNull;
 
 /**
  * Created by huxinyu on 2019/3/8.
@@ -28,11 +31,11 @@ public abstract class AppCallBack<T> extends ApiObserver<T> {
 
     private void handleException(ApiException e) {
         if (e.getCode() == ExceptionCode.TOKEN_INVALID) {
-            Log.e("HttpError","TOKEN 已过期");
+            Log.e("HttpError", "TOKEN 已过期");
         }
     }
 
-    protected abstract void success(T data);
+    protected abstract void success(@NonNull T data);
 
     protected abstract void fail(Long code, String msg);
 

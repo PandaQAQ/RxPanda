@@ -51,7 +51,7 @@ public class HttpGlobalConfig {
     private boolean trustAll = false;
     // Gson 解析补空默认值
     private NullDataValue defValues = new NullDataValue();
-    private Class<? extends IApiData> apiDataClazz = ApiData.class;
+    private Class apiDataClazz = ApiData.class;
     private HttpLoggingInterceptor loggingInterceptor;
 
     private HttpGlobalConfig() {

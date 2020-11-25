@@ -35,7 +35,6 @@ public interface ApiService {
     @RealEntity
     Observable<ZhihuData> zhihu();
 
-    @Headers("compress:header")
     @GET("http://192.168.0.73:8082/user/hello")
     Observable<UserInfo> test();
 }

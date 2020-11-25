@@ -32,10 +32,12 @@ public class GetRequest extends HttpRequest<GetRequest> {
 
     @SuppressWarnings("unchecked")
     @Override
-    protected void execute(ApiObserver callback) {
+    protected <T> void execute(ApiObserver<T> callback) {
         if (tag != null) {
             RxPanda.manager().addTag(tag, callback);
         }
-        this.execute(getType(callback)).subscribe(callback);
+        this.execute(getType(callback))
+                .map(o -> (T) o)
+                .subscribe(callback);
     }
 }

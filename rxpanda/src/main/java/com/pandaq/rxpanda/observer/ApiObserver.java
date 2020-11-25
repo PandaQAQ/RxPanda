@@ -2,6 +2,7 @@ package com.pandaq.rxpanda.observer;
 
 import com.pandaq.rxpanda.exception.ApiException;
 
+import io.reactivex.annotations.NonNull;
 import io.reactivex.observers.DisposableObserver;
 
 /**
@@ -43,7 +44,7 @@ public abstract class ApiObserver<T> extends DisposableObserver<T> {
      *
      * @param data 请求成功后的数据体
      */
-    protected abstract void onSuccess(T data);
+    protected abstract void onSuccess(@NonNull T data);
 
     /**
      * 请求失败回调

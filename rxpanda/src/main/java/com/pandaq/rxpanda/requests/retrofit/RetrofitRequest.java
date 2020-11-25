@@ -1,17 +1,19 @@
 package com.pandaq.rxpanda.requests.retrofit;
 
 import android.text.TextUtils;
+
 import com.pandaq.rxpanda.R;
 import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.interceptor.ParamsInterceptor;
 import com.pandaq.rxpanda.requests.Request;
 import com.pandaq.rxpanda.ssl.SSLManager;
 import com.pandaq.rxpanda.utils.CastUtils;
-import retrofit2.CallAdapter;
-import retrofit2.Retrofit;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import retrofit2.CallAdapter;
+import retrofit2.Retrofit;
 
 /**
  * Created by huxinyu on 2019/1/11.

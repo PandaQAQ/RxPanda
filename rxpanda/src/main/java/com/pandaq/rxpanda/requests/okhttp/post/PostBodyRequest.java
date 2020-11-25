@@ -6,9 +6,11 @@ import com.pandaq.rxpanda.constants.MediaTypes;
 import com.pandaq.rxpanda.observer.ApiObserver;
 import com.pandaq.rxpanda.requests.okhttp.base.HttpRequest;
 import com.pandaq.rxpanda.utils.GsonUtil;
+
 import io.reactivex.Observable;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -70,11 +72,13 @@ public class PostBodyRequest extends HttpRequest<PostBodyRequest> {
 
     @SuppressWarnings("unchecked")
     @Override
-    protected void execute(ApiObserver callback) {
+    protected <T> void execute(ApiObserver<T> callback) {
         if (tag != null) {
             RxPanda.manager().addTag(tag, callback);
         }
-        this.execute(getType(callback)).subscribe(callback);
+        this.execute(getType(callback))
+                .map(o -> (T) o)
+                .subscribe(callback);
     }
 
     /**

@@ -32,7 +32,7 @@ public class CastFunc<T> implements Function<ResponseBody, T> {
     @Override
     public T apply(ResponseBody responseBody) throws Exception {
         String json = responseBody.string();
-        if (json == null || json.isEmpty()) {
+        if (json.isEmpty()) {
             if (EmptyData.class.equals(type)) { // 如果接收的是空对象则回传 EmptyData
                 return typeAdapter.fromJson(GsonUtil.gson().toJson(new EmptyData()));
             } else if (String.class.equals(type)) {
