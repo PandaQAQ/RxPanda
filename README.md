@@ -1,5 +1,5 @@
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1a9236f222ac4293a509c9db710a13f5)](https://app.codacy.com/app/PandaQAQ/RxPanda?utm_source=github.com&utm_medium=referral&utm_content=PandaQAQ/RxPanda&utm_campaign=Badge_Grade_Dashboard)  [![License](https://img.shields.io/github/license/PandaQAQ/RxPanda.svg)](https://github.com/PandaQAQ/RxPanda/blob/master/LICENSE)  [![Download](https://api.bintray.com/packages/huxinyu/maven/rxpanda/images/download.svg?version=0.2.6)](https://bintray.com/huxinyu/maven/rxpanda/0.2.6/link)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1a9236f222ac4293a509c9db710a13f5)](https://app.codacy.com/app/PandaQAQ/RxPanda?utm_source=github.com&utm_medium=referral&utm_content=PandaQAQ/RxPanda&utm_campaign=Badge_Grade_Dashboard)  [![License](https://img.shields.io/github/license/PandaQAQ/RxPanda.svg)](https://github.com/PandaQAQ/RxPanda/blob/master/LICENSE)  [![Download](https://api.bintray.com/packages/huxinyu/maven/rxpanda/images/download.svg?version=1.0.0)](https://bintray.com/huxinyu/maven/rxpanda/1.0.0/link)
 
 # 项目地址
 [RxPanda](https://github.com/PandaQAQ/RxPanda)，欢迎使用和 star，提出的问题我会及时回复并处理。
@@ -12,12 +12,13 @@
 > 4、支持日志格式化及并发按序输出
 > 5、支持 data 为基本数据类型
 > 6、支持 int 类型 json 解析为 String 不会 0 变成 0.0
-> 7、支持解析类型为 `int`、`String`、`float`、`double`、`long`、`BigDecima`、`EmptyData` 时 json 字段缺失。解析为对象时自动使用默认值。
+> 7、支持解析类型为 `int`、`String`、`float`、`double`、`long`、`BigDecima`、`EmptyData` 时 json 字段缺失。解析为对象时自动使用默认值
 > 8、支持 json 解析时解析类型为第七条中的类型但是返回为 null 时替换为配置的默认值
 
 # Release Log
+> - 1.0.0: a、修复全局设置请求超时时间无效，会被 CONFIG 的默认超时时间覆盖问题；b、默认超时时间与 okhttp 保持一致设置为 10s
 > - 0.2.6: 升级 Retrofit 版本以达到支持 kotlin suspend 关键字，配合协程使用
-> - 0.2.5: Json 解析为对象时，基本数据类型 null 值或缺失的情况下增加默认值兼容。
+> - 0.2.5: Json 解析为对象时，基本数据类型 null 值或缺失的情况下增加默认值兼容
 > - 0.2.4: ApiException msg 空兼容性优化
 > - 0.2.3: 兼容 Number 类型 data，接口无数据时返回空字符串会解析报错的问题
 > - 0.2.2: 日志拦截器重复添加 bug 修复
