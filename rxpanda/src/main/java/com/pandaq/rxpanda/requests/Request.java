@@ -1,6 +1,7 @@
 package com.pandaq.rxpanda.requests;
 
 import android.text.TextUtils;
+
 import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.config.CONFIG;
 import com.pandaq.rxpanda.config.HttpGlobalConfig;
@@ -8,6 +9,7 @@ import com.pandaq.rxpanda.converter.PandaConvertFactory;
 import com.pandaq.rxpanda.interceptor.HeaderInterceptor;
 import com.pandaq.rxpanda.ssl.SSLManager;
 import com.pandaq.rxpanda.utils.CastUtils;
+
 import io.reactivex.annotations.NonNull;
 import okhttp3.ConnectionPool;
 import okhttp3.Interceptor;
@@ -165,9 +167,9 @@ public class Request<T extends Request<T>> {
             mGlobalConfig.sslFactory(SSLManager.getSslSocketFactory(null, null, null));
         }
         builder.sslSocketFactory(mGlobalConfig.getSslSocketFactory());
-        builder.connectTimeout(CONFIG.DEFAULT_TIMEOUT, TimeUnit.SECONDS);
-        builder.readTimeout(CONFIG.DEFAULT_TIMEOUT, TimeUnit.SECONDS);
-        builder.writeTimeout(CONFIG.DEFAULT_TIMEOUT, TimeUnit.SECONDS);
+        builder.connectTimeout(mGlobalConfig.getConnectTimeout(), TimeUnit.MILLISECONDS);
+        builder.readTimeout(mGlobalConfig.getReadTimeout(), TimeUnit.MILLISECONDS);
+        builder.writeTimeout(mGlobalConfig.getWriteTimeout(), TimeUnit.MILLISECONDS);
         builder.retryOnConnectionFailure(true);
 
         // retrofit config

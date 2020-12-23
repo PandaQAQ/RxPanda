@@ -42,8 +42,6 @@ public class HttpGlobalConfig {
     private Map<String, String> globalHeaders = new LinkedHashMap<>();//请求头
     private Map<String, String> globalParams = new LinkedHashMap<>();//请求参数
     private String baseUrl;//基础域名
-    private long retryDelayMillis;//请求失败重试间隔时间
-    private int retryCount;//请求失败重试次数
     private static HttpGlobalConfig sHttpGlobalConfig;
     private boolean isDebug;
     private Long apiSuccessCode = -1L;
@@ -51,8 +49,14 @@ public class HttpGlobalConfig {
     private boolean trustAll = false;
     // Gson 解析补空默认值
     private NullDataValue defValues = new NullDataValue();
-    private Class apiDataClazz = ApiData.class;
+    private Class<? extends IApiData> apiDataClazz = ApiData.class;
     private HttpLoggingInterceptor loggingInterceptor;
+
+    private long retryDelayMillis;//请求失败重试间隔时间
+    private int retryCount;//请求失败重试次数
+    private long connectTimeout = CONFIG.DEFAULT_TIMEOUT * 1000L; //连接超时时间，默认 10 秒
+    private long readTimeout = CONFIG.DEFAULT_TIMEOUT * 1000L; //连接超时时间，默认 10 秒
+    private long writeTimeout = CONFIG.DEFAULT_TIMEOUT * 1000L; //连接超时时间，默认 10 秒
 
     private HttpGlobalConfig() {
 
@@ -267,17 +271,17 @@ public class HttpGlobalConfig {
     }
 
     public HttpGlobalConfig readTimeout(long readTimeout) {
-        RxPanda.getOkHttpBuilder().readTimeout(readTimeout, TimeUnit.MILLISECONDS);
+        this.readTimeout = readTimeout;
         return this;
     }
 
     public HttpGlobalConfig writeTimeout(long writeTimeout) {
-        RxPanda.getOkHttpBuilder().writeTimeout(writeTimeout, TimeUnit.MILLISECONDS);
+        this.writeTimeout = writeTimeout;
         return this;
     }
 
     public HttpGlobalConfig connectTimeout(long connectTimeout) {
-        RxPanda.getOkHttpBuilder().connectTimeout(connectTimeout, TimeUnit.MILLISECONDS);
+        this.connectTimeout = connectTimeout;
         return this;
     }
 
@@ -358,6 +362,22 @@ public class HttpGlobalConfig {
     public HttpGlobalConfig debug(boolean debug) {
         isDebug = debug;
         return this;
+    }
+
+    public boolean isTrustAll() {
+        return trustAll;
+    }
+
+    public long getConnectTimeout() {
+        return connectTimeout;
+    }
+
+    public long getReadTimeout() {
+        return readTimeout;
+    }
+
+    public long getWriteTimeout() {
+        return writeTimeout;
     }
 
     public Class getApiDataClazz() {

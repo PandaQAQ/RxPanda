@@ -9,13 +9,13 @@ import com.pandaq.rxpanda.requests.okhttp.post.PostFormRequest;
 import com.pandaq.rxpanda.requests.okhttp.post.PostRequest;
 import com.pandaq.rxpanda.requests.retrofit.RetrofitRequest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import okhttp3.ConnectionSpec;
 import okhttp3.OkHttpClient;
 import okhttp3.TlsVersion;
 import retrofit2.Retrofit;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by huxinyu on 2019/1/9.
@@ -25,8 +25,8 @@ import java.util.List;
  */
 public class RxPanda {
 
-    private static OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
-    private static Retrofit.Builder retrofitBuilder = new Retrofit.Builder();
+    private static final OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
+    private static final Retrofit.Builder retrofitBuilder = new Retrofit.Builder();
     private static OkHttpClient okHttpClient;
 
     private RxPanda() {
