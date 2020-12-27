@@ -25,10 +25,6 @@ import retrofit2.Retrofit;
  */
 public class RxPanda {
 
-    private static final OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
-    private static final Retrofit.Builder retrofitBuilder = new Retrofit.Builder();
-    private static OkHttpClient okHttpClient;
-
     private RxPanda() {
 
     }
@@ -93,30 +89,6 @@ public class RxPanda {
     public static RetrofitRequest retrofit() {
         return new RetrofitRequest();
     }
-
-    public static OkHttpClient getOkhttpClient() {
-        if (okHttpClient == null) {
-            okHttpClient = getOkHttpBuilder().build();
-        }
-        return okHttpClient;
-    }
-
-    public static OkHttpClient.Builder getOkHttpBuilder() {
-        // 默认加密套件
-        ConnectionSpec cs = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
-                .tlsVersions(TlsVersion.TLS_1_2).build();
-        List<ConnectionSpec> specs = new ArrayList<>();
-        specs.add(cs);
-        specs.add(ConnectionSpec.COMPATIBLE_TLS);
-        specs.add(ConnectionSpec.CLEARTEXT);
-        okHttpBuilder.connectionSpecs(specs);
-        return okHttpBuilder;
-    }
-
-    public static Retrofit.Builder getRetrofitBuilder() {
-        return retrofitBuilder;
-    }
-
     /**
      * 获取到请求管理器
      *

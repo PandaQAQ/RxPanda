@@ -85,10 +85,11 @@ public class DefaultTypeAdapters {
                 case NUMBER:
                     return in.nextInt();
                 case STRING:
-                    if (TextUtils.isEmpty(in.nextString())) {
+                    String str = in.nextString();
+                    if (TextUtils.isEmpty(str)) {
                         return HttpGlobalConfig.getInstance().getDefValues().defInt;
                     }
-                    return Integer.valueOf(in.nextString());
+                    return Integer.valueOf(str);
                 default:
                     throw new JsonSyntaxException("Expecting number, got: " + jsonToken);
             }
@@ -114,10 +115,11 @@ public class DefaultTypeAdapters {
                 case NUMBER:
                     return in.nextLong();
                 case STRING:
-                    if (TextUtils.isEmpty(in.nextString())) {
+                    String str = in.nextString();
+                    if (TextUtils.isEmpty(str)) {
                         return HttpGlobalConfig.getInstance().getDefValues().defLong;
                     }
-                    return Long.valueOf(in.nextString());
+                    return Long.valueOf(str);
                 default:
                     throw new JsonSyntaxException("Expecting number, got: " + jsonToken);
             }
@@ -143,10 +145,11 @@ public class DefaultTypeAdapters {
                 case NUMBER:
                     return (float) in.nextDouble();
                 case STRING:
-                    if (TextUtils.isEmpty(in.nextString())) {
+                    String str = in.nextString();
+                    if (TextUtils.isEmpty(str)) {
                         return HttpGlobalConfig.getInstance().getDefValues().defFloat;
                     }
-                    return Float.valueOf(in.nextString());
+                    return Float.valueOf(str);
                 default:
                     throw new JsonSyntaxException("Expecting number, got: " + jsonToken);
             }
@@ -172,10 +175,11 @@ public class DefaultTypeAdapters {
                 case NUMBER:
                     return in.nextDouble();
                 case STRING:
-                    if (TextUtils.isEmpty(in.nextString())) {
+                    String str = in.nextString();
+                    if (TextUtils.isEmpty(str)) {
                         return HttpGlobalConfig.getInstance().getDefValues().defDouble;
                     }
-                    return Double.valueOf(in.nextString());
+                    return Double.valueOf(str);
                 default:
                     throw new JsonSyntaxException("Expecting number, got: " + jsonToken);
             }
@@ -200,10 +204,11 @@ public class DefaultTypeAdapters {
                     return HttpGlobalConfig.getInstance().getDefValues().defDouble;
                 case NUMBER:
                 case STRING:
-                    if (TextUtils.isEmpty(in.nextString())) {
+                    String str = in.nextString();
+                    if (TextUtils.isEmpty(str)) {
                         return HttpGlobalConfig.getInstance().getDefValues().defDouble;
                     }
-                    return new LazilyParsedNumber(in.nextString());
+                    return new LazilyParsedNumber(str);
                 default:
                     throw new JsonSyntaxException("Expecting number, got: " + jsonToken);
             }
@@ -281,7 +286,6 @@ public class DefaultTypeAdapters {
     public static final TypeAdapter<StringBuilder> STRING_BUILDER = new TypeAdapter<StringBuilder>() {
         @Override
         public StringBuilder read(JsonReader in) throws IOException {
-
             if (in.peek() == JsonToken.NULL) {
                 in.nextNull();
                 return new StringBuilder(HttpGlobalConfig.getInstance().getDefValues().defString);

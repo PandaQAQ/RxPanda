@@ -2,6 +2,7 @@ package com.pandaq.sample.apis;
 
 import com.pandaq.app_launcher.entites.ZhihuData;
 import com.pandaq.rxpanda.annotation.RealEntity;
+import com.pandaq.sample.entities.User;
 import com.pandaq.sample.entities.UserInfo;
 import com.pandaq.sample.entities.ZooData;
 
@@ -32,9 +33,10 @@ public interface ApiService {
     Observable<String> stringData();
 
     // 与 ApiData 结构完全不一样使用 RealEntity 标准不做脱壳处理，返回 ZhihuData 就解析为 ZhihuData
-    @RealEntity
-    Observable<ZhihuData> zhihu();
+    @GET("https://news-at.zhihu.com/api/4/news/latest")
+    Observable<User> zhihu();
 
-    @GET("http://192.168.0.73:8082/user/hello")
-    Observable<UserInfo> test();
+    @GET("https://www.easy-mock.com/mock/5cef4b3e651e4075bad237f8/example/boolean")
+    Observable<User> test();
+
 }

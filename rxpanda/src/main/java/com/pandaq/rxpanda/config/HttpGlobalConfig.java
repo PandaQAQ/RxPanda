@@ -1,6 +1,5 @@
 package com.pandaq.rxpanda.config;
 
-import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.converter.PandaConvertFactory;
 import com.pandaq.rxpanda.entity.ApiData;
 import com.pandaq.rxpanda.entity.IApiData;
@@ -13,17 +12,19 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 
 import io.reactivex.annotations.NonNull;
-import okhttp3.Call;
 import okhttp3.ConnectionPool;
+import okhttp3.ConnectionSpec;
 import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.TlsVersion;
 import retrofit2.CallAdapter;
 import retrofit2.Converter;
+import retrofit2.Retrofit;
 
 /**
  * Created by huxinyu on 2019/1/9.
@@ -35,15 +36,15 @@ public class HttpGlobalConfig {
 
     private List<CallAdapter.Factory> callAdapterFactories = new ArrayList<>();//Call适配器工厂
     private Converter.Factory converterFactory = PandaConvertFactory.create();//转换工厂,默认为 PandaConvertFactory
-    private Call.Factory callFactory;//Call工厂
     private SSLSocketFactory sslSocketFactory;//SSL工厂
     private HostnameVerifier hostnameVerifier;//主机域名验证
     private ConnectionPool connectionPool;//连接池
     private Map<String, String> globalHeaders = new LinkedHashMap<>();//请求头
     private Map<String, String> globalParams = new LinkedHashMap<>();//请求参数
+    @NonNull
     private String baseUrl;//基础域名
     private static HttpGlobalConfig sHttpGlobalConfig;
-    private boolean isDebug;
+    private boolean isDebug = false;
     private Long apiSuccessCode = -1L;
     // 不验证 host 允许所有的 host
     private boolean trustAll = false;
@@ -51,6 +52,9 @@ public class HttpGlobalConfig {
     private NullDataValue defValues = new NullDataValue();
     private Class<? extends IApiData> apiDataClazz = ApiData.class;
     private HttpLoggingInterceptor loggingInterceptor;
+    private OkHttpClient okHttpClient = getDefaultClient();
+    // 全局的 Retrofit对象
+    private Retrofit.Builder retrofitBuilder = new Retrofit.Builder();
 
     private long retryDelayMillis;//请求失败重试间隔时间
     private int retryCount;//请求失败重试次数
@@ -73,6 +77,11 @@ public class HttpGlobalConfig {
         return sHttpGlobalConfig;
     }
 
+    public HttpGlobalConfig client(OkHttpClient client) {
+        okHttpClient = client;
+        return this;
+    }
+
     /**
      * add a CallAdapter.Factory,if never add ,will add a RxJava2CallAdapterFactory as default
      *
@@ -92,15 +101,6 @@ public class HttpGlobalConfig {
      */
     public HttpGlobalConfig converterFactory(@NonNull Converter.Factory factory) {
         this.converterFactory = factory;
-        return this;
-    }
-
-    /**
-     * @param factory the factory to add
-     * @return Config self
-     */
-    public HttpGlobalConfig callFactory(@NonNull Call.Factory factory) {
-        this.callFactory = factory;
         return this;
     }
 
@@ -255,7 +255,7 @@ public class HttpGlobalConfig {
         if (interceptor instanceof HttpLoggingInterceptor) {
             loggingInterceptor = (HttpLoggingInterceptor) interceptor;
         } else {
-            RxPanda.getOkHttpBuilder().addInterceptor(interceptor);
+            okHttpClient.newBuilder().addInterceptor(interceptor);
         }
         return this;
     }
@@ -265,7 +265,7 @@ public class HttpGlobalConfig {
         if (netInterceptor instanceof HttpLoggingInterceptor) {
             loggingInterceptor = (HttpLoggingInterceptor) netInterceptor;
         } else {
-            RxPanda.getOkHttpBuilder().addNetworkInterceptor(netInterceptor);
+            okHttpClient.newBuilder().addNetworkInterceptor(netInterceptor);
         }
         return this;
     }
@@ -307,16 +307,31 @@ public class HttpGlobalConfig {
 
     //    ######################################## getter ########################################
 
+    public OkHttpClient getClient() {
+        return okHttpClient;
+    }
+
+    public Retrofit.Builder getRetrofitBuilder() {
+        return retrofitBuilder;
+    }
+
+    private OkHttpClient getDefaultClient() {
+        // 默认加密套件
+        ConnectionSpec cs = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
+                .tlsVersions(TlsVersion.TLS_1_2).build();
+        List<ConnectionSpec> specs = new ArrayList<>();
+        specs.add(cs);
+        specs.add(ConnectionSpec.COMPATIBLE_TLS);
+        specs.add(ConnectionSpec.CLEARTEXT);
+        return new OkHttpClient().newBuilder().connectionSpecs(specs).build();
+    }
+
     public List<CallAdapter.Factory> getCallAdapterFactories() {
         return callAdapterFactories;
     }
 
     public Converter.Factory getConverterFactory() {
         return converterFactory;
-    }
-
-    public Call.Factory getCallFactory() {
-        return callFactory;
     }
 
     public SSLSocketFactory getSslSocketFactory() {

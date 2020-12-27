@@ -9,6 +9,9 @@ import com.pandaq.rxpanda.requests.Request;
 import com.pandaq.rxpanda.ssl.SSLManager;
 import com.pandaq.rxpanda.utils.CastUtils;
 
+import retrofit2.CallAdapter;
+import retrofit2.Retrofit;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -43,27 +46,30 @@ public class RetrofitRequest extends Request<RetrofitRequest> {
     }
 
     public <T> T create(Class<T> apiService) {
+        Retrofit retrofit;
         injectLocalParams();
         if (!TextUtils.isEmpty(baseUrl)) { // 如果基础地址改了者需要重新构建个 Retrofit 对象，避免影响默认请求的配置
             Retrofit.Builder newRetrofitBuilder = new Retrofit.Builder();
             newRetrofitBuilder.baseUrl(baseUrl);
-            if (mGlobalConfig.getConverterFactory() != null) {
-                newRetrofitBuilder.addConverterFactory(mGlobalConfig.getConverterFactory());
+            if (getGlobalConfig().getConverterFactory() != null) {
+                newRetrofitBuilder.addConverterFactory(getGlobalConfig().getConverterFactory());
             }
-            if (!mGlobalConfig.getCallAdapterFactories().isEmpty()) {
-                for (CallAdapter.Factory factory : mGlobalConfig.getCallAdapterFactories()) {
+            if (!getGlobalConfig().getCallAdapterFactories().isEmpty()) {
+                for (CallAdapter.Factory factory : getGlobalConfig().getCallAdapterFactories()) {
                     newRetrofitBuilder.addCallAdapterFactory(factory);
                 }
             }
-            if (mGlobalConfig.getCallFactory() != null) {
-                newRetrofitBuilder.callFactory(mGlobalConfig.getCallFactory());
-            }
             builder.hostnameVerifier(new SSLManager.SafeHostnameVerifier(baseUrl));
+            // 添加日志拦截器
+            if (getGlobalConfig().getLoggingInterceptor() != null) {
+                if (!builder.networkInterceptors().contains(RxPanda.globalConfig().getLoggingInterceptor())) {
+                    builder.addNetworkInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
+                }
+            }
             newRetrofitBuilder.client(builder.build());
             retrofit = newRetrofitBuilder.build();
         } else { // 使用默认配置的对象
-            RxPanda.getRetrofitBuilder().client(builder.build());
-            retrofit = RxPanda.getRetrofitBuilder().build();
+            retrofit = getCommonRetrofit();
         }
         return retrofit.create(apiService);
     }
@@ -72,8 +78,8 @@ public class RetrofitRequest extends Request<RetrofitRequest> {
     protected void injectLocalParams() {
         super.injectLocalParams();
         // retrofit 方式请求，通过拦截器添加参数
-        if (mGlobalConfig.getGlobalParams() != null) {
-            localParams.putAll(mGlobalConfig.getGlobalParams());
+        if (getGlobalConfig().getGlobalParams() != null) {
+            localParams.putAll(getGlobalConfig().getGlobalParams());
         }
         if (paramsInterceptor == null) {
             paramsInterceptor = new ParamsInterceptor(localParams);
@@ -82,12 +88,6 @@ public class RetrofitRequest extends Request<RetrofitRequest> {
         }
         // 将参数添加到请求中
         builder.addNetworkInterceptor(paramsInterceptor);
-        // 添加日志拦截器
-        if (RxPanda.globalConfig().getLoggingInterceptor() != null) {
-            if (!builder.networkInterceptors().contains(RxPanda.globalConfig().getLoggingInterceptor())) {
-                builder.addNetworkInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
-            }
-        }
     }
 
     /**

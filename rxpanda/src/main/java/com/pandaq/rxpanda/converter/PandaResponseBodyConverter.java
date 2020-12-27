@@ -60,11 +60,7 @@ public class PandaResponseBodyConverter<T> implements Converter<ResponseBody, T>
          * 因此可以用 code 是否存在来判断数据是否合法
          */
         if (apiData.getCode() == null) {
-            try {
-                throw new ApiException(HttpCode.FRAME_WORK.SHELL_FORMAT_ERROR, response, response);
-            } finally {
-                value.close();
-            }
+            throw new ApiException(HttpCode.FRAME_WORK.SHELL_FORMAT_ERROR, response, response);
         } else {
             String data = apiData.getData() == null ? defaultData() : GsonUtil.gson().toJson(apiData.getData());
             if (!apiData.isSuccess()) {
@@ -86,13 +82,14 @@ public class PandaResponseBodyConverter<T> implements Converter<ResponseBody, T>
                         e.printStackTrace();
                         Log.w("errorData: ", response);
                     }
-                    // 原始数据解析不通返回 EmptyData对象解析
-                    throw new ApiException(apiData.getCode(), "接口数据与本地数据结构不匹配", data);
+                    // 原始数据解析不通
+                    ApiException exception = new ApiException(apiData.getCode(), "接口数据类型不匹配", data);
+                    exception.setExceptionType(ExceptionType.JSON_PARSE);
+                    throw exception;
                 } finally {
                     value.close();
                 }
             }
-
         }
     }
 

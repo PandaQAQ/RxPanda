@@ -3,6 +3,7 @@ package com.pandaq.sample
 import android.app.Application
 import com.pandaq.rxpanda.RxPanda
 import com.pandaq.rxpanda.entity.NullDataValue
+import com.pandaq.rxpanda.interceptor.HeaderInterceptor
 import com.pandaq.rxpanda.log.HttpLoggingInterceptor
 
 /**
@@ -21,17 +22,17 @@ class MyApplication : Application() {
         defValues.defFloat = -0.0f
         defValues.defInt = -1
         defValues.defLong = 0L
-        defValues.defString = ""
+        defValues.defString = "ss"
 
         RxPanda.globalConfig()
             .baseUrl("https://www.easy-mock.com/mock/5cef4b3e651e4075bad237f8/example/")
-            .hosts("www.easy-mock.com")
             .trustAllHost(true)
             .defaultValue(defValues)
             .netInterceptor(
                 HttpLoggingInterceptor()
                     .setLevel(HttpLoggingInterceptor.Level.BODY)
             )
+            .addGlobalHeader("test","testHeader")
             .apiSuccessCode(0L)
             .debug(BuildConfig.DEBUG)
     }

@@ -5,15 +5,14 @@ import android.support.annotation.NonNull;
 import com.pandaq.rxpanda.annotation.AutoWired;
 import com.pandaq.rxpanda.utils.GsonUtil;
 
-@AutoWired
+//@AutoWired
 public class UserInfo {
 
     private int userId;
     private String userName;
     private String nickName;
-    private String companyId;
-    private Integer age;
-    private Integer notExist;
+    private int age;
+    private String notExist;
 
     public int getUserId() {
         return userId;
@@ -37,14 +36,6 @@ public class UserInfo {
 
     public void setNickName(String nickName) {
         this.nickName = nickName;
-    }
-
-    public String getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(String companyId) {
-        this.companyId = companyId;
     }
 
     public int getAge() {

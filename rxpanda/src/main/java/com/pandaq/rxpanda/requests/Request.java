@@ -7,16 +7,9 @@ import com.pandaq.rxpanda.config.CONFIG;
 import com.pandaq.rxpanda.config.HttpGlobalConfig;
 import com.pandaq.rxpanda.converter.PandaConvertFactory;
 import com.pandaq.rxpanda.interceptor.HeaderInterceptor;
+import com.pandaq.rxpanda.interceptor.MockDataInterceptor;
 import com.pandaq.rxpanda.ssl.SSLManager;
 import com.pandaq.rxpanda.utils.CastUtils;
-
-import io.reactivex.annotations.NonNull;
-import okhttp3.ConnectionPool;
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import retrofit2.CallAdapter;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -25,6 +18,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import io.reactivex.annotations.NonNull;
+import okhttp3.ConnectionPool;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+import retrofit2.CallAdapter;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 /**
  * Created by huxinyu on 2019/1/9.
@@ -43,11 +46,8 @@ public class Request<T extends Request<T>> {
     private Map<String, String> headers = new LinkedHashMap<>();
     private List<Interceptor> interceptors = new ArrayList<>();
     private List<Interceptor> networkInterceptors = new ArrayList<>();
-
-    // default global config
-    protected HttpGlobalConfig mGlobalConfig;
-
-    protected Retrofit retrofit;
+    // 方便调试增加 mockData
+    private String mockJson;
     protected OkHttpClient.Builder builder;
 
     /**
@@ -144,54 +144,36 @@ public class Request<T extends Request<T>> {
         return CastUtils.cast(this);
     }
 
+    public T mockData(String mockJson) {
+        this.mockJson = mockJson;
+        return CastUtils.cast(this);
+    }
+
     /**
      * 使用全局配置覆盖当前配置
      */
     private void resetGlobalParams() {
-        mGlobalConfig = RxPanda.globalConfig();
-        builder = RxPanda.getOkHttpBuilder();
-
+        builder = getGlobalConfig().getClient().newBuilder();
         // http client config
-        if (mGlobalConfig.getConnectionPool() == null) {
-            mGlobalConfig.connectionPool(new ConnectionPool(CONFIG.DEFAULT_MAX_IDLE_CONNECTIONS,
+        if (getGlobalConfig().getConnectionPool() == null) {
+            getGlobalConfig().connectionPool(new ConnectionPool(CONFIG.DEFAULT_MAX_IDLE_CONNECTIONS,
                     CONFIG.DEFAULT_KEEP_ALIVE_DURATION, TimeUnit.MILLISECONDS));
         }
-        mGlobalConfig.connectionPool(mGlobalConfig.getConnectionPool());
+        getGlobalConfig().connectionPool(getGlobalConfig().getConnectionPool());
 
-        if (mGlobalConfig.getHostnameVerifier() == null) {
-            mGlobalConfig.hostVerifier(new SSLManager.SafeHostnameVerifier(mGlobalConfig.getBaseUrl()));
+        if (getGlobalConfig().getHostnameVerifier() == null) {
+            getGlobalConfig().hostVerifier(new SSLManager.SafeHostnameVerifier(getGlobalConfig().getBaseUrl()));
         }
-        builder.hostnameVerifier(mGlobalConfig.getHostnameVerifier());
+        builder.hostnameVerifier(getGlobalConfig().getHostnameVerifier());
 
-        if (mGlobalConfig.getSslSocketFactory() == null) {
-            mGlobalConfig.sslFactory(SSLManager.getSslSocketFactory(null, null, null));
+        if (getGlobalConfig().getSslSocketFactory() == null) {
+            getGlobalConfig().sslFactory(SSLManager.getSslSocketFactory(null, null, null));
         }
-        builder.sslSocketFactory(mGlobalConfig.getSslSocketFactory());
-        builder.connectTimeout(mGlobalConfig.getConnectTimeout(), TimeUnit.MILLISECONDS);
-        builder.readTimeout(mGlobalConfig.getReadTimeout(), TimeUnit.MILLISECONDS);
-        builder.writeTimeout(mGlobalConfig.getWriteTimeout(), TimeUnit.MILLISECONDS);
+        builder.sslSocketFactory(getGlobalConfig().getSslSocketFactory());
+        builder.connectTimeout(getGlobalConfig().getConnectTimeout(), TimeUnit.MILLISECONDS);
+        builder.readTimeout(getGlobalConfig().getReadTimeout(), TimeUnit.MILLISECONDS);
+        builder.writeTimeout(getGlobalConfig().getWriteTimeout(), TimeUnit.MILLISECONDS);
         builder.retryOnConnectionFailure(true);
-
-        // retrofit config
-        Retrofit.Builder retrofitBuilder = RxPanda.getRetrofitBuilder();
-        if (!TextUtils.isEmpty(mGlobalConfig.getBaseUrl())) {
-            retrofitBuilder.baseUrl(mGlobalConfig.getBaseUrl());
-        } else {
-            throw new IllegalArgumentException("base url can not be empty !!!");
-        }
-        if (mGlobalConfig.getConverterFactory() == null) {
-            mGlobalConfig.converterFactory(PandaConvertFactory.create());
-        }
-        retrofitBuilder.addConverterFactory(mGlobalConfig.getConverterFactory());
-        if (mGlobalConfig.getCallAdapterFactories().isEmpty()) {
-            mGlobalConfig.addCallAdapterFactory(RxJava2CallAdapterFactory.create());
-        }
-        for (CallAdapter.Factory factory : mGlobalConfig.getCallAdapterFactories()) {
-            retrofitBuilder.addCallAdapterFactory(factory);
-        }
-        if (mGlobalConfig.getCallFactory() != null) {
-            retrofitBuilder.callFactory(mGlobalConfig.getCallFactory());
-        }
     }
 
     /**
@@ -202,9 +184,9 @@ public class Request<T extends Request<T>> {
         resetGlobalParams();
 
         // 添加请求头
-        if (mGlobalConfig.getGlobalHeaders() != null) {
+        if (getGlobalConfig().getGlobalHeaders() != null) {
             // 全局的请求头设置进去,将全局加入到本地 header 中（本地同名覆盖全局）
-            headers.putAll(mGlobalConfig.getGlobalHeaders());
+            headers.putAll(getGlobalConfig().getGlobalHeaders());
         }
         if (!headers.isEmpty()) {
             builder.addInterceptor(new HeaderInterceptor(headers));
@@ -255,5 +237,45 @@ public class Request<T extends Request<T>> {
             finalNeedType = type;
         }
         return finalNeedType;
+    }
+
+    /**
+     * 获取全局的通用配置 Retrofit 对象
+     *
+     * @return retrofit
+     */
+    protected Retrofit getCommonRetrofit() {
+        // retrofit config
+        Retrofit.Builder retrofitBuilder = getGlobalConfig().getRetrofitBuilder();
+        if (!TextUtils.isEmpty(getGlobalConfig().getBaseUrl())) {
+            retrofitBuilder.baseUrl(getGlobalConfig().getBaseUrl());
+        } else {
+            throw new IllegalArgumentException("base url can not be empty !!!");
+        }
+        if (getGlobalConfig().getConverterFactory() == null) {
+            getGlobalConfig().converterFactory(PandaConvertFactory.create());
+        }
+        retrofitBuilder.addConverterFactory(getGlobalConfig().getConverterFactory());
+        if (getGlobalConfig().getCallAdapterFactories().isEmpty()) {
+            getGlobalConfig().addCallAdapterFactory(RxJava2CallAdapterFactory.create());
+        }
+        for (CallAdapter.Factory factory : getGlobalConfig().getCallAdapterFactories()) {
+            retrofitBuilder.addCallAdapterFactory(factory);
+        }
+        // 添加日志拦截器
+        if (getGlobalConfig().getLoggingInterceptor() != null) {
+            if (!builder.networkInterceptors().contains(RxPanda.globalConfig().getLoggingInterceptor())) {
+                builder.addNetworkInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
+            }
+        }
+        // 添加调试阶段的模拟数据拦截器
+        if (getGlobalConfig().isDebug() && mockJson != null) {
+            builder.addNetworkInterceptor(new MockDataInterceptor(mockJson));
+        }
+        return retrofitBuilder.client(builder.build()).build();
+    }
+
+    protected HttpGlobalConfig getGlobalConfig() {
+        return RxPanda.globalConfig();
     }
 }

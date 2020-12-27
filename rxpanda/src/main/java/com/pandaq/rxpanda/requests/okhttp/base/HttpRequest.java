@@ -18,6 +18,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.annotations.NonNull;
 import okhttp3.ResponseBody;
+import retrofit2.Retrofit;
 
 /**
  * Created by huxinyu on 2019/1/11.
@@ -33,7 +34,6 @@ public abstract class HttpRequest<R extends HttpRequest<R>> extends Request<R> {
     // request tag
     protected Object tag;
     protected Map<String, String> localParams = new LinkedHashMap<>();//请求参数
-    private long retryDelayMillis;//请求失败重试间隔时间
 
     /**
      * set request‘s tag，use to manage the request
@@ -122,22 +122,10 @@ public abstract class HttpRequest<R extends HttpRequest<R>> extends Request<R> {
     @Override
     protected void injectLocalParams() {
         super.injectLocalParams();
-        RxPanda.getRetrofitBuilder().client(builder.build());
-        retrofit = RxPanda.getRetrofitBuilder().build();
-        if (mGlobalConfig.getGlobalParams() != null) {
-            localParams.putAll(mGlobalConfig.getGlobalParams());
+        if (getGlobalConfig().getGlobalParams() != null) {
+            localParams.putAll(getGlobalConfig().getGlobalParams());
         }
-        if (retryDelayMillis <= 0) {
-            retryDelayMillis = mGlobalConfig.getRetryDelayMillis();
-        }
-
-        // 添加日志拦截器
-        if (RxPanda.globalConfig().getLoggingInterceptor() != null) {
-            if (!builder.networkInterceptors().contains(RxPanda.globalConfig().getLoggingInterceptor())) {
-                builder.addNetworkInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
-            }
-        }
-        mApi = retrofit.create(Api.class);
+        mApi = getCommonRetrofit().create(Api.class);
     }
 
     protected <T> ObservableTransformer<ResponseBody, T> httpTransformer(final Type type) {
