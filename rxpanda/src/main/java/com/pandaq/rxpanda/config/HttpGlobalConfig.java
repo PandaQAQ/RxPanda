@@ -49,7 +49,7 @@ public class HttpGlobalConfig {
     // 不验证 host 允许所有的 host
     private boolean trustAll = false;
     // Gson 解析补空默认值
-    private NullDataValue defValues = new NullDataValue();
+    private NullDataValue defValues = null;
     private Class<? extends IApiData> apiDataClazz = ApiData.class;
     private HttpLoggingInterceptor loggingInterceptor;
     private OkHttpClient okHttpClient = getDefaultClient();

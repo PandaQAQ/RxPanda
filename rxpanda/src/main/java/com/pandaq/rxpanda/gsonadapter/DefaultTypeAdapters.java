@@ -33,7 +33,9 @@ public class DefaultTypeAdapters {
             if (peek == JsonToken.NULL) {
                 in.nextNull();
                 // 返回配置的默认值
-                return HttpGlobalConfig.getInstance().getDefValues().defBoolean;
+                if (HttpGlobalConfig.getInstance().getDefValues() != null) {
+                    return HttpGlobalConfig.getInstance().getDefValues().defBoolean;
+                }
             } else if (peek == JsonToken.STRING) {
                 // support strings for compatibility with GSON 1.7
                 return Boolean.parseBoolean(in.nextString());
@@ -44,7 +46,9 @@ public class DefaultTypeAdapters {
         @Override
         public void write(JsonWriter out, Boolean value) throws IOException {
             if (value == null) {
-                value = HttpGlobalConfig.getInstance().getDefValues().defBoolean;
+                if (HttpGlobalConfig.getInstance().getDefValues() != null) {
+                    value = HttpGlobalConfig.getInstance().getDefValues().defBoolean;
+                }
             }
             out.value(value);
         }
@@ -56,7 +60,9 @@ public class DefaultTypeAdapters {
             if (in.peek() == JsonToken.NULL) {
                 in.nextNull();
                 // 返回配置的默认值
-                return HttpGlobalConfig.getInstance().getDefValues().defBoolean;
+                if (HttpGlobalConfig.getInstance().getDefValues() != null) {
+                    return HttpGlobalConfig.getInstance().getDefValues().defBoolean;
+                }
             }
             if (in.peek() == JsonToken.BOOLEAN) {
                 return in.nextBoolean();
@@ -67,7 +73,9 @@ public class DefaultTypeAdapters {
         @Override
         public void write(JsonWriter out, Boolean value) throws IOException {
             if (value == null) {
-                value = HttpGlobalConfig.getInstance().getDefValues().defBoolean;
+                if (HttpGlobalConfig.getInstance().getDefValues() != null) {
+                    value = HttpGlobalConfig.getInstance().getDefValues().defBoolean;
+                }
             }
             out.value(value);
         }
@@ -81,13 +89,17 @@ public class DefaultTypeAdapters {
             switch (jsonToken) {
                 case NULL:
                     in.nextNull();
-                    return HttpGlobalConfig.getInstance().getDefValues().defInt;
+                    if (HttpGlobalConfig.getInstance().getDefValues() != null) {
+                        return HttpGlobalConfig.getInstance().getDefValues().defInt;
+                    }
                 case NUMBER:
                     return in.nextInt();
                 case STRING:
                     String str = in.nextString();
                     if (TextUtils.isEmpty(str)) {
-                        return HttpGlobalConfig.getInstance().getDefValues().defInt;
+                        if (HttpGlobalConfig.getInstance().getDefValues() != null) {
+                            return HttpGlobalConfig.getInstance().getDefValues().defInt;
+                        }
                     }
                     return Integer.valueOf(str);
                 default:
@@ -98,7 +110,9 @@ public class DefaultTypeAdapters {
         @Override
         public void write(JsonWriter out, Integer value) throws IOException {
             if (value == null) {
-                value = HttpGlobalConfig.getInstance().getDefValues().defInt;
+                if (HttpGlobalConfig.getInstance().getDefValues() != null) {
+                    value = HttpGlobalConfig.getInstance().getDefValues().defInt;
+                }
             }
             out.value(value);
         }
@@ -111,13 +125,17 @@ public class DefaultTypeAdapters {
             switch (jsonToken) {
                 case NULL:
                     in.nextNull();
-                    return HttpGlobalConfig.getInstance().getDefValues().defLong;
+                    if (HttpGlobalConfig.getInstance().getDefValues() != null) {
+                        return HttpGlobalConfig.getInstance().getDefValues().defLong;
+                    }
                 case NUMBER:
                     return in.nextLong();
                 case STRING:
                     String str = in.nextString();
                     if (TextUtils.isEmpty(str)) {
-                        return HttpGlobalConfig.getInstance().getDefValues().defLong;
+                        if (HttpGlobalConfig.getInstance().getDefValues() != null) {
+                            return HttpGlobalConfig.getInstance().getDefValues().defLong;
+                        }
                     }
                     return Long.valueOf(str);
                 default:
@@ -128,7 +146,9 @@ public class DefaultTypeAdapters {
         @Override
         public void write(JsonWriter out, Long value) throws IOException {
             if (value == null) {
-                value = HttpGlobalConfig.getInstance().getDefValues().defLong;
+                if (HttpGlobalConfig.getInstance().getDefValues() != null) {
+                    value = HttpGlobalConfig.getInstance().getDefValues().defLong;
+                }
             }
             out.value(value);
         }
@@ -141,13 +161,17 @@ public class DefaultTypeAdapters {
             switch (jsonToken) {
                 case NULL:
                     in.nextNull();
-                    return HttpGlobalConfig.getInstance().getDefValues().defFloat;
+                    if (HttpGlobalConfig.getInstance().getDefValues() != null) {
+                        return HttpGlobalConfig.getInstance().getDefValues().defFloat;
+                    }
                 case NUMBER:
                     return (float) in.nextDouble();
                 case STRING:
                     String str = in.nextString();
                     if (TextUtils.isEmpty(str)) {
-                        return HttpGlobalConfig.getInstance().getDefValues().defFloat;
+                        if (HttpGlobalConfig.getInstance().getDefValues() != null) {
+                            return HttpGlobalConfig.getInstance().getDefValues().defFloat;
+                        }
                     }
                     return Float.valueOf(str);
                 default:
@@ -158,7 +182,9 @@ public class DefaultTypeAdapters {
         @Override
         public void write(JsonWriter out, Float value) throws IOException {
             if (value == null) {
-                value = HttpGlobalConfig.getInstance().getDefValues().defFloat;
+                if (HttpGlobalConfig.getInstance().getDefValues() != null) {
+                    value = HttpGlobalConfig.getInstance().getDefValues().defFloat;
+                }
             }
             out.value(value);
         }
@@ -171,13 +197,17 @@ public class DefaultTypeAdapters {
             switch (jsonToken) {
                 case NULL:
                     in.nextNull();
-                    return HttpGlobalConfig.getInstance().getDefValues().defDouble;
+                    if (HttpGlobalConfig.getInstance().getDefValues() != null) {
+                        return HttpGlobalConfig.getInstance().getDefValues().defDouble;
+                    }
                 case NUMBER:
                     return in.nextDouble();
                 case STRING:
                     String str = in.nextString();
                     if (TextUtils.isEmpty(str)) {
-                        return HttpGlobalConfig.getInstance().getDefValues().defDouble;
+                        if (HttpGlobalConfig.getInstance().getDefValues() != null) {
+                            return HttpGlobalConfig.getInstance().getDefValues().defDouble;
+                        }
                     }
                     return Double.valueOf(str);
                 default:
@@ -188,7 +218,9 @@ public class DefaultTypeAdapters {
         @Override
         public void write(JsonWriter out, Double value) throws IOException {
             if (value == null) {
-                value = HttpGlobalConfig.getInstance().getDefValues().defDouble;
+                if (HttpGlobalConfig.getInstance().getDefValues() != null) {
+                    value = HttpGlobalConfig.getInstance().getDefValues().defDouble;
+                }
             }
             out.value(value);
         }
@@ -201,12 +233,16 @@ public class DefaultTypeAdapters {
             switch (jsonToken) {
                 case NULL:
                     in.nextNull();
-                    return HttpGlobalConfig.getInstance().getDefValues().defDouble;
+                    if (HttpGlobalConfig.getInstance().getDefValues() != null) {
+                        return HttpGlobalConfig.getInstance().getDefValues().defDouble;
+                    }
                 case NUMBER:
                 case STRING:
                     String str = in.nextString();
                     if (TextUtils.isEmpty(str)) {
-                        return HttpGlobalConfig.getInstance().getDefValues().defDouble;
+                        if (HttpGlobalConfig.getInstance().getDefValues() != null) {
+                            return HttpGlobalConfig.getInstance().getDefValues().defDouble;
+                        }
                     }
                     return new LazilyParsedNumber(str);
                 default:
@@ -217,7 +253,9 @@ public class DefaultTypeAdapters {
         @Override
         public void write(JsonWriter out, Number value) throws IOException {
             if (value == null) {
-                value = HttpGlobalConfig.getInstance().getDefValues().defDouble;
+                if (HttpGlobalConfig.getInstance().getDefValues() != null) {
+                    value = HttpGlobalConfig.getInstance().getDefValues().defDouble;
+                }
             }
             out.value(value);
         }
@@ -229,7 +267,9 @@ public class DefaultTypeAdapters {
             JsonToken peek = in.peek();
             if (peek == JsonToken.NULL) {
                 in.nextNull();
-                return HttpGlobalConfig.getInstance().getDefValues().defString;
+                if (HttpGlobalConfig.getInstance().getDefValues() != null) {
+                    return HttpGlobalConfig.getInstance().getDefValues().defString;
+                }
             }
             if (peek == JsonToken.NUMBER) {
                 double dbNum = in.nextDouble();
@@ -253,7 +293,9 @@ public class DefaultTypeAdapters {
         @Override
         public void write(JsonWriter out, String value) throws IOException {
             if (value == null) {
-                value = HttpGlobalConfig.getInstance().getDefValues().defString;
+                if (HttpGlobalConfig.getInstance().getDefValues() != null) {
+                    value = HttpGlobalConfig.getInstance().getDefValues().defString;
+                }
             }
             out.value(value);
         }
@@ -264,7 +306,9 @@ public class DefaultTypeAdapters {
         public BigDecimal read(JsonReader in) throws IOException {
             if (in.peek() == JsonToken.NULL) {
                 in.nextNull();
-                return new BigDecimal(HttpGlobalConfig.getInstance().getDefValues().defInt);
+                if (HttpGlobalConfig.getInstance().getDefValues() != null) {
+                    return new BigDecimal(HttpGlobalConfig.getInstance().getDefValues().defInt);
+                }
             }
             try {
                 return new BigDecimal(in.nextString());
@@ -276,72 +320,11 @@ public class DefaultTypeAdapters {
         @Override
         public void write(JsonWriter out, BigDecimal value) throws IOException {
             if (value == null) {
-                value = new BigDecimal(HttpGlobalConfig.getInstance().getDefValues().defInt);
+                if (HttpGlobalConfig.getInstance().getDefValues() != null) {
+                    value = new BigDecimal(HttpGlobalConfig.getInstance().getDefValues().defInt);
+                }
             }
             out.value(value);
         }
     };
-
-
-    public static final TypeAdapter<StringBuilder> STRING_BUILDER = new TypeAdapter<StringBuilder>() {
-        @Override
-        public StringBuilder read(JsonReader in) throws IOException {
-            if (in.peek() == JsonToken.NULL) {
-                in.nextNull();
-                return new StringBuilder(HttpGlobalConfig.getInstance().getDefValues().defString);
-            }
-
-            if (in.peek() == JsonToken.NUMBER) {
-                double dbNum = in.nextDouble();
-                if (dbNum > Long.MAX_VALUE) {
-                    return new StringBuilder(String.valueOf(dbNum));
-                }
-                // 如果是整数
-                if (dbNum == (long) dbNum) {
-                    return new StringBuilder(String.valueOf((long) dbNum));
-                } else {
-                    return new StringBuilder(String.valueOf(dbNum));
-                }
-            }
-
-            return new StringBuilder(in.nextString());
-        }
-
-        @Override
-        public void write(JsonWriter out, StringBuilder value) throws IOException {
-            out.value(value == null ? HttpGlobalConfig.getInstance().getDefValues().defString : value.toString());
-        }
-    };
-
-
-    public static final TypeAdapter<StringBuffer> STRING_BUFFER = new TypeAdapter<StringBuffer>() {
-        @Override
-        public StringBuffer read(JsonReader in) throws IOException {
-            if (in.peek() == JsonToken.NULL) {
-                in.nextNull();
-                return new StringBuffer(HttpGlobalConfig.getInstance().getDefValues().defString);
-            }
-
-            if (in.peek() == JsonToken.NUMBER) {
-                double dbNum = in.nextDouble();
-                if (dbNum > Long.MAX_VALUE) {
-                    return new StringBuffer(String.valueOf(dbNum));
-                }
-                // 如果是整数
-                if (dbNum == (long) dbNum) {
-                    return new StringBuffer(String.valueOf((long) dbNum));
-                } else {
-                    return new StringBuffer(String.valueOf(dbNum));
-                }
-            }
-
-            return new StringBuffer(in.nextString());
-        }
-
-        @Override
-        public void write(JsonWriter out, StringBuffer value) throws IOException {
-            out.value(value == null ? HttpGlobalConfig.getInstance().getDefValues().defString : value.toString());
-        }
-    };
-
 }
