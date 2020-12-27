@@ -22,7 +22,7 @@ class MyApplication : Application() {
         defValues.defFloat = -0.0f
         defValues.defInt = -1
         defValues.defLong = 0L
-        defValues.defString = "ss"
+        defValues.defString = "默认补全数据"
 
         RxPanda.globalConfig()
             .baseUrl("https://www.easy-mock.com/mock/5cef4b3e651e4075bad237f8/example/")
@@ -32,7 +32,7 @@ class MyApplication : Application() {
                 HttpLoggingInterceptor()
                     .setLevel(HttpLoggingInterceptor.Level.BODY)
             )
-            .addGlobalHeader("test","testHeader")
+            .addGlobalHeader("test", "testHeader")
             .apiSuccessCode(0L)
             .debug(BuildConfig.DEBUG)
     }

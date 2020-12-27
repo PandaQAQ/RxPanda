@@ -144,7 +144,6 @@ data class ZooApiData<T>(
 
 本地需要解析的 UserInfo 对象如下
 ``` java
-@AutoWired
 public class UserInfo {
     private String userName;
     private String nickName;
@@ -164,7 +163,7 @@ public class UserInfo {
 		}
 }
 ```
-当接口返回的 json 缺少 notExits 时，解析结果的 UserInfo 对象中 `notExist` 中的值将是`null`。如果使用 @AutoWired 进行标注，则在解析后`notExist` 的值将会解析为 defaultValue 中的对应值。
+当接口返回的 json 缺少 notExits 时，解析结果的 UserInfo 对象中 `notExist` 中的值将是`null`。如果使用配置了defaultValue，则在解析后`notExist` 的值将会解析为 defaultValue 中的对应值。
 
 ### 三、请求使用
 

@@ -5,7 +5,6 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.pandaq.rxpanda.HttpCode;
 import com.pandaq.rxpanda.RxPanda;
-import com.pandaq.rxpanda.annotation.AutoWired;
 import com.pandaq.rxpanda.config.HttpGlobalConfig;
 import com.pandaq.rxpanda.entity.EmptyData;
 import com.pandaq.rxpanda.entity.IApiData;
@@ -69,14 +68,7 @@ public class PandaResponseBodyConverter<T> implements Converter<ResponseBody, T>
                 throw exception;
             } else {
                 try {
-                    T notWire = GsonUtil.gson().fromJson(data, dataType);
-                    boolean autoWire = notWire.getClass().getAnnotation(AutoWired.class) != null;
-                    if (autoWire) {
-                        String wireData = GsonUtil.gson().toJson(notWire);
-                        return GsonUtil.gson().fromJson(wireData, dataType);
-                    } else {
-                        return notWire;
-                    }
+                    return GsonUtil.gson().fromJson(data, dataType);
                 } catch (Exception e) {
                     if (HttpGlobalConfig.getInstance().isDebug()) {
                         e.printStackTrace();

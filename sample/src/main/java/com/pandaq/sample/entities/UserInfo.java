@@ -2,7 +2,6 @@ package com.pandaq.sample.entities;
 
 import android.support.annotation.NonNull;
 
-import com.pandaq.rxpanda.annotation.AutoWired;
 import com.pandaq.rxpanda.utils.GsonUtil;
 
 //@AutoWired
