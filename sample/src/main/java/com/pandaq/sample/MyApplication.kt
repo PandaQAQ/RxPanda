@@ -19,15 +19,15 @@ class MyApplication : Application() {
         val defValues = NullDataValue()
         defValues.defBoolean = false
         defValues.defDouble = -1.0
-        defValues.defFloat = -0.0f
+        defValues.defFloat = -1.0f
         defValues.defInt = -1
-        defValues.defLong = 0L
-        defValues.defString = "默认补全数据"
+        defValues.defLong = -1L
+        defValues.defString = ""
 
         RxPanda.globalConfig()
             .baseUrl("https://www.easy-mock.com/mock/5cef4b3e651e4075bad237f8/example/")
             .trustAllHost(true)
-//            .defaultValue(defValues)
+            .defaultValue(defValues)
             .netInterceptor(
                 HttpLoggingInterceptor()
                     .setLevel(HttpLoggingInterceptor.Level.BODY)

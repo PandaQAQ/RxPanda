@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             "\t\t\"userId\":\"1\",\n" +
             "\t\t\"userName\":\"\",\n" +
             "\t\t\"nickName\":\"\",\n" +
-            "\t\t\"age\":\"1\"\n" +
+            "\t\t\"age\":\"\"\n" +
             "\t\t}\n" +
             "\t}\n" +
             "}"
