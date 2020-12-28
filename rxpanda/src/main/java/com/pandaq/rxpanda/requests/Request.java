@@ -23,8 +23,6 @@ import io.reactivex.annotations.NonNull;
 import okhttp3.ConnectionPool;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 import retrofit2.CallAdapter;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -43,11 +41,9 @@ public class Request<T extends Request<T>> {
     // local connectTimeout
     private Long connectTimeout = 0L;
 
-    private Map<String, String> headers = new LinkedHashMap<>();
-    private List<Interceptor> interceptors = new ArrayList<>();
-    private List<Interceptor> networkInterceptors = new ArrayList<>();
-    // 方便调试增加 mockData
-    private String mockJson;
+    private final Map<String, String> headers = new LinkedHashMap<>();
+    private final List<Interceptor> interceptors = new ArrayList<>();
+    private final List<Interceptor> networkInterceptors = new ArrayList<>();
     protected OkHttpClient.Builder builder;
 
     /**
@@ -141,11 +137,6 @@ public class Request<T extends Request<T>> {
 
     public T connectTimeout(long connectTimeout) {
         this.connectTimeout = connectTimeout;
-        return CastUtils.cast(this);
-    }
-
-    public T mockData(String mockJson) {
-        this.mockJson = mockJson;
         return CastUtils.cast(this);
     }
 
@@ -269,8 +260,8 @@ public class Request<T extends Request<T>> {
             }
         }
         // 添加调试阶段的模拟数据拦截器
-        if (getGlobalConfig().isDebug() && mockJson != null) {
-            builder.addNetworkInterceptor(new MockDataInterceptor(mockJson));
+        if (getGlobalConfig().isDebug()) {
+            builder.addNetworkInterceptor(new MockDataInterceptor());
         }
         return retrofitBuilder.client(builder.build()).build();
     }

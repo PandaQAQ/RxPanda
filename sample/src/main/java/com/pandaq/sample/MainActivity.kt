@@ -3,9 +3,7 @@ package com.pandaq.sample
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import com.pandaq.app_launcher.entites.ZhihuData
 import com.pandaq.rxpanda.RxPanda
-import com.pandaq.rxpanda.constants.MediaTypes
 import com.pandaq.rxpanda.transformer.RxScheduler
 import com.pandaq.rxpanda.utils.GsonUtil
 import com.pandaq.sample.apis.ApiService
@@ -14,27 +12,11 @@ import com.pandaq.sample.entities.User
 import com.pandaq.sample.entities.ZooData
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
-import okhttp3.Response
-import okhttp3.ResponseBody
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
-    val data = "{\n" +
-            "\t\"code\":0,\n" +
-            "\t\"msg\":\"成功\",\n" +
-            "\t\"data\":{\n" +
-            "\t\"group\":\"1\",\n" +
-            "\t\"info\":{\n" +
-            "\t\t\"userId\":\"1\",\n" +
-            "\t\t\"userName\":\"\",\n" +
-            "\t\t\"nickName\":\"\",\n" +
-            "\t\t\"age\":\"\"\n" +
-            "\t\t}\n" +
-            "\t}\n" +
-            "}"
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private val apiService = RxPanda
         .retrofit()
-        .mockData(data)
         .create(ApiService::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
