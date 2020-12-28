@@ -3,8 +3,14 @@
 
 # 项目地址
 [RxPanda](https://github.com/PandaQAQ/RxPanda)，欢迎使用和 star，提出的问题我会及时回复并处理。
+# 接入方式
+```grovy
+dependencies {
+    "com.pandaq:rxpanda:1.0.1"
+}
+```
 # RxPanda
-基于 `RxJava2` `Retrofit2` `Okhttp3` 封装的网络库，处理了数据格式封装，gson 数据类型处理，gson 类解析空安全问题
+基于 `RxJava2` `Retrofit2` `Okhttp3` 封装的网络库，处理了数据格式封装，gson 数据类型处理，gson 类解析空安全问题，使用时推荐使用 Release Log 中的最新版本目前为 1.0.1版本。
 
 > 1、支持解析数据壳 key 自定义
 > 2、支持接口单独配置禁用脱壳返回接口定义的原始对象
@@ -14,8 +20,11 @@
 > 6、支持 int 类型 json 解析为 String 不会 0 变成 0.0
 > 7、支持解析类型为 `int`、`String`、`float`、`double`、`long`、`BigDecima`、`EmptyData` 时 json 字段缺失。解析为对象时自动使用默认值
 > 8、支持 json 解析时解析类型为第七条中的类型但是返回为 null 时替换为配置的默认值
+> 9、兼容 PHP 接口 `float`、`int`、`double`、`long` 类型无值时后端未处理返回空字符串导致解析失败
+>10、支持开发阶段单接口返回模拟json数据（适用于脱离后端接口开发，提高开发效率）
 
 # Release Log
+> - 1.0.1: a、修复 int、float、double 类型数据空字符串不能补全的问题；b、新增注解`@MockJson`debug 模式下替换模拟数据功能
 > - 1.0.0: a、修复全局设置请求超时时间无效，会被 CONFIG 的默认超时时间覆盖问题；b、默认超时时间与 okhttp 保持一致设置为 10s
 > - 0.2.6: 升级 Retrofit 版本以达到支持 kotlin suspend 关键字，配合协程使用
 > - 0.2.5: Json 解析为对象时，基本数据类型 null 值或缺失的情况下增加默认值兼容
@@ -86,29 +95,20 @@
 
 ### 二、接口定义
 ``` kotlin
-public interface ApiService {
-
-    // 在线 mock 正常使用 ApiData 数据壳
+    //使用全局配置的数据壳,默认为 ApiData
     @GET("xxx/xxx/xxx")
     Observable<List<ZooData>> getZooList();
-
-    // 数据结构不变但是数据壳 jsonKey 与框架默认不一致时使用此注解，也可在 Config 配置全局使用此数据壳
-    @ApiData(clazz = ZooApiData.class)
-    @GET("xxx/xxx/xxx")
-    Observable<List<ZooData>> newJsonKeyData();
-
-    // 与 ApiData 结构完全不一样使用 RealEntity 标准不做脱壳处理，返回 ZhihuData 就解析为 ZhihuData
-    @RealEntity
-    @GET("xxx/xxx/xxx")
-    Observable<ZhihuData> zhihu();
-}
 ```
 与 retrofit 完全一样的基础上增加了两个自定义注解
 - 1、 @RealEntity
-
 	接口数据未使用 ApiData 进行数据壳包装，需要直接解析未定义对象时使用。如上面代码中的 `ZhihuData` 在解析时不会进行脱壳操作，接口返回 `ZhihuData` 就解析为 `ZhihuData`
+	```kotlin
+	    // 与 ApiData 结构完全不一样使用 RealEntity 标准不做脱壳处理，返回 ZhihuData 就解析为 ZhihuData
+        @RealEntity
+        @GET("xxx/xxx/xxx")
+        Observable<ZhihuData> zhihu();
+	```
 - 2、@ApiData(clazz = ZooApiData.class)
-
 	接口数据使用 ApiData 进行数据壳包装，但包装的 key 与默认的 ApiData 不一致时，可自定义数数据壳实现 IApiData 接口
 ```kotlin
 // 自定义解析 key
@@ -135,13 +135,26 @@ data class ZooApiData<T>(
 
 }
 ```
+给特定接口指定解析壳
+```
+    // 数据结构不变但是数据壳 jsonKey 与框架默认不一致时使用此注解，也可在 Config 配置全局使用此数据壳
+    @ApiData(clazz = ZooApiData.class)
+    @GET("xxx/xxx/xxx")
+    Observable<List<ZooData>> newJsonKeyData();
+```
 如果全部接口都是按 ZooApiData 的解析 key 格式返回的数据,也不用麻烦的每个接口都加注解。直接在第一步的配置中使用全局配置来配置全局的数据壳
-
 ``` kotlin
   .apiDataClazz(ZooApiData::class.java)
 ```
+- 3、 @MockJson(json = jsonString)
+    后端给出数据结构但接口尚在开发时，可通过此注解配置模拟数据（仅在 RxPanda debug 模式下有效）。使用时在对应的接口上此注解指定返回的 json 字符串，任意请求一个可请求通的接口即可
+```kotlin
+    // 给这个接口指定模拟返回的 json 为 Constants.MOCK_JSON（仅当 RxPanda.globalConfig().isDebug()=true 时有效），请求地址为任意能正常请求的地址即可
+    @MockJson(json = Constants.MOCK_JSON)
+    @GET("https://www.baidu.com")
+    Observable<List<ZooData>> newJsonKeyData();
+```
 ### 三、自动补全默认值数据实体对象
-
 本地需要解析的 UserInfo 对象如下
 ``` java
 public class UserInfo {
@@ -163,7 +176,7 @@ public class UserInfo {
 		}
 }
 ```
-当接口返回的 json 缺少 notExits 时，解析结果的 UserInfo 对象中 `notExist` 中的值将是`null`。如果使用配置了defaultValue，则在解析后`notExist` 的值将会解析为 defaultValue 中的对应值。
+当接口返回的 json 缺少 notExits 时，解析结果的 UserInfo 对象中 `notExist` 中的值将是`null`。如果配置了defaultValue，则在解析后`notExist` 的值将会解析为 defaultValue 中的对应值。
 
 ### 三、请求使用
 

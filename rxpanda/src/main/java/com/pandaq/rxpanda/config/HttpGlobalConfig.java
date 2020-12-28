@@ -34,14 +34,13 @@ import retrofit2.Retrofit;
  */
 public class HttpGlobalConfig {
 
-    private List<CallAdapter.Factory> callAdapterFactories = new ArrayList<>();//Call适配器工厂
+    private final List<CallAdapter.Factory> callAdapterFactories = new ArrayList<>();//Call适配器工厂
     private Converter.Factory converterFactory = PandaConvertFactory.create();//转换工厂,默认为 PandaConvertFactory
     private SSLSocketFactory sslSocketFactory;//SSL工厂
     private HostnameVerifier hostnameVerifier;//主机域名验证
     private ConnectionPool connectionPool;//连接池
-    private Map<String, String> globalHeaders = new LinkedHashMap<>();//请求头
-    private Map<String, String> globalParams = new LinkedHashMap<>();//请求参数
-    @NonNull
+    private final Map<String, String> globalHeaders = new LinkedHashMap<>();//请求头
+    private final Map<String, String> globalParams = new LinkedHashMap<>();//请求参数
     private String baseUrl;//基础域名
     private static HttpGlobalConfig sHttpGlobalConfig;
     private boolean isDebug = false;
@@ -54,7 +53,7 @@ public class HttpGlobalConfig {
     private HttpLoggingInterceptor loggingInterceptor;
     private OkHttpClient okHttpClient = getDefaultClient();
     // 全局的 Retrofit对象
-    private Retrofit.Builder retrofitBuilder = new Retrofit.Builder();
+    private final Retrofit.Builder retrofitBuilder = new Retrofit.Builder();
 
     private long retryDelayMillis;//请求失败重试间隔时间
     private int retryCount;//请求失败重试次数

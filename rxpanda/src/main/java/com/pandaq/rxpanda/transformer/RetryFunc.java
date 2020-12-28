@@ -17,8 +17,8 @@ import java.util.concurrent.TimeUnit;
 public class RetryFunc implements Function<Observable<Throwable>, ObservableSource<?>> {
 
     private int count = 1;
-    private int maxCount;
-    private long retryDelayMillis;
+    private final int maxCount;
+    private final long retryDelayMillis;
 
     public RetryFunc(int maxCount, long retryDelayMillis) {
         this.maxCount = maxCount;

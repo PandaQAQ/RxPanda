@@ -8,7 +8,7 @@ import com.pandaq.rxpanda.utils.GsonUtil;
 public class User {
 
     private UserInfo info;
-    private int group;
+    private String group;
 
     @NonNull
     @Override

@@ -22,7 +22,7 @@ class MyApplication : Application() {
         defValues.defFloat = -1.0f
         defValues.defInt = -1
         defValues.defLong = -1L
-        defValues.defString = ""
+        defValues.defString = "这是自动补全数据"
 
         RxPanda.globalConfig()
             .baseUrl("https://www.easy-mock.com/mock/5cef4b3e651e4075bad237f8/example/")
