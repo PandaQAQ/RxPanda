@@ -12,16 +12,16 @@ dependencies {
 # RxPanda
 基于 `RxJava2` `Retrofit2` `Okhttp3` 封装的网络库，处理了数据格式封装，gson 数据类型处理，gson 类解析空安全问题，使用时推荐使用 Release Log 中的最新版本目前为 1.0.1版本。
 
-> 1、支持解析数据壳 key 自定义
-> 2、支持接口单独配置禁用脱壳返回接口定义的原始对象
-> 3、支持多 host 校验
-> 4、支持日志格式化及并发按序输出
-> 5、支持 data 为基本数据类型
-> 6、支持 int 类型 json 解析为 String 不会 0 变成 0.0
-> 7、支持解析类型为 `int`、`String`、`float`、`double`、`long`、`BigDecima`、`EmptyData` 时 json 字段缺失。解析为对象时自动使用默认值
-> 8、支持 json 解析时解析类型为第七条中的类型但是返回为 null 时替换为配置的默认值
-> 9、兼容 PHP 接口 `float`、`int`、`double`、`long` 类型无值时后端未处理返回空字符串导致解析失败
->10、支持开发阶段单接口返回模拟json数据（适用于脱离后端接口开发，提高开发效率）
+> - 1、支持解析数据壳 key 自定义
+> - 2、支持接口单独配置禁用脱壳返回接口定义的原始对象
+> - 3、支持多 host 校验
+> - 4、支持日志格式化及并发按序输出
+> - 5、支持 data 为基本数据类型
+> - 6、支持 int 类型 json 解析为 String 不会 0 变成 0.0
+> - 7、支持解析类型为 `int`、`String`、`float`、`double`、`long`、`BigDecima`、`EmptyData` 时 json 字段缺失。解析为对象时自动使用默认值
+> - 8、支持 json 解析时解析类型为第七条中的类型但是返回为 null 时替换为配置的默认值
+> - 9、兼容 PHP 接口 `float`、`int`、`double`、`long` 类型无值时后端未处理返回空字符串导致解析失败
+> - 10、支持开发阶段单接口返回模拟json数据（适用于脱离后端接口开发，提高开发效率）
 
 # Release Log
 > - 1.0.1: a、修复 int、float、double 类型数据空字符串不能补全的问题；b、新增注解`@MockJson`debug 模式下替换模拟数据功能
@@ -42,7 +42,7 @@ dependencies {
 ### 一、全局配置推荐在 Application 初始化时配置
 ```java
 
-		val defValues = NullDataValue()
+        val defValues = NullDataValue()
         defValues.defBoolean = false
         defValues.defDouble = -1.0
         defValues.defFloat = -0.0f
@@ -60,7 +60,7 @@ dependencies {
                 .readTimeout(10000) // 读取超时时间（ms）
                 .writeTimeout(10000) // 写入超时时间（ms）
                 .client(new OkHttpClient.Builder()) // 仅用作补充 OkHttpClient 配置
-				.defaultValue(defValues) // gson 返回字段为 null 或 字段缺失时，解析实体对象的基本类型默认值配置
+                .defaultValue(defValues) // gson 返回字段为 null 或 字段缺失时，解析实体对象的基本类型默认值配置
                 .debug(BuildConfig.DEBUG);// 是否 dubug 模式（非 debug 模式不会输出日志）
 ```
 以上只是精简的配置，还可以通过 GlobalConfig 配置类进行更多的全局配置
@@ -94,8 +94,10 @@ dependencies {
 | debug(boolean debug)             | 配置是否为 debug 模式，非 debug 模式网络库将不会输出 日志 | false |
 | defaultValue(NullDataValue defaultValue)             | 配置对应数据类型返回结果为 null 或对应数据接口未返回时的默认值| false |
 | client(new OkHttpClient.Builder())              |补充配置 OkHttpClient，相同的配置会被 RxPanda 配置项覆盖，例如超时时长等|false|
+
 ### 二、接口定义
-``` kotlin
+
+```kotlin
     //使用全局配置的数据壳,默认为 ApiData
     @GET("xxx/xxx/xxx")
     Observable<List<ZooData>> getZooList();
