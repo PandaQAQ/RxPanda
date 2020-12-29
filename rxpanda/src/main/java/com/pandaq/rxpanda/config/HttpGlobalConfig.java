@@ -34,6 +34,8 @@ import retrofit2.Retrofit;
  */
 public class HttpGlobalConfig {
 
+    private final List<Interceptor> interceptors = new ArrayList<>();
+    private final List<Interceptor> netInterceptors = new ArrayList<>();
     private final List<CallAdapter.Factory> callAdapterFactories = new ArrayList<>();//Call适配器工厂
     private Converter.Factory converterFactory = PandaConvertFactory.create();//转换工厂,默认为 PandaConvertFactory
     private SSLSocketFactory sslSocketFactory;//SSL工厂
@@ -51,7 +53,7 @@ public class HttpGlobalConfig {
     private NullDataValue defValues = null;
     private Class<? extends IApiData> apiDataClazz = ApiData.class;
     private HttpLoggingInterceptor loggingInterceptor;
-    private OkHttpClient okHttpClient = getDefaultClient();
+    private OkHttpClient.Builder clientBuilder = getDefaultClientBuilder();
     // 全局的 Retrofit对象
     private final Retrofit.Builder retrofitBuilder = new Retrofit.Builder();
 
@@ -76,8 +78,14 @@ public class HttpGlobalConfig {
         return sHttpGlobalConfig;
     }
 
-    public HttpGlobalConfig client(OkHttpClient client) {
-        okHttpClient = client;
+    /**
+     * set custom clientConfigs,the same config will be covered by Rxpanda
+     *
+     * @param clientBuilder CustomBuilder
+     * @return Config self
+     */
+    public HttpGlobalConfig client(OkHttpClient.Builder clientBuilder) {
+        this.clientBuilder = clientBuilder;
         return this;
     }
 
@@ -254,7 +262,7 @@ public class HttpGlobalConfig {
         if (interceptor instanceof HttpLoggingInterceptor) {
             loggingInterceptor = (HttpLoggingInterceptor) interceptor;
         } else {
-            okHttpClient.newBuilder().addInterceptor(interceptor);
+            interceptors.add(interceptor);
         }
         return this;
     }
@@ -264,7 +272,7 @@ public class HttpGlobalConfig {
         if (netInterceptor instanceof HttpLoggingInterceptor) {
             loggingInterceptor = (HttpLoggingInterceptor) netInterceptor;
         } else {
-            okHttpClient.newBuilder().addNetworkInterceptor(netInterceptor);
+            netInterceptors.add(netInterceptor);
         }
         return this;
     }
@@ -306,15 +314,23 @@ public class HttpGlobalConfig {
 
     //    ######################################## getter ########################################
 
-    public OkHttpClient getClient() {
-        return okHttpClient;
+    public OkHttpClient.Builder getClientBuilder() {
+        return clientBuilder;
+    }
+
+    public List<Interceptor> getInterceptors() {
+        return interceptors;
+    }
+
+    public List<Interceptor> getNetInterceptors() {
+        return netInterceptors;
     }
 
     public Retrofit.Builder getRetrofitBuilder() {
         return retrofitBuilder;
     }
 
-    private OkHttpClient getDefaultClient() {
+    private OkHttpClient.Builder getDefaultClientBuilder() {
         // 默认加密套件
         ConnectionSpec cs = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
                 .tlsVersions(TlsVersion.TLS_1_2).build();
@@ -322,7 +338,7 @@ public class HttpGlobalConfig {
         specs.add(cs);
         specs.add(ConnectionSpec.COMPATIBLE_TLS);
         specs.add(ConnectionSpec.CLEARTEXT);
-        return new OkHttpClient().newBuilder().connectionSpecs(specs).build();
+        return new OkHttpClient().newBuilder().connectionSpecs(specs);
     }
 
     public List<CallAdapter.Factory> getCallAdapterFactories() {

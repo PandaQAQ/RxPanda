@@ -1,9 +1,9 @@
 package com.pandaq.sample
 
 import android.app.Application
+import android.util.Log
 import com.pandaq.rxpanda.RxPanda
 import com.pandaq.rxpanda.entity.NullDataValue
-import com.pandaq.rxpanda.interceptor.HeaderInterceptor
 import com.pandaq.rxpanda.log.HttpLoggingInterceptor
 
 /**
@@ -28,6 +28,10 @@ class MyApplication : Application() {
             .baseUrl("https://www.easy-mock.com/mock/5cef4b3e651e4075bad237f8/example/")
             .trustAllHost(true)
             .defaultValue(defValues)
+            .interceptor { chain ->
+                Log.d("Interceptor", "global Interceptor")
+                chain.proceed(chain.request())
+            }
             .netInterceptor(
                 HttpLoggingInterceptor()
                     .setLevel(HttpLoggingInterceptor.Level.BODY)

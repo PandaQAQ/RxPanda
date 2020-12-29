@@ -22,7 +22,6 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.annotations.NonNull;
 import okhttp3.ConnectionPool;
 import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
 import retrofit2.CallAdapter;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -44,7 +43,6 @@ public class Request<T extends Request<T>> {
     private final Map<String, String> headers = new LinkedHashMap<>();
     private final List<Interceptor> interceptors = new ArrayList<>();
     private final List<Interceptor> networkInterceptors = new ArrayList<>();
-    protected OkHttpClient.Builder builder;
 
     /**
      * 添加 header map
@@ -144,7 +142,6 @@ public class Request<T extends Request<T>> {
      * 使用全局配置覆盖当前配置
      */
     private void resetGlobalParams() {
-        builder = getGlobalConfig().getClient().newBuilder();
         // http client config
         if (getGlobalConfig().getConnectionPool() == null) {
             getGlobalConfig().connectionPool(new ConnectionPool(CONFIG.DEFAULT_MAX_IDLE_CONNECTIONS,
@@ -155,16 +152,23 @@ public class Request<T extends Request<T>> {
         if (getGlobalConfig().getHostnameVerifier() == null) {
             getGlobalConfig().hostVerifier(new SSLManager.SafeHostnameVerifier(getGlobalConfig().getBaseUrl()));
         }
-        builder.hostnameVerifier(getGlobalConfig().getHostnameVerifier());
+        getGlobalConfig().getClientBuilder().hostnameVerifier(getGlobalConfig().getHostnameVerifier());
 
         if (getGlobalConfig().getSslSocketFactory() == null) {
             getGlobalConfig().sslFactory(SSLManager.getSslSocketFactory(null, null, null));
         }
-        builder.sslSocketFactory(getGlobalConfig().getSslSocketFactory());
-        builder.connectTimeout(getGlobalConfig().getConnectTimeout(), TimeUnit.MILLISECONDS);
-        builder.readTimeout(getGlobalConfig().getReadTimeout(), TimeUnit.MILLISECONDS);
-        builder.writeTimeout(getGlobalConfig().getWriteTimeout(), TimeUnit.MILLISECONDS);
-        builder.retryOnConnectionFailure(true);
+        getGlobalConfig().getClientBuilder().sslSocketFactory(getGlobalConfig().getSslSocketFactory());
+        getGlobalConfig().getClientBuilder().connectTimeout(getGlobalConfig().getConnectTimeout(), TimeUnit.MILLISECONDS);
+        getGlobalConfig().getClientBuilder().readTimeout(getGlobalConfig().getReadTimeout(), TimeUnit.MILLISECONDS);
+        getGlobalConfig().getClientBuilder().writeTimeout(getGlobalConfig().getWriteTimeout(), TimeUnit.MILLISECONDS);
+        // 添加全局的拦截器
+        for (Interceptor interceptor : getGlobalConfig().getInterceptors()) {
+            getGlobalConfig().getClientBuilder().addInterceptor(interceptor);
+        }
+        for (Interceptor interceptor : getGlobalConfig().getNetInterceptors()) {
+            getGlobalConfig().getClientBuilder().addNetworkInterceptor(interceptor);
+        }
+        getGlobalConfig().getClientBuilder().retryOnConnectionFailure(true);
     }
 
     /**
@@ -180,29 +184,29 @@ public class Request<T extends Request<T>> {
             headers.putAll(getGlobalConfig().getGlobalHeaders());
         }
         if (!headers.isEmpty()) {
-            builder.addInterceptor(new HeaderInterceptor(headers));
+            getGlobalConfig().getClientBuilder().addInterceptor(new HeaderInterceptor(headers));
         }
         // 添加请求拦截器
         if (!interceptors.isEmpty()) {
             for (Interceptor interceptor : interceptors) {
-                builder.addInterceptor(interceptor);
+                getGlobalConfig().getClientBuilder().addInterceptor(interceptor);
             }
         }
         // 添加请求网络拦截器
         if (!networkInterceptors.isEmpty()) {
             for (Interceptor interceptor : networkInterceptors) {
-                builder.addInterceptor(interceptor);
+                getGlobalConfig().getClientBuilder().addInterceptor(interceptor);
             }
         }
         //设置局部超时时间和重试次数
         if (readTimeout > 0) {
-            builder.readTimeout(readTimeout, TimeUnit.MILLISECONDS);
+            getGlobalConfig().getClientBuilder().readTimeout(readTimeout, TimeUnit.MILLISECONDS);
         }
         if (writeTimeout > 0) {
-            builder.writeTimeout(writeTimeout, TimeUnit.MILLISECONDS);
+            getGlobalConfig().getClientBuilder().writeTimeout(writeTimeout, TimeUnit.MILLISECONDS);
         }
         if (connectTimeout > 0) {
-            builder.connectTimeout(connectTimeout, TimeUnit.MILLISECONDS);
+            getGlobalConfig().getClientBuilder().connectTimeout(connectTimeout, TimeUnit.MILLISECONDS);
         }
     }
 
@@ -255,15 +259,15 @@ public class Request<T extends Request<T>> {
         }
         // 添加日志拦截器
         if (getGlobalConfig().getLoggingInterceptor() != null) {
-            if (!builder.networkInterceptors().contains(RxPanda.globalConfig().getLoggingInterceptor())) {
-                builder.addNetworkInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
+            if (!getGlobalConfig().getClientBuilder().networkInterceptors().contains(RxPanda.globalConfig().getLoggingInterceptor())) {
+                getGlobalConfig().getClientBuilder().addNetworkInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
             }
         }
         // 添加调试阶段的模拟数据拦截器
         if (getGlobalConfig().isDebug()) {
-            builder.addNetworkInterceptor(new MockDataInterceptor());
+            getGlobalConfig().getClientBuilder().addNetworkInterceptor(new MockDataInterceptor());
         }
-        return retrofitBuilder.client(builder.build()).build();
+        return retrofitBuilder.client(getGlobalConfig().getClientBuilder().build()).build();
     }
 
     protected HttpGlobalConfig getGlobalConfig() {

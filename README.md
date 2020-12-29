@@ -59,6 +59,7 @@ dependencies {
                 .connectTimeout(10000) // 连接超时时间（ms）
                 .readTimeout(10000) // 读取超时时间（ms）
                 .writeTimeout(10000) // 写入超时时间（ms）
+                .client(new OkHttpClient.Builder()) // 仅用作补充 OkHttpClient 配置
 				.defaultValue(defValues) // gson 返回字段为 null 或 字段缺失时，解析实体对象的基本类型默认值配置
                 .debug(BuildConfig.DEBUG);// 是否 dubug 模式（非 debug 模式不会输出日志）
 ```
@@ -92,7 +93,7 @@ dependencies {
 | apiSuccessCode(Long apiSuccessCode)             | Json解析接口数据结构外壳对象为 `ApiData` 结构时，配置成功 Code，默认值为 `0L`				| false |
 | debug(boolean debug)             | 配置是否为 debug 模式，非 debug 模式网络库将不会输出 日志 | false |
 | defaultValue(NullDataValue defaultValue)             | 配置对应数据类型返回结果为 null 或对应数据接口未返回时的默认值| false |
-
+| client(new OkHttpClient.Builder())              |补充配置 OkHttpClient，相同的配置会被 RxPanda 配置项覆盖，例如超时时长等|false|
 ### 二、接口定义
 ``` kotlin
     //使用全局配置的数据壳,默认为 ApiData

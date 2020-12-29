@@ -9,9 +9,6 @@ import com.pandaq.rxpanda.requests.Request;
 import com.pandaq.rxpanda.ssl.SSLManager;
 import com.pandaq.rxpanda.utils.CastUtils;
 
-import retrofit2.CallAdapter;
-import retrofit2.Retrofit;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -59,14 +56,14 @@ public class RetrofitRequest extends Request<RetrofitRequest> {
                     newRetrofitBuilder.addCallAdapterFactory(factory);
                 }
             }
-            builder.hostnameVerifier(new SSLManager.SafeHostnameVerifier(baseUrl));
+            getGlobalConfig().getClientBuilder().hostnameVerifier(new SSLManager.SafeHostnameVerifier(baseUrl));
             // 添加日志拦截器
             if (getGlobalConfig().getLoggingInterceptor() != null) {
-                if (!builder.networkInterceptors().contains(RxPanda.globalConfig().getLoggingInterceptor())) {
-                    builder.addNetworkInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
+                if (!getGlobalConfig().getClientBuilder().networkInterceptors().contains(RxPanda.globalConfig().getLoggingInterceptor())) {
+                    getGlobalConfig().getClientBuilder().addNetworkInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
                 }
             }
-            newRetrofitBuilder.client(builder.build());
+            newRetrofitBuilder.client(getGlobalConfig().getClientBuilder().build());
             retrofit = newRetrofitBuilder.build();
         } else { // 使用默认配置的对象
             retrofit = getCommonRetrofit();
@@ -87,7 +84,7 @@ public class RetrofitRequest extends Request<RetrofitRequest> {
             paramsInterceptor.setParamsMap(localParams);
         }
         // 将参数添加到请求中
-        builder.addNetworkInterceptor(paramsInterceptor);
+        getGlobalConfig().getClientBuilder().addNetworkInterceptor(paramsInterceptor);
     }
 
     /**

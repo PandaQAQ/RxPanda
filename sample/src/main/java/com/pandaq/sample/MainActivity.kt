@@ -3,6 +3,7 @@ package com.pandaq.sample
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import com.google.gson.Gson
 import com.pandaq.rxpanda.RxPanda
@@ -14,11 +15,17 @@ import com.pandaq.sample.entities.User
 import com.pandaq.sample.entities.ZooData
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
+import okhttp3.Interceptor
+import okhttp3.Response
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private val apiService = RxPanda
         .retrofit()
+        .interceptor { chain ->
+            Log.d("Interceptor", "local Interceptor")
+            chain.proceed(chain.request())
+        }
         .connectTimeout(200)
         .create(ApiService::class.java)
 
