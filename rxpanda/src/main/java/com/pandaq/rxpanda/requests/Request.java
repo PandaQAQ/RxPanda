@@ -260,7 +260,11 @@ public class Request<T extends Request<T>> {
         // 添加日志拦截器
         if (getGlobalConfig().getLoggingInterceptor() != null) {
             if (!getGlobalConfig().getClientBuilder().networkInterceptors().contains(RxPanda.globalConfig().getLoggingInterceptor())) {
-                getGlobalConfig().getClientBuilder().addNetworkInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
+                if (RxPanda.globalConfig().getLoggingInterceptor().isNetInterceptor()) {
+                    getGlobalConfig().getClientBuilder().addNetworkInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
+                } else {
+                    getGlobalConfig().getClientBuilder().addInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
+                }
             }
         }
         // 添加调试阶段的模拟数据拦截器

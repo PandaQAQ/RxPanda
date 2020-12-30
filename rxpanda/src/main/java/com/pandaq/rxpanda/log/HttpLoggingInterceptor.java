@@ -16,6 +16,7 @@
 package com.pandaq.rxpanda.log;
 
 import com.pandaq.rxpanda.RxPanda;
+
 import okhttp3.*;
 import okio.Buffer;
 import okio.BufferedSource;
@@ -37,6 +38,19 @@ public final class HttpLoggingInterceptor implements Interceptor {
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
     public static final String IO_FLAG_HEADER = "ioRequest";
+
+    /**
+     * a flag about add to interceptors or networkInterceptors
+     */
+    private Boolean isNetInterceptor = false;
+
+    public Boolean isNetInterceptor() {
+        return isNetInterceptor;
+    }
+
+    public void setNetInterceptor(Boolean netInterceptor) {
+        isNetInterceptor = netInterceptor;
+    }
 
     public enum Level {
         /**
@@ -200,7 +214,9 @@ public final class HttpLoggingInterceptor implements Interceptor {
         try {
             response = chain.proceed(request);
         } catch (Exception e) {
-            entity.addLog("Error: " + e.getMessage());
+            entity.addLog("║——————————————————ERROR INFO——————————————————\"");
+            entity.addLog("ErrorMessage:===> " + e.getMessage());
+            LogPrinter.printLog(entity);
             throw e;
         }
         long tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs);

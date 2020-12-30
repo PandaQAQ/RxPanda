@@ -261,6 +261,7 @@ public class HttpGlobalConfig {
         // 日志拦截器最后添加（避免其他拦截器添加的数据打印缺失）
         if (interceptor instanceof HttpLoggingInterceptor) {
             loggingInterceptor = (HttpLoggingInterceptor) interceptor;
+            loggingInterceptor.setNetInterceptor(false);
         } else {
             interceptors.add(interceptor);
         }
@@ -271,6 +272,7 @@ public class HttpGlobalConfig {
         // 日志拦截器最后添加（避免其他拦截器添加的数据打印缺失）
         if (netInterceptor instanceof HttpLoggingInterceptor) {
             loggingInterceptor = (HttpLoggingInterceptor) netInterceptor;
+            loggingInterceptor.setNetInterceptor(true);
         } else {
             netInterceptors.add(netInterceptor);
         }
