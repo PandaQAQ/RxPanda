@@ -12,6 +12,7 @@ import com.pandaq.rxpanda.utils.GsonUtil
 import com.pandaq.sample.apis.ApiService
 import com.pandaq.sample.apis.AppCallBack
 import com.pandaq.sample.entities.User
+import com.pandaq.sample.entities.UserTest
 import com.pandaq.sample.entities.ZooData
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
@@ -111,8 +112,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 apiService.typeError()
                     .doOnSubscribe { t -> compositeDisposable.add(t) }
                     .compose(RxScheduler.retrySync(10))
-                    .subscribe(object : AppCallBack<User>() {
-                        override fun success(data: User) {
+                    .subscribe(object : AppCallBack<List<UserTest>>() {
+                        override fun success(data: List<UserTest>) {
                             dataString.text = GsonUtil.gson().toJson(data)
                             dataString.setTextColor(Color.parseColor("#000000"))
                         }

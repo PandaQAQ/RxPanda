@@ -3,6 +3,9 @@ package com.pandaq.sample.apis;
 import com.pandaq.rxpanda.annotation.MockJson;
 import com.pandaq.sample.Constants;
 import com.pandaq.sample.entities.User;
+import com.pandaq.sample.entities.UserTest;
+
+import java.util.List;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
@@ -27,8 +30,12 @@ public interface ApiService {
     @GET("https://www.baidu.com")
     Observable<Integer> intData();
 
+//
+//    @MockJson(json = Constants.MOCK_TYPE_ERROR)
+//    @GET("https://www.baidu.com")
+//    Observable<User> typeError();
 
-    @MockJson(json = Constants.MOCK_TYPE_ERROR)
+    @MockJson(json = Constants.MOCK_DATA)
     @GET("https://www.baidu.com")
-    Observable<User> typeError();
+    Observable<List<UserTest>> typeError();
 }

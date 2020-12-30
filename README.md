@@ -1,16 +1,16 @@
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1a9236f222ac4293a509c9db710a13f5)](https://app.codacy.com/app/PandaQAQ/RxPanda?utm_source=github.com&utm_medium=referral&utm_content=PandaQAQ/RxPanda&utm_campaign=Badge_Grade_Dashboard)  [![License](https://img.shields.io/github/license/PandaQAQ/RxPanda.svg)](https://github.com/PandaQAQ/RxPanda/blob/master/LICENSE)  [![Download](https://api.bintray.com/packages/huxinyu/maven/rxpanda/images/download.svg?version=1.0.0)](https://bintray.com/huxinyu/maven/rxpanda/1.0.0/link)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1a9236f222ac4293a509c9db710a13f5)](https://app.codacy.com/app/PandaQAQ/RxPanda?utm_source=github.com&utm_medium=referral&utm_content=PandaQAQ/RxPanda&utm_campaign=Badge_Grade_Dashboard)  [![License](https://img.shields.io/github/license/PandaQAQ/RxPanda.svg)](https://github.com/PandaQAQ/RxPanda/blob/master/LICENSE)  [![Download](https://api.bintray.com/packages/huxinyu/maven/rxpanda/images/download.svg?version=1.0.2)](https://bintray.com/huxinyu/maven/rxpanda/1.0.2/link)
 
 # 项目地址
 [RxPanda](https://github.com/PandaQAQ/RxPanda)，欢迎使用和 star，提出的问题我会及时回复并处理。
 # 接入方式
 ```grovy
 dependencies {
-    "com.pandaq:rxpanda:1.0.1"
+    "com.pandaq:rxpanda:1.0.2"
 }
 ```
 # RxPanda
-基于 `RxJava2` `Retrofit2` `Okhttp3` 封装的网络库，处理了数据格式封装，gson 数据类型处理，gson 类解析空安全问题，使用时推荐使用 Release Log 中的最新版本目前为 1.0.1版本。
+基于 `RxJava2` `Retrofit2` `Okhttp3` 封装的网络库，处理了数据格式封装，gson 数据类型处理，gson 类解析空安全问题，使用时推荐使用 Release Log 中的最新版本目前为 1.0.2版本。
 
 > - 1、支持解析数据壳 key 自定义
 > - 2、支持接口单独配置禁用脱壳返回接口定义的原始对象
@@ -24,7 +24,7 @@ dependencies {
 > - 10、支持开发阶段单接口返回模拟json数据（适用于脱离后端接口开发，提高开发效率）
 
 # Release Log
-> - 1.0.1: a、修复 int、float、double 类型数据空字符串不能补全的问题；b、新增注解`@MockJson`debug 模式下替换模拟数据功能
+> - 1.0.2: a、修复 int、float、double 类型数据空字符串不能补全的问题；b、新增注解`@MockJson`debug 模式下替换模拟数据功能
 > - 1.0.0: a、修复全局设置请求超时时间无效，会被 CONFIG 的默认超时时间覆盖问题；b、默认超时时间与 okhttp 保持一致设置为 10s
 > - 0.2.6: 升级 Retrofit 版本以达到支持 kotlin suspend 关键字，配合协程使用
 > - 0.2.5: Json 解析为对象时，基本数据类型 null 值或缺失的情况下增加默认值兼容
