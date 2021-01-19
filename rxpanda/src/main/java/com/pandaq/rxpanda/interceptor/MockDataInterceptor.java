@@ -4,7 +4,6 @@ import com.pandaq.rxpanda.annotation.MockJson;
 import com.pandaq.rxpanda.constants.MediaTypes;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import okhttp3.Interceptor;

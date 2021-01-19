@@ -60,13 +60,14 @@ public class RetrofitRequest extends Request<RetrofitRequest> {
             // 添加日志拦截器
             if (getGlobalConfig().getLoggingInterceptor() != null) {
                 if (!getGlobalConfig().getClientBuilder().networkInterceptors().contains(RxPanda.globalConfig().getLoggingInterceptor())) {
-                    if (RxPanda.globalConfig().getLoggingInterceptor().isNetInterceptor()){
+                    if (RxPanda.globalConfig().getLoggingInterceptor().isNetInterceptor()) {
                         getGlobalConfig().getClientBuilder().addNetworkInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
-                    }else {
+                    } else {
                         getGlobalConfig().getClientBuilder().addInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
                     }
                 }
             }
+            // 添加模拟数据
             newRetrofitBuilder.client(getGlobalConfig().getClientBuilder().build());
             retrofit = newRetrofitBuilder.build();
         } else { // 使用默认配置的对象

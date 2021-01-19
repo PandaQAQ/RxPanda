@@ -13,11 +13,8 @@ import com.pandaq.sample.apis.ApiService
 import com.pandaq.sample.apis.AppCallBack
 import com.pandaq.sample.entities.User
 import com.pandaq.sample.entities.UserTest
-import com.pandaq.sample.entities.ZooData
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
-import okhttp3.Interceptor
-import okhttp3.Response
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
@@ -128,7 +125,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                         }
 
                     })
-
             }
         }
     }
