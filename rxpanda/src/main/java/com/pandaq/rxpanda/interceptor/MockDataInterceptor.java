@@ -1,10 +1,13 @@
 package com.pandaq.rxpanda.interceptor;
 
+import android.util.Log;
+
 import com.pandaq.rxpanda.annotation.MockJson;
 import com.pandaq.rxpanda.constants.MediaTypes;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.logging.Logger;
 
 import okhttp3.Interceptor;
 import okhttp3.Protocol;
@@ -37,6 +40,7 @@ public class MockDataInterceptor implements Interceptor {
             MockJson mockJson = method.getAnnotation(MockJson.class);
             if (mockJson != null) {
                 chain.proceed(request);
+                Log.w("MockDataInterceptor", method.getName() + "()  ！！！！！！！！！！！！！！！！！！！！正在使用模拟数据！！！！！！！！！！！！！！！！！！！！");
                 return new Response.Builder()
                         .code(200)
                         .addHeader("Content-Type", "application/json")
@@ -50,6 +54,7 @@ public class MockDataInterceptor implements Interceptor {
         // http 直接请求方式代码本地添加
         if (localMockJson != null) {
             chain.proceed(request);
+            Log.w("MockDataInterceptor", request.url() + "！！！！！！！！！！！！！！！！！！！！正在使用模拟数据！！！！！！！！！！！！！！！！！！！！");
             return new Response.Builder()
                     .code(200)
                     .addHeader("Content-Type", "application/json")
