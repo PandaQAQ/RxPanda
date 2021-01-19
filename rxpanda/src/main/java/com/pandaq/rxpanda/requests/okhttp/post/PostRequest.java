@@ -18,7 +18,7 @@ import io.reactivex.Observable;
 public class PostRequest extends HttpRequest<PostRequest> {
 
     // url中带参数 post
-    private StringBuilder stringBuilder = new StringBuilder();
+    private final StringBuilder stringBuilder = new StringBuilder();
 
 
     public PostRequest(String url) {

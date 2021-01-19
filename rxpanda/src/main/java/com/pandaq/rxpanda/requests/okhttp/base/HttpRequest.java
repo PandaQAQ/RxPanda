@@ -2,7 +2,6 @@ package com.pandaq.rxpanda.requests.okhttp.base;
 
 import android.text.TextUtils;
 
-import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.api.Api;
 import com.pandaq.rxpanda.observer.ApiObserver;
 import com.pandaq.rxpanda.requests.Request;
@@ -17,8 +16,8 @@ import java.util.Map;
 import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.annotations.NonNull;
+import okhttp3.Response;
 import okhttp3.ResponseBody;
-import retrofit2.Retrofit;
 
 /**
  * Created by huxinyu on 2019/1/11.
@@ -34,6 +33,7 @@ public abstract class HttpRequest<R extends HttpRequest<R>> extends Request<R> {
     // request tag
     protected Object tag;
     protected Map<String, String> localParams = new LinkedHashMap<>();//请求参数
+    private String mockJson;
 
     /**
      * set request‘s tag，use to manage the request
@@ -65,6 +65,19 @@ public abstract class HttpRequest<R extends HttpRequest<R>> extends Request<R> {
     protected abstract <T> Observable<T> execute(Type type);
 
     protected abstract <T> void execute(ApiObserver<T> callback);
+
+    /**
+     * 添加请求的模拟数据
+     */
+    public R mockData(@NonNull String mockJson) {
+        this.mockJson = mockJson;
+        return CastUtils.cast(this);
+    }
+
+    @Override
+    public String getMockJson() {
+        return mockJson;
+    }
 
     /**
      * 添加请求参数

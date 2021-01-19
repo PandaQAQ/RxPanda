@@ -20,9 +20,17 @@ import retrofit2.Invocation;
  */
 public class MockDataInterceptor implements Interceptor {
 
+    // mockResponse 是为直接使用 post/get 方法提供的.与注解不可能同时存在
+    private final String localMockJson;
+
+    public MockDataInterceptor(String mockJson) {
+        this.localMockJson = mockJson;
+    }
+
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
+        // retrofit 接口注解添加方式
         Invocation invocation = request.tag(Invocation.class);
         if (invocation != null) {
             Method method = invocation.method();
@@ -38,6 +46,18 @@ public class MockDataInterceptor implements Interceptor {
                         .protocol(Protocol.HTTP_2)
                         .build();
             }
+        }
+        // http 直接请求方式代码本地添加
+        if (localMockJson != null) {
+            chain.proceed(request);
+            return new Response.Builder()
+                    .code(200)
+                    .addHeader("Content-Type", "application/json")
+                    .body(ResponseBody.create(MediaTypes.APPLICATION_JSON_TYPE, localMockJson))
+                    .message("这是拦截器模拟数据！！！！")
+                    .request(chain.request())
+                    .protocol(Protocol.HTTP_2)
+                    .build();
         }
         // 未注解不进行拦截
         return chain.proceed(request);

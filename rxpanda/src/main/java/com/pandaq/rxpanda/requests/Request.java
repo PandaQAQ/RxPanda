@@ -45,6 +45,13 @@ public class Request<T extends Request<T>> {
     private final List<Interceptor> networkInterceptors = new ArrayList<>();
 
     /**
+     * 获取子类指定的模拟数据，默认为空
+     */
+    protected String getMockJson(){
+        return null;
+    }
+
+    /**
      * 添加 header map
      *
      * @param headers 请求头 map
@@ -269,7 +276,7 @@ public class Request<T extends Request<T>> {
         }
         // 添加调试阶段的模拟数据拦截器
         if (getGlobalConfig().isDebug()) {
-            getGlobalConfig().getClientBuilder().addNetworkInterceptor(new MockDataInterceptor());
+            getGlobalConfig().getClientBuilder().addNetworkInterceptor(new MockDataInterceptor(getMockJson()));
         }
         return retrofitBuilder.client(getGlobalConfig().getClientBuilder().build()).build();
     }
