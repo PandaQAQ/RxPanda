@@ -1,6 +1,5 @@
 package com.pandaq.rxpanda.transformer;
 
-import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
 import com.pandaq.rxpanda.entity.EmptyData;

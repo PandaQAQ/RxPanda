@@ -33,9 +33,6 @@ public interface Api {
     @HEAD()
     Observable<ResponseBody> head(@Url String url, @QueryMap Map<String, String> maps);
 
-    @OPTIONS()
-    Observable<ResponseBody> options(@Url String url, @QueryMap Map<String, String> maps);
-
     @FormUrlEncoded
     @PUT()
     Observable<ResponseBody> put(@Url() String url, @FieldMap Map<String, String> maps);
