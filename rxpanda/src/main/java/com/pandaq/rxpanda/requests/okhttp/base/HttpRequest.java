@@ -2,7 +2,6 @@ package com.pandaq.rxpanda.requests.okhttp.base;
 
 import android.text.TextUtils;
 
-import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.api.Api;
 import com.pandaq.rxpanda.observer.ApiObserver;
 import com.pandaq.rxpanda.requests.Request;
@@ -18,7 +17,6 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.annotations.NonNull;
 import okhttp3.ResponseBody;
-import retrofit2.Retrofit;
 
 /**
  * Created by huxinyu on 2019/1/11.

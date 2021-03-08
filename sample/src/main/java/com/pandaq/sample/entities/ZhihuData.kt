@@ -1,4 +1,4 @@
-package com.pandaq.app_launcher.entites
+package com.pandaq.sample.entities
 
 /**
  * Created by huxinyu on 2019/6/13.
@@ -12,6 +12,9 @@ data class ZhihuData(
     val top_stories: List<TopStory?>?
 )
 
+/**
+ * TopStory
+ */
 data class TopStory(
     val ga_prefix: String?,
     val id: Int?,
@@ -20,6 +23,9 @@ data class TopStory(
     val type: Int?
 )
 
+/**
+ * Story
+ */
 data class Story(
     val ga_prefix: String?,
     val id: Int?,

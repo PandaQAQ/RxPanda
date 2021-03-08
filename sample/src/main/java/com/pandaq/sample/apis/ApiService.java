@@ -9,6 +9,7 @@ import java.util.List;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
+import retrofit2.http.Query;
 
 /**
  * Created by huxinyu on 2018/4/2.
@@ -37,5 +38,5 @@ public interface ApiService {
 
     @MockJson(json = Constants.MOCK_DATA)
     @GET("https://www.baidu.com")
-    Observable<List<UserTest>> typeError();
+    Observable<List<UserTest>> typeError(@Query("test") String test);
 }

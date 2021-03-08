@@ -1,5 +1,6 @@
 package com.pandaq.sample
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -13,11 +14,8 @@ import com.pandaq.sample.apis.ApiService
 import com.pandaq.sample.apis.AppCallBack
 import com.pandaq.sample.entities.User
 import com.pandaq.sample.entities.UserTest
-import com.pandaq.sample.entities.ZooData
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
-import okhttp3.Interceptor
-import okhttp3.Response
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
@@ -52,6 +50,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                             dataString.setTextColor(Color.parseColor("#000000"))
                         }
 
+                        @SuppressLint("SetTextI18n")
                         override fun fail(code: Long?, msg: String?) {
                             dataString.text = "error:::$msg"
                             dataString.setTextColor(Color.parseColor("#ff0000"))
@@ -74,6 +73,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                             dataString.setTextColor(Color.parseColor("#000000"))
                         }
 
+                        @SuppressLint("SetTextI18n")
                         override fun fail(code: Long?, msg: String?) {
                             dataString.text = "error:::$msg"
                             dataString.setTextColor(Color.parseColor("#ff0000"))
@@ -96,6 +96,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                             dataString.setTextColor(Color.parseColor("#000000"))
                         }
 
+                        @SuppressLint("SetTextI18n")
                         override fun fail(code: Long?, msg: String?) {
                             dataString.text = "error:::$msg"
                             dataString.setTextColor(Color.parseColor("#ff0000"))
@@ -109,7 +110,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             R.id.userErrorType -> {
-                apiService.typeError()
+                apiService.typeError("hah")
                     .doOnSubscribe { t -> compositeDisposable.add(t) }
                     .compose(RxScheduler.retrySync(10))
                     .subscribe(object : AppCallBack<List<UserTest>>() {
@@ -118,6 +119,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                             dataString.setTextColor(Color.parseColor("#000000"))
                         }
 
+                        @SuppressLint("SetTextI18n")
                         override fun fail(code: Long?, msg: String?) {
                             dataString.text = "error:::$msg"
                             dataString.setTextColor(Color.parseColor("#ff0000"))

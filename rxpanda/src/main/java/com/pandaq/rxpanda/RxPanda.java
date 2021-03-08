@@ -9,14 +9,6 @@ import com.pandaq.rxpanda.requests.okhttp.post.PostFormRequest;
 import com.pandaq.rxpanda.requests.okhttp.post.PostRequest;
 import com.pandaq.rxpanda.requests.retrofit.RetrofitRequest;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import okhttp3.ConnectionSpec;
-import okhttp3.OkHttpClient;
-import okhttp3.TlsVersion;
-import retrofit2.Retrofit;
-
 /**
  * Created by huxinyu on 2019/1/9.
  * Email : panda.h@foxmail.com
@@ -89,6 +81,7 @@ public class RxPanda {
     public static RetrofitRequest retrofit() {
         return new RetrofitRequest();
     }
+
     /**
      * 获取到请求管理器
      *

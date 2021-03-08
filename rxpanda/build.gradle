@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 28
@@ -29,14 +28,14 @@ android {
 
 }
 
-publish {
-    userOrg = 'huxinyu' //注册时候的用户名
-    groupId = 'com.pandaq'// //compile引用时的第1部分
-    artifactId = 'rxpanda'////发布到JCenter上的项目名字，compile引用时的第2部分项目名
-    publishVersion = '1.0.2'//版本号 ，compile引用时的最后部分
-    desc = 'An Android network lib, base on rxjava2,retrofit2,okhttp3'//描述，不重要
-    website = 'https://github.com/PandaQAQ/RxPanda' //项目的GitHub网站
-}
+//publish {
+//    userOrg = 'huxinyu' //注册时候的用户名
+//    groupId = 'com.pandaq'// //compile引用时的第1部分
+//    artifactId = 'rxpanda'////发布到JCenter上的项目名字，compile引用时的第2部分项目名
+//    publishVersion = '1.0.2'//版本号 ，compile引用时的最后部分
+//    desc = 'An Android network lib, base on rxjava2,retrofit2,okhttp3'//描述，不重要
+//    website = 'https://github.com/PandaQAQ/RxPanda' //项目的GitHub网站
+//}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
