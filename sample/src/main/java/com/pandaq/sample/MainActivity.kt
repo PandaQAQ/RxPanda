@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.View
 import com.google.gson.Gson
 import com.pandaq.rxpanda.RxPanda
-import com.pandaq.rxpanda.entity.ApiData
 import com.pandaq.rxpanda.transformer.RxScheduler
 import com.pandaq.rxpanda.utils.GsonUtil
 import com.pandaq.sample.apis.ApiService
@@ -131,26 +130,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                         }
 
                     })
-//                RxPanda.post("https://www.baidu.com")
-//                    .mockData(Constants.MOCK_DATA)
-//                    .request(
-//                        object : AppCallBack<ApiData<List<UserTest>>>() {
-//                            override fun success(data: ApiData<List<UserTest>>) {
-//                                dataString.text = GsonUtil.gson().toJson(data)
-//                                dataString.setTextColor(Color.parseColor("#000000"))
-//                            }
-//
-//                            override fun fail(code: Long?, msg: String?) {
-//                                dataString.text = "error:::$msg"
-//                                dataString.setTextColor(Color.parseColor("#ff0000"))
-//                            }
-//
-//                            override fun finish(success: Boolean) {
-//
-//                            }
-//
-//                        }
-//                    )
             }
         }
     }
