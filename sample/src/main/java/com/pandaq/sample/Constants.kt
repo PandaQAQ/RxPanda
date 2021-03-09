@@ -49,7 +49,7 @@ class Constants {
                 "  \"data\": [\n" +
                 "    {\n" +
                 "      \"userId\": \"1255688430613921793\",\n" +
-                "      \"name\": \"张俊\",\n" +
+                "      \"name\": \"qqq\",\n" +
                 "      \"mobile\": \"18280281159\",\n" +
                 "      \"avatar\": \"https://naoyuekang-weixindev.oss-cn-chengdu.aliyuncs.com/mine/man.png\",\n" +
                 "      \"sex\": 0,\n" +

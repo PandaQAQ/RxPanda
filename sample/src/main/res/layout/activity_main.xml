@@ -45,7 +45,7 @@
         android:layout_marginTop="16dp"
         android:text="userData"
         android:textSize="14sp"
-        app:layout_constraintEnd_toStartOf="@+id/userErrorType"
+        app:layout_constraintEnd_toStartOf="@+id/mockdata"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/stringData"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,7 +53,7 @@
 
 
     <Button
-        android:id="@+id/userErrorType"
+        android:id="@+id/mockdata"
         android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:text="userErrorType"
@@ -70,7 +70,7 @@
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userErrorType">
+        app:layout_constraintTop_toBottomOf="@+id/mockdata">
 
         <TextView
             android:id="@+id/dataString"

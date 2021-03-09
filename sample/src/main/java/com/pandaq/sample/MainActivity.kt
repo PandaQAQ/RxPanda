@@ -1,5 +1,6 @@
 package com.pandaq.sample
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -16,7 +17,6 @@ import com.pandaq.sample.entities.User
 import com.pandaq.sample.entities.UserTest
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
-import okhttp3.Response
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         stringData.setOnClickListener(this)
         intData.setOnClickListener(this)
         userData.setOnClickListener(this)
-        userErrorType.setOnClickListener(this)
+        mockdata.setOnClickListener(this)
         this.javaClass.isAnonymousClass
     }
 
@@ -107,46 +107,47 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     })
             }
 
-            R.id.userErrorType -> {
-                apiService.typeError()
-                    .doOnSubscribe { t -> compositeDisposable.add(t) }
-                    .compose(RxScheduler.retrySync(10))
-                    .subscribe(object : AppCallBack<List<UserTest>>() {
-                        override fun success(data: List<UserTest>) {
-                            dataString.text = GsonUtil.gson().toJson(data)
-                            dataString.setTextColor(Color.parseColor("#000000"))
-                        }
-
-                        override fun fail(code: Long?, msg: String?) {
-                            dataString.text = "error:::$msg"
-                            dataString.setTextColor(Color.parseColor("#ff0000"))
-                        }
-
-                        override fun finish(success: Boolean) {
-
-                        }
-
-                    })
-//                RxPanda.post("https://www.baidu.com")
-//                    .mockData(Constants.MOCK_DATA)
-//                    .request(
-//                        object : AppCallBack<ApiData<List<UserTest>>>() {
-//                            override fun success(data: ApiData<List<UserTest>>) {
-//                                dataString.text = GsonUtil.gson().toJson(data)
-//                                dataString.setTextColor(Color.parseColor("#000000"))
-//                            }
+            R.id.mockdata -> {
+//                apiService.typeError()
+//                    .doOnSubscribe { t -> compositeDisposable.add(t) }
+//                    .compose(RxScheduler.retrySync(10))
+//                    .subscribe(object : AppCallBack<List<UserTest>>() {
+//                        override fun success(data: List<UserTest>) {
+//                            dataString.text = GsonUtil.gson().toJson(data)
+//                            dataString.setTextColor(Color.parseColor("#000000"))
+//                        }
 //
-//                            override fun fail(code: Long?, msg: String?) {
-//                                dataString.text = "error:::$msg"
-//                                dataString.setTextColor(Color.parseColor("#ff0000"))
-//                            }
+//                        override fun fail(code: Long?, msg: String?) {
+//                            dataString.text = "error:::$msg"
+//                            dataString.setTextColor(Color.parseColor("#ff0000"))
+//                        }
 //
-//                            override fun finish(success: Boolean) {
-//
-//                            }
+//                        override fun finish(success: Boolean) {
 //
 //                        }
-//                    )
+//
+//                    })
+                RxPanda.post("https://www.baidu.com")
+                    .mockData(Constants.MOCK_DATA)
+                    .request(
+                        object : AppCallBack<ApiData<List<UserTest>>>() {
+                            override fun success(data: ApiData<List<UserTest>>) {
+                                dataString.text = GsonUtil.gson().toJson(data)
+                                dataString.setTextColor(Color.parseColor("#000000"))
+                            }
+
+                            @SuppressLint("SetTextI18n")
+                            override fun fail(code: Long?, msg: String?) {
+                                dataString.text = "error:::$msg"
+                                dataString.setTextColor(Color.parseColor("#ff0000"))
+                            }
+
+                            override fun finish(success: Boolean) {
+
+                            }
+
+                        }
+                    )
             }
         }
     }
