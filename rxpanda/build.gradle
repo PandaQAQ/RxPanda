@@ -1,8 +1,10 @@
-apply plugin: 'com.android.library'
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+}
 
 android {
     compileSdkVersion 28
-
 
     defaultConfig {
         minSdkVersion 21
@@ -26,15 +28,27 @@ android {
     }
 
 }
+task sourceJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier "sources"
+}
 
-//publish {
-//    userOrg = 'huxinyu' //注册时候的用户名
-//    groupId = 'com.pandaq'// //compile引用时的第1部分
-//    artifactId = 'rxpanda'////发布到JCenter上的项目名字，compile引用时的第2部分项目名
-//    publishVersion = '1.0.2'//版本号 ，compile引用时的最后部分
-//    desc = 'An Android network lib, base on rxjava2,retrofit2,okhttp3'//描述，不重要
-//    website = 'https://github.com/PandaQAQ/RxPanda' //项目的GitHub网站
-//}
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                // Applies the component for the release build variant.
+                from components.release
+                // You can then customize attributes of the publication as shown below.
+                groupId = 'com.pandaq'
+                artifactId = 'rxpanda'
+                version = '1.0.3'
+                artifact(sourceJar)
+            }
+        }
+    }
+}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -50,5 +64,5 @@ dependencies {
     api "com.squareup.retrofit2:converter-gson:2.6.0"
     api "com.squareup.retrofit2:adapter-rxjava2:2.6.0"
     // gson
-    api "com.google.code.gson:gson:2.8.5"
+    api "com.google.code.gson:gson:2.8.6"
 }
