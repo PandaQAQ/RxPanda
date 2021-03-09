@@ -1,14 +1,14 @@
 package com.pandaq.rxpanda.interceptor;
 
-import io.reactivex.annotations.NonNull;
 import com.pandaq.rxpanda.callbacks.TransmitCallback;
-import com.pandaq.rxpanda.callbacks.UploadCallBack;
 import com.pandaq.rxpanda.models.ProgressUploadBody;
+
+import java.io.IOException;
+
+import io.reactivex.annotations.NonNull;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
-
-import java.io.IOException;
 
 /**
  * Created by huxinyu on 2018/6/8.

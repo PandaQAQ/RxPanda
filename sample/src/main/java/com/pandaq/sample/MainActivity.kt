@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.View
 import com.google.gson.Gson
 import com.pandaq.rxpanda.RxPanda
-import com.pandaq.rxpanda.entity.ApiData
 import com.pandaq.rxpanda.transformer.RxScheduler
 import com.pandaq.rxpanda.utils.GsonUtil
 import com.pandaq.sample.apis.ApiService
@@ -51,6 +50,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                             dataString.setTextColor(Color.parseColor("#000000"))
                         }
 
+                        @SuppressLint("SetTextI18n")
                         override fun fail(code: Long?, msg: String?) {
                             dataString.text = "error:::$msg"
                             dataString.setTextColor(Color.parseColor("#ff0000"))
@@ -73,6 +73,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                             dataString.setTextColor(Color.parseColor("#000000"))
                         }
 
+                        @SuppressLint("SetTextI18n")
                         override fun fail(code: Long?, msg: String?) {
                             dataString.text = "error:::$msg"
                             dataString.setTextColor(Color.parseColor("#ff0000"))
@@ -95,6 +96,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                             dataString.setTextColor(Color.parseColor("#000000"))
                         }
 
+                        @SuppressLint("SetTextI18n")
                         override fun fail(code: Long?, msg: String?) {
                             dataString.text = "error:::$msg"
                             dataString.setTextColor(Color.parseColor("#ff0000"))
@@ -108,7 +110,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             R.id.mockdata -> {
-//                apiService.typeError()
+//                apiService.typeError("hah")
 //                    .doOnSubscribe { t -> compositeDisposable.add(t) }
 //                    .compose(RxScheduler.retrySync(10))
 //                    .subscribe(object : AppCallBack<List<UserTest>>() {
