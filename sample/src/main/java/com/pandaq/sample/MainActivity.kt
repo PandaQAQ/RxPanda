@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import com.google.gson.Gson
 import com.pandaq.rxpanda.RxPanda
+import com.pandaq.rxpanda.entity.ApiData
 import com.pandaq.rxpanda.transformer.RxScheduler
 import com.pandaq.rxpanda.utils.GsonUtil
 import com.pandaq.sample.apis.ApiService
