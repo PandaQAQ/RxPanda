@@ -35,6 +35,8 @@ public class DefaultTypeAdapters {
                 // 返回配置的默认值
                 if (HttpGlobalConfig.getInstance().getDefValues() != null) {
                     return HttpGlobalConfig.getInstance().getDefValues().defBoolean;
+                } else {
+                    return false;
                 }
             } else if (peek == JsonToken.STRING) {
                 // support strings for compatibility with GSON 1.7
@@ -48,6 +50,8 @@ public class DefaultTypeAdapters {
             if (value == null) {
                 if (HttpGlobalConfig.getInstance().getDefValues() != null) {
                     value = HttpGlobalConfig.getInstance().getDefValues().defBoolean;
+                } else {
+                    value = false;
                 }
             }
             out.value(value);
@@ -62,6 +66,8 @@ public class DefaultTypeAdapters {
                 // 返回配置的默认值
                 if (HttpGlobalConfig.getInstance().getDefValues() != null) {
                     return HttpGlobalConfig.getInstance().getDefValues().defBoolean;
+                } else {
+                    return false;
                 }
             }
             if (in.peek() == JsonToken.BOOLEAN) {
@@ -75,6 +81,8 @@ public class DefaultTypeAdapters {
             if (value == null) {
                 if (HttpGlobalConfig.getInstance().getDefValues() != null) {
                     value = HttpGlobalConfig.getInstance().getDefValues().defBoolean;
+                } else {
+                    value = false;
                 }
             }
             out.value(value);
@@ -91,6 +99,8 @@ public class DefaultTypeAdapters {
                     in.nextNull();
                     if (HttpGlobalConfig.getInstance().getDefValues() != null) {
                         return HttpGlobalConfig.getInstance().getDefValues().defInt;
+                    } else {
+                        return 0;
                     }
                 case NUMBER:
                     return in.nextInt();
@@ -99,6 +109,8 @@ public class DefaultTypeAdapters {
                     if (TextUtils.isEmpty(str)) {
                         if (HttpGlobalConfig.getInstance().getDefValues() != null) {
                             return HttpGlobalConfig.getInstance().getDefValues().defInt;
+                        } else {
+                            return 0;
                         }
                     }
                     return Integer.valueOf(str);
@@ -112,6 +124,8 @@ public class DefaultTypeAdapters {
             if (value == null) {
                 if (HttpGlobalConfig.getInstance().getDefValues() != null) {
                     value = HttpGlobalConfig.getInstance().getDefValues().defInt;
+                } else {
+                    value = 0;
                 }
             }
             out.value(value);
@@ -127,6 +141,8 @@ public class DefaultTypeAdapters {
                     in.nextNull();
                     if (HttpGlobalConfig.getInstance().getDefValues() != null) {
                         return HttpGlobalConfig.getInstance().getDefValues().defLong;
+                    } else {
+                        return 0L;
                     }
                 case NUMBER:
                     return in.nextLong();
@@ -135,6 +151,8 @@ public class DefaultTypeAdapters {
                     if (TextUtils.isEmpty(str)) {
                         if (HttpGlobalConfig.getInstance().getDefValues() != null) {
                             return HttpGlobalConfig.getInstance().getDefValues().defLong;
+                        } else {
+                            return 0L;
                         }
                     }
                     return Long.valueOf(str);
@@ -148,6 +166,8 @@ public class DefaultTypeAdapters {
             if (value == null) {
                 if (HttpGlobalConfig.getInstance().getDefValues() != null) {
                     value = HttpGlobalConfig.getInstance().getDefValues().defLong;
+                } else {
+                    value = 0L;
                 }
             }
             out.value(value);
@@ -163,6 +183,8 @@ public class DefaultTypeAdapters {
                     in.nextNull();
                     if (HttpGlobalConfig.getInstance().getDefValues() != null) {
                         return HttpGlobalConfig.getInstance().getDefValues().defFloat;
+                    } else {
+                        return 0.0f;
                     }
                 case NUMBER:
                     return (float) in.nextDouble();
@@ -171,6 +193,8 @@ public class DefaultTypeAdapters {
                     if (TextUtils.isEmpty(str)) {
                         if (HttpGlobalConfig.getInstance().getDefValues() != null) {
                             return HttpGlobalConfig.getInstance().getDefValues().defFloat;
+                        } else {
+                            return 0.0f;
                         }
                     }
                     return Float.valueOf(str);
@@ -184,6 +208,8 @@ public class DefaultTypeAdapters {
             if (value == null) {
                 if (HttpGlobalConfig.getInstance().getDefValues() != null) {
                     value = HttpGlobalConfig.getInstance().getDefValues().defFloat;
+                } else {
+                    value = 0.0f;
                 }
             }
             out.value(value);
@@ -199,6 +225,8 @@ public class DefaultTypeAdapters {
                     in.nextNull();
                     if (HttpGlobalConfig.getInstance().getDefValues() != null) {
                         return HttpGlobalConfig.getInstance().getDefValues().defDouble;
+                    } else {
+                        return 0.0;
                     }
                 case NUMBER:
                     return in.nextDouble();
@@ -207,6 +235,8 @@ public class DefaultTypeAdapters {
                     if (TextUtils.isEmpty(str)) {
                         if (HttpGlobalConfig.getInstance().getDefValues() != null) {
                             return HttpGlobalConfig.getInstance().getDefValues().defDouble;
+                        } else {
+                            return 0.0;
                         }
                     }
                     return Double.valueOf(str);
@@ -220,6 +250,8 @@ public class DefaultTypeAdapters {
             if (value == null) {
                 if (HttpGlobalConfig.getInstance().getDefValues() != null) {
                     value = HttpGlobalConfig.getInstance().getDefValues().defDouble;
+                } else {
+                    value = 0.0;
                 }
             }
             out.value(value);
@@ -235,6 +267,8 @@ public class DefaultTypeAdapters {
                     in.nextNull();
                     if (HttpGlobalConfig.getInstance().getDefValues() != null) {
                         return HttpGlobalConfig.getInstance().getDefValues().defDouble;
+                    } else {
+                        return 0;
                     }
                 case NUMBER:
                 case STRING:
@@ -242,6 +276,8 @@ public class DefaultTypeAdapters {
                     if (TextUtils.isEmpty(str)) {
                         if (HttpGlobalConfig.getInstance().getDefValues() != null) {
                             return HttpGlobalConfig.getInstance().getDefValues().defDouble;
+                        } else {
+                            return 0;
                         }
                     }
                     return new LazilyParsedNumber(str);
@@ -255,6 +291,8 @@ public class DefaultTypeAdapters {
             if (value == null) {
                 if (HttpGlobalConfig.getInstance().getDefValues() != null) {
                     value = HttpGlobalConfig.getInstance().getDefValues().defDouble;
+                } else {
+                    value = 0;
                 }
             }
             out.value(value);
@@ -269,6 +307,8 @@ public class DefaultTypeAdapters {
                 in.nextNull();
                 if (HttpGlobalConfig.getInstance().getDefValues() != null) {
                     return HttpGlobalConfig.getInstance().getDefValues().defString;
+                } else {
+                    return null;
                 }
             }
             if (peek == JsonToken.NUMBER) {
@@ -308,6 +348,8 @@ public class DefaultTypeAdapters {
                 in.nextNull();
                 if (HttpGlobalConfig.getInstance().getDefValues() != null) {
                     return new BigDecimal(HttpGlobalConfig.getInstance().getDefValues().defInt);
+                } else {
+                    return new BigDecimal(0);
                 }
             }
             try {
@@ -322,6 +364,9 @@ public class DefaultTypeAdapters {
             if (value == null) {
                 if (HttpGlobalConfig.getInstance().getDefValues() != null) {
                     value = new BigDecimal(HttpGlobalConfig.getInstance().getDefValues().defInt);
+                } else {
+                    value = new BigDecimal(0);
+
                 }
             }
             out.value(value);
