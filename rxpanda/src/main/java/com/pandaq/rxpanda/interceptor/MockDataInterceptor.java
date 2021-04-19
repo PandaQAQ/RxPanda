@@ -24,10 +24,10 @@ import retrofit2.Invocation;
 public class MockDataInterceptor implements Interceptor {
 
     // mockResponse 是为直接使用 post/get 方法提供的.与注解不可能同时存在
-    private final String localMockJson;
+    private  String localMockJson;
 
-    public MockDataInterceptor(String mockJson) {
-        this.localMockJson = mockJson;
+    public void setLocalMockJson(String localMockJson) {
+        this.localMockJson = localMockJson;
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.pandaq.rxpanda.converter.PandaConvertFactory;
 import com.pandaq.rxpanda.entity.ApiData;
 import com.pandaq.rxpanda.entity.IApiData;
 import com.pandaq.rxpanda.entity.NullDataValue;
+import com.pandaq.rxpanda.interceptor.MockDataInterceptor;
 import com.pandaq.rxpanda.log.HttpLoggingInterceptor;
 import com.pandaq.rxpanda.ssl.SSLManager;
 
@@ -56,6 +57,7 @@ public class HttpGlobalConfig {
     private OkHttpClient.Builder clientBuilder = getDefaultClientBuilder();
     // 全局的 Retrofit对象
     private final Retrofit.Builder retrofitBuilder = new Retrofit.Builder();
+    private MockDataInterceptor mMockDataInterceptor;
 
     private long retryDelayMillis;//请求失败重试间隔时间
     private int retryCount;//请求失败重试次数
@@ -76,6 +78,13 @@ public class HttpGlobalConfig {
             }
         }
         return sHttpGlobalConfig;
+    }
+
+    public MockDataInterceptor getMockDataInterceptor() {
+        if (mMockDataInterceptor==null){
+            mMockDataInterceptor = new MockDataInterceptor();
+        }
+        return mMockDataInterceptor;
     }
 
     /**

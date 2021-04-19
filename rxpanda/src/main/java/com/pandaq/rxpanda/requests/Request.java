@@ -47,7 +47,7 @@ public class Request<T extends Request<T>> {
     /**
      * 获取子类指定的模拟数据，默认为空
      */
-    protected String getMockJson(){
+    protected String getMockJson() {
         return null;
     }
 
@@ -170,15 +170,20 @@ public class Request<T extends Request<T>> {
         getGlobalConfig().getClientBuilder().writeTimeout(getGlobalConfig().getWriteTimeout(), TimeUnit.MILLISECONDS);
         // 添加全局的拦截器
         for (Interceptor interceptor : getGlobalConfig().getInterceptors()) {
-            getGlobalConfig().getClientBuilder().addInterceptor(interceptor);
+            if (!getGlobalConfig().getClientBuilder().interceptors().contains(interceptor)) {
+                getGlobalConfig().getClientBuilder().addInterceptor(interceptor);
+            }
         }
         for (Interceptor interceptor : getGlobalConfig().getNetInterceptors()) {
-            getGlobalConfig().getClientBuilder().addNetworkInterceptor(interceptor);
+            if (!getGlobalConfig().getClientBuilder().networkInterceptors().contains(interceptor)) {
+                getGlobalConfig().getClientBuilder().addNetworkInterceptor(interceptor);
+            }
         }
         getGlobalConfig().getClientBuilder().retryOnConnectionFailure(true);
     }
 
     /**
+     * å
      * 注入本地配置参数
      */
     protected void injectLocalParams() {
@@ -196,13 +201,17 @@ public class Request<T extends Request<T>> {
         // 添加请求拦截器
         if (!interceptors.isEmpty()) {
             for (Interceptor interceptor : interceptors) {
-                getGlobalConfig().getClientBuilder().addInterceptor(interceptor);
+                if (!getGlobalConfig().getClientBuilder().interceptors().contains(interceptor)) {
+                    getGlobalConfig().getClientBuilder().addInterceptor(interceptor);
+                }
             }
         }
         // 添加请求网络拦截器
         if (!networkInterceptors.isEmpty()) {
             for (Interceptor interceptor : networkInterceptors) {
-                getGlobalConfig().getClientBuilder().addInterceptor(interceptor);
+                if (!getGlobalConfig().getClientBuilder().networkInterceptors().contains(interceptor)) {
+                    getGlobalConfig().getClientBuilder().addInterceptor(interceptor);
+                }
             }
         }
         //设置局部超时时间和重试次数
@@ -266,17 +275,23 @@ public class Request<T extends Request<T>> {
         }
         // 添加日志拦截器
         if (getGlobalConfig().getLoggingInterceptor() != null) {
-            if (!getGlobalConfig().getClientBuilder().networkInterceptors().contains(RxPanda.globalConfig().getLoggingInterceptor())) {
-                if (RxPanda.globalConfig().getLoggingInterceptor().isNetInterceptor()) {
+            if (RxPanda.globalConfig().getLoggingInterceptor().isNetInterceptor()) {
+                if (!getGlobalConfig().getClientBuilder().networkInterceptors().contains(RxPanda.globalConfig().getLoggingInterceptor())) {
                     getGlobalConfig().getClientBuilder().addNetworkInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
-                } else {
+                }
+            } else {
+                if (!getGlobalConfig().getClientBuilder().interceptors().contains(RxPanda.globalConfig().getLoggingInterceptor())) {
                     getGlobalConfig().getClientBuilder().addInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
                 }
             }
         }
         // 添加调试阶段的模拟数据拦截器
         if (getGlobalConfig().isDebug()) {
-            getGlobalConfig().getClientBuilder().addNetworkInterceptor(new MockDataInterceptor(getMockJson()));
+            MockDataInterceptor dataInterceptor = getGlobalConfig().getMockDataInterceptor();
+            dataInterceptor.setLocalMockJson(getMockJson());
+            if (!getGlobalConfig().getClientBuilder().networkInterceptors().contains(dataInterceptor)) {
+                getGlobalConfig().getClientBuilder().addNetworkInterceptor(dataInterceptor);
+            }
         }
         return retrofitBuilder.client(getGlobalConfig().getClientBuilder().build()).build();
     }
