@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.pandaq.rxpanda.R;
 import com.pandaq.rxpanda.RxPanda;
+import com.pandaq.rxpanda.interceptor.MockDataInterceptor;
 import com.pandaq.rxpanda.interceptor.ParamsInterceptor;
 import com.pandaq.rxpanda.requests.Request;
 import com.pandaq.rxpanda.ssl.SSLManager;
@@ -26,7 +27,6 @@ public class RetrofitRequest extends Request<RetrofitRequest> {
     // local basUrl
     private String baseUrl = "";
     protected Map<String, String> localParams = new LinkedHashMap<>();//请求参数
-    private ParamsInterceptor paramsInterceptor;
 
     public RetrofitRequest() {
     }
@@ -59,16 +59,24 @@ public class RetrofitRequest extends Request<RetrofitRequest> {
             getGlobalConfig().getClientBuilder().hostnameVerifier(new SSLManager.SafeHostnameVerifier(baseUrl));
             // 添加日志拦截器
             if (getGlobalConfig().getLoggingInterceptor() != null) {
-                if (!getGlobalConfig().getClientBuilder().networkInterceptors().contains(RxPanda.globalConfig().getLoggingInterceptor())) {
-                    if (RxPanda.globalConfig().getLoggingInterceptor().isNetInterceptor()) {
+                if (RxPanda.globalConfig().getLoggingInterceptor().isNetInterceptor()) {
+                    if (!getGlobalConfig().getClientBuilder().networkInterceptors().contains(RxPanda.globalConfig().getLoggingInterceptor())) {
                         getGlobalConfig().getClientBuilder().addNetworkInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
-                    } else {
+                    }
+                } else {
+                    if (!getGlobalConfig().getClientBuilder().interceptors().contains(RxPanda.globalConfig().getLoggingInterceptor())) {
                         getGlobalConfig().getClientBuilder().addInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
                     }
                 }
             }
-            // 添加模拟数据
-            newRetrofitBuilder.client(getGlobalConfig().getClientBuilder().build());
+            // 添加调试阶段的模拟数据拦截器
+            if (getGlobalConfig().isDebug()) {
+                MockDataInterceptor dataInterceptor = getGlobalConfig().getMockDataInterceptor();
+                dataInterceptor.setLocalMockJson(getMockJson());
+                if (!getGlobalConfig().getClientBuilder().networkInterceptors().contains(dataInterceptor)) {
+                    getGlobalConfig().getClientBuilder().addNetworkInterceptor(dataInterceptor);
+                }
+            }
             retrofit = newRetrofitBuilder.build();
         } else { // 使用默认配置的对象
             retrofit = getCommonRetrofit();
@@ -83,13 +91,15 @@ public class RetrofitRequest extends Request<RetrofitRequest> {
         if (getGlobalConfig().getGlobalParams() != null) {
             localParams.putAll(getGlobalConfig().getGlobalParams());
         }
-        if (paramsInterceptor == null) {
-            paramsInterceptor = new ParamsInterceptor(localParams);
-        } else {
+
+        if (!localParams.isEmpty()){
+            ParamsInterceptor paramsInterceptor = getGlobalConfig().getParamsInterceptor();
             paramsInterceptor.setParamsMap(localParams);
+            if (!getGlobalConfig().getClientBuilder().networkInterceptors().contains(paramsInterceptor)) {
+                // 将参数添加到请求中
+                getGlobalConfig().getClientBuilder().addNetworkInterceptor(paramsInterceptor);
+            }
         }
-        // 将参数添加到请求中
-        getGlobalConfig().getClientBuilder().addNetworkInterceptor(paramsInterceptor);
     }
 
     /**

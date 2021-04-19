@@ -4,6 +4,7 @@ import io.reactivex.annotations.NonNull;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +19,7 @@ public class ParamsInterceptor implements Interceptor {
     private static final String POST = "POST";
     private static final String GET = "GET";
 
-    private Map<String, String> paramsMap;
+    private Map<String, String> paramsMap = new HashMap<>();
 
     public Map<String, String> getParamsMap() {
         return paramsMap;
@@ -27,14 +28,6 @@ public class ParamsInterceptor implements Interceptor {
     public void setParamsMap(Map<String, String> paramsMap) {
         this.paramsMap = paramsMap;
     }
-
-    /**
-     * 构造器
-     */
-    public ParamsInterceptor(@NonNull Map<String, String> paramsMap) {
-        this.paramsMap = paramsMap;
-    }
-
 
     /**
      * only support post and get request
