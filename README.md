@@ -4,9 +4,27 @@
 # 项目地址
 [RxPanda](https://github.com/PandaQAQ/RxPanda)，欢迎使用和 star，提出的问题我会及时回复并处理。
 # 接入方式
+## <= 1.0.3
 ```grovy
 dependencies {
-    "com.pandaq:rxpanda:1.0.4"
+    "com.pandaq:rxpanda:version"
+}
+```
+## >= 1.0.4 
+- 1
+```groovy
+// project 的 build.gradle 中配置
+allprojects {
+    repositories {
+        // your other properties
+        maven { url 'https://gitee.com/monkeies/maven/raw/master' }
+    }
+}
+```
+- 2
+```grovy
+dependencies {
+    "com.pandaq:rxpanda:version"
 }
 ```
 # RxPanda
@@ -24,6 +42,7 @@ dependencies {
 > - 10、支持开发阶段单接口返回模拟json数据（适用于脱离后端接口开发，提高开发效率）
 
 # Release Log
+> - 1.0.4: 修复拦截器被重复添加的 bug
 > - 1.0.3: http 请求方式增加 mock 数据支持
 > - 1.0.2: a、修复 int、float、double 类型数据空字符串不能补全的问题；b、新增注解`@MockJson`debug 模式下替换模拟数据功能
 > - 1.0.0: a、修复全局设置请求超时时间无效，会被 CONFIG 的默认超时时间覆盖问题；b、默认超时时间与 okhttp 保持一致设置为 10s
