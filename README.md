@@ -24,7 +24,7 @@ allprojects {
 - 2
 ```grovy
 dependencies {
-    "com.pandaq:rxpanda:version"
+   implementation "com.pandaq:rxpanda:version"
 }
 ```
 # RxPanda
