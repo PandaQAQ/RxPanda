@@ -1,6 +1,6 @@
 plugins {
     id 'com.android.library'
-    id 'maven-publish'
+    id 'maven'
 }
 
 android {
@@ -33,27 +33,21 @@ task sourceJar(type: Jar) {
     classifier "sources"
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            // Creates a Maven publication called "release".
-            release(MavenPublication) {
-                // Applies the component for the release build variant.
-                from components.release
-                // You can then customize attributes of the publication as shown below.
-                groupId = 'com.pandaq'
-                artifactId = 'rxpanda'
-                version = '1.0.4'
-                artifact(sourceJar)
-            }
-        }
+uploadArchives {
+    repositories.mavenDeployer {
+        // 本地仓库路径
+        repository(url: uri('/Users/pandaq/Desktop/Maven'))
+        // 唯一标识
+        pom.groupId = 'com.pandaq'
+        // 模块名称
+        pom.artifactId = 'rxpanda'
+        // 版本号
+        pom.version = '1.0.4'
     }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     // rxJava 2
