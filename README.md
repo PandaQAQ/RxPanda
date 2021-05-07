@@ -7,7 +7,7 @@
 ## <= 1.0.3
 ```grovy
 dependencies {
-    "com.pandaq:rxpanda:version"
+    implementation "com.pandaq:rxpanda:version"
 }
 ```
 ## >= 1.0.4 
