@@ -37,7 +37,7 @@ class MyApplication : Application() {
                     .setLevel(HttpLoggingInterceptor.Level.BODY)
             )
             .addGlobalHeader("test", "testHeader")
-            .apiSuccessCode(0L)
+            .apiSuccessCode("0")
             .debug(BuildConfig.DEBUG)
     }
 }

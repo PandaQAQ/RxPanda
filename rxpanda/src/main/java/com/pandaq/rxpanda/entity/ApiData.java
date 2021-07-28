@@ -22,7 +22,7 @@ public class ApiData<T> implements IApiData<T> {
     /**
      * 接口请求返回码
      */
-    private Long code;
+    private String code;
     /**
      * 消息，可为空
      */
@@ -32,11 +32,11 @@ public class ApiData<T> implements IApiData<T> {
      */
     private T data;
 
-    public Long getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(long code) {
+    public void setCode(String code) {
         this.code = code;
     }
 
@@ -63,6 +63,6 @@ public class ApiData<T> implements IApiData<T> {
      */
     public boolean isSuccess() {
         if (this.code == null) return false;
-        return this.code.longValue() == RxPanda.globalConfig().getApiSuccessCode().longValue();
+        return RxPanda.globalConfig().getApiSuccessCode().equals(this.code);
     }
 }

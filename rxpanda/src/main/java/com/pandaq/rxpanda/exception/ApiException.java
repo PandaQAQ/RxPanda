@@ -20,24 +20,24 @@ import retrofit2.HttpException;
  */
 public class ApiException extends IOException {
 
-    private final long code;
+    private final String code;
     private String message;
     private String data;
     private ExceptionType exceptionType = ExceptionType.UNKNOWN;
 
-    public ApiException(Throwable throwable, int code) {
+    public ApiException(Throwable throwable, String code) {
         super(throwable);
         this.code = code;
         this.message = throwable.getMessage();
     }
 
-    public ApiException(long code) {
+    public ApiException(String code) {
         this.code = code;
         this.data = "";
         this.message = "";
     }
 
-    public ApiException(long code, String msg, String data) {
+    public ApiException(String code, String msg, String data) {
         this.code = code;
         this.data = data;
         this.message = msg;
@@ -51,7 +51,7 @@ public class ApiException extends IOException {
         this.exceptionType = exceptionType;
     }
 
-    public long getCode() {
+    public String getCode() {
         return code;
     }
 
@@ -81,7 +81,7 @@ public class ApiException extends IOException {
         ApiException ex;
         if (e instanceof HttpException) {
             HttpException httpException = (HttpException) e;
-            ex = new ApiException(e, httpException.code());
+            ex = new ApiException(e, String.valueOf(httpException.code()));
             switch (httpException.code()) {
                 case HttpCode.HTTP.CAN_NOT_RECEIVE:
                 case HttpCode.HTTP.CREATED:

@@ -8,7 +8,7 @@ package com.pandaq.rxpanda.entity;
  */
 public interface IApiData<T> {
 
-    Long getCode();
+    String getCode();
 
     String getMsg();
 

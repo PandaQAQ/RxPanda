@@ -37,7 +37,7 @@ public class CastFunc<T> implements Function<ResponseBody, T> {
             } else if (String.class.equals(type)) {
                 return (T) json;
             } else {
-                ApiException exception = new ApiException(-1, "data parse error", json);
+                ApiException exception = new ApiException("-1", "data parse error", json);
                 exception.setExceptionType(ExceptionType.JSON_PARSE);
                 throw exception;
             }

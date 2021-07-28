@@ -48,7 +48,7 @@ public class HttpGlobalConfig {
     private String baseUrl;//基础域名
     private static HttpGlobalConfig sHttpGlobalConfig;
     private boolean isDebug = false;
-    private Long apiSuccessCode = -1L;
+    private String apiSuccessCode = "0";
     // 不验证 host 允许所有的 host
     private boolean trustAll = false;
     // Gson 解析补空默认值
@@ -434,11 +434,11 @@ public class HttpGlobalConfig {
         return apiDataClazz;
     }
 
-    public Long getApiSuccessCode() {
+    public String getApiSuccessCode() {
         return apiSuccessCode;
     }
 
-    public HttpGlobalConfig apiSuccessCode(Long apiSuccessCode) {
+    public HttpGlobalConfig apiSuccessCode(String apiSuccessCode) {
         this.apiSuccessCode = apiSuccessCode;
         return this;
     }

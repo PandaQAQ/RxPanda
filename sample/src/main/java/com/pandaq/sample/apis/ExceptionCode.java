@@ -7,6 +7,6 @@ package com.pandaq.sample.apis;
  */
 public class ExceptionCode {
 
-    public static Long TOKEN_INVALID = 10000001L;
+    public static String TOKEN_INVALID = "10000001L";
 
 }

@@ -42,6 +42,7 @@ dependencies {
 > - 10、支持开发阶段单接口返回模拟json数据（适用于脱离后端接口开发，提高开发效率）
 
 # Release Log
+> - 1.1.0: ApiData code 类型由 `long` 更改为 `String` 类型，以兼容后端 String 类型 code 码
 > - 1.0.4: 修复拦截器被重复添加的 bug
 > - 1.0.3: http 请求方式增加 mock 数据支持
 > - 1.0.2: a、修复 int、float、double 类型数据空字符串不能补全的问题；b、新增注解`@MockJson`debug 模式下替换模拟数据功能
@@ -74,7 +75,7 @@ dependencies {
                 .baseUrl(ApiService.BASE_URL) //配置基础域名
                 .netInterceptor(new HttpLoggingInterceptor()
                         .setLevel(HttpLoggingInterceptor.Level.BODY)) //添加日志拦截器
-                .apiSuccessCode(100L) // 数据壳解析时接口成功的状态码
+                .apiSuccessCode("100L") // 数据壳解析时接口成功的状态码
                 .hosts("http://192.168.0.107:8080") // 兼容另一个 host（默认只允许基础域名接口访问）
                 .connectTimeout(10000) // 连接超时时间（ms）
                 .readTimeout(10000) // 读取超时时间（ms）

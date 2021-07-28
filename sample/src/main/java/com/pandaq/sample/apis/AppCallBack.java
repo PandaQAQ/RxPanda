@@ -37,7 +37,7 @@ public abstract class AppCallBack<T> extends ApiObserver<T> {
 
     protected abstract void success(@NonNull T data);
 
-    protected abstract void fail(Long code, String msg);
+    protected abstract void fail(String code, String msg);
 
     protected abstract void finish(boolean success);
 }
