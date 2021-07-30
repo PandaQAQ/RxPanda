@@ -42,6 +42,7 @@ dependencies {
 > - 10、支持开发阶段单接口返回模拟json数据（适用于脱离后端接口开发，提高开发效率）
 
 # Release Log
+> - 1.1.1: 日志打印优化
 > - 1.1.0: ApiData code 类型由 `long` 更改为 `String` 类型，以兼容后端 String 类型 code 码
 > - 1.0.4: 修复拦截器被重复添加的 bug
 > - 1.0.3: http 请求方式增加 mock 数据支持
