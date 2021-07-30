@@ -45,14 +45,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 apiService.stringData()
                     .doOnSubscribe { t -> compositeDisposable.add(t) }
                     .compose(RxScheduler.sync())
-                    .subscribe(object : AppCallBack<String>() {
-                        override fun success(data: String) {
-                            dataString.text = data
+                    .subscribe(object : AppCallBack<Any>() {
+                        override fun success(data: Any) {
+//                            dataString.text = data
                             dataString.setTextColor(Color.parseColor("#000000"))
                         }
 
                         @SuppressLint("SetTextI18n")
-                        override fun fail(code: Long?, msg: String?) {
+                        override fun fail(code: String?, msg: String?) {
                             dataString.text = "error:::$msg"
                             dataString.setTextColor(Color.parseColor("#ff0000"))
                         }
@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                         }
 
                         @SuppressLint("SetTextI18n")
-                        override fun fail(code: Long?, msg: String?) {
+                        override fun fail(code: String?, msg: String?) {
                             dataString.text = "error:::$msg"
                             dataString.setTextColor(Color.parseColor("#ff0000"))
                         }
@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                         }
 
                         @SuppressLint("SetTextI18n")
-                        override fun fail(code: Long?, msg: String?) {
+                        override fun fail(code: String?, msg: String?) {
                             dataString.text = "error:::$msg"
                             dataString.setTextColor(Color.parseColor("#ff0000"))
                         }
@@ -140,7 +140,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                             }
 
                             @SuppressLint("SetTextI18n")
-                            override fun fail(code: Long?, msg: String?) {
+                            override fun fail(code: String?, msg: String?) {
                                 dataString.text = "error:::$msg"
                                 dataString.setTextColor(Color.parseColor("#ff0000"))
                             }

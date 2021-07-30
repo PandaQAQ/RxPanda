@@ -210,17 +210,8 @@ public final class HttpLoggingInterceptor implements Interceptor {
             }
         }
         long startNs = System.nanoTime();
-        Response response;
-        try {
-            response = chain.proceed(request);
-        } catch (Exception e) {
-            entity.addLog("║——————————————————ERROR INFO——————————————————\"");
-            entity.addLog("ErrorMessage:===> " + e.getMessage());
-            LogPrinter.printLog(entity);
-            throw e;
-        }
+        Response response=chain.proceed(request);
         long tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs);
-
         ResponseBody responseBody = response.body();
         long contentLength = 0;
         if (responseBody != null) {
@@ -260,18 +251,11 @@ public final class HttpLoggingInterceptor implements Interceptor {
                 if ("gzip".equalsIgnoreCase(headers.get("Content-Encoding"))) {
                     gzippedLength = buffer.size();
                     GzipSource gzippedResponseBody = null;
-                    try {
-                        gzippedResponseBody = new GzipSource(buffer.clone());
-                        buffer = new Buffer();
-                        buffer.writeAll(gzippedResponseBody);
-                    } catch (Exception e) {
-                        entity.addLog("Error: " + e.getMessage());
-                    } finally {
-                        if (gzippedResponseBody != null) {
-                            gzippedResponseBody.close();
-                            buffer.close();
-                        }
-                    }
+                    gzippedResponseBody = new GzipSource(buffer.clone());
+                    buffer = new Buffer();
+                    buffer.writeAll(gzippedResponseBody);
+                    gzippedResponseBody.close();
+                    buffer.close();
                 }
 
                 Charset charset = UTF8;

@@ -18,9 +18,9 @@ import retrofit2.http.Query;
  */
 public interface ApiService {
 
-    @MockJson(json = Constants.MOCK_STRING)
+//    @MockJson(json = Constants.MOCK_STRING)
     @GET("https://www.baidu.com")
-    Observable<String> stringData();
+    Observable<Object> stringData();
 
     // 与 ApiData 结构完全不一样使用 RealEntity 标准不做脱壳处理，返回 ZhihuData 就解析为 ZhihuData
     @MockJson(json = Constants.MOCK_USER)
