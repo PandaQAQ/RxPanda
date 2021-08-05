@@ -20,7 +20,7 @@ public class HeaderInterceptor implements Interceptor {
     /**
      * 设置的 header
      */
-    private Map<String, String> headers;
+    private final Map<String, String> headers;
 
     public HeaderInterceptor(@NonNull Map<String, String> headers) {
         this.headers = headers;
