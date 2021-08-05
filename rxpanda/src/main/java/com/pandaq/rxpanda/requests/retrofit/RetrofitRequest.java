@@ -2,13 +2,11 @@ package com.pandaq.rxpanda.requests.retrofit;
 
 import android.text.TextUtils;
 
-import com.pandaq.rxpanda.R;
 import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.interceptor.MockDataInterceptor;
 import com.pandaq.rxpanda.interceptor.ParamsInterceptor;
 import com.pandaq.rxpanda.requests.Request;
 import com.pandaq.rxpanda.ssl.SSLManager;
-import com.pandaq.rxpanda.utils.CastUtils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -92,7 +90,7 @@ public class RetrofitRequest extends Request<RetrofitRequest> {
             localParams.putAll(getGlobalConfig().getGlobalParams());
         }
 
-        if (!localParams.isEmpty()){
+        if (!localParams.isEmpty()) {
             ParamsInterceptor paramsInterceptor = getGlobalConfig().getParamsInterceptor();
             paramsInterceptor.setParamsMap(localParams);
             if (!getGlobalConfig().getClientBuilder().networkInterceptors().contains(paramsInterceptor)) {
@@ -109,11 +107,11 @@ public class RetrofitRequest extends Request<RetrofitRequest> {
      * @param paramValue
      * @return
      */
-    public R addParam(String paramKey, String paramValue) {
+    public RetrofitRequest addParam(String paramKey, String paramValue) {
         if (paramKey != null && paramValue != null) {
             this.localParams.put(paramKey, paramValue);
         }
-        return CastUtils.cast(this);
+        return this;
     }
 
     /**
@@ -122,11 +120,11 @@ public class RetrofitRequest extends Request<RetrofitRequest> {
      * @param params
      * @return
      */
-    public R addParams(Map<String, String> params) {
+    public RetrofitRequest addParams(Map<String, String> params) {
         if (params != null) {
             this.localParams.putAll(params);
         }
-        return CastUtils.cast(this);
+        return this;
     }
 
     /**
@@ -135,11 +133,11 @@ public class RetrofitRequest extends Request<RetrofitRequest> {
      * @param paramKey
      * @return
      */
-    public R removeParam(String paramKey) {
+    public RetrofitRequest removeParam(String paramKey) {
         if (paramKey != null) {
             this.localParams.remove(paramKey);
         }
-        return CastUtils.cast(this);
+        return this;
     }
 
     /**
@@ -148,10 +146,10 @@ public class RetrofitRequest extends Request<RetrofitRequest> {
      * @param params
      * @return
      */
-    public R params(Map<String, String> params) {
+    public RetrofitRequest params(Map<String, String> params) {
         if (params != null) {
             this.localParams = params;
         }
-        return CastUtils.cast(this);
+        return this;
     }
 }
