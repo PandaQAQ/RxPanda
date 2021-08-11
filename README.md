@@ -42,6 +42,7 @@ dependencies {
 > - 10、支持开发阶段单接口返回模拟json数据（适用于脱离后端接口开发，提高开发效率）
 
 # Release Log
+> - 1.1.4  优化下载进度日志打印
 > - 1.1.3  RetrofitRequest Bug 修复，修复初始化接口请求对象时配置局部参数和header失效问题
 > - 1.1.2: 日志打印优化
 > - 1.1.0: ApiData code 类型由 `long` 更改为 `String` 类型，以兼容后端 String 类型 code 码

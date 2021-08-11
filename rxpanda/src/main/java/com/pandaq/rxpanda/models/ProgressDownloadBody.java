@@ -3,12 +3,17 @@ package com.pandaq.rxpanda.models;
 
 import com.pandaq.rxpanda.callbacks.TransmitCallback;
 import com.pandaq.rxpanda.utils.ThreadUtils;
+
+import java.io.IOException;
+
 import io.reactivex.annotations.NonNull;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
-import okio.*;
-
-import java.io.IOException;
+import okio.Buffer;
+import okio.BufferedSource;
+import okio.ForwardingSource;
+import okio.Okio;
+import okio.Source;
 
 /**
  * Created by huxinyu on 2018/6/8.
@@ -23,6 +28,8 @@ public class ProgressDownloadBody extends ResponseBody {
     private final TransmitCallback mCallback;
     //包装完成的BufferedSource
     private BufferedSource bufferedSource;
+    //记录当前的Progress
+    private int currentProgress = 0;
 
     /**
      * 构造函数，赋值
@@ -96,7 +103,11 @@ public class ProgressDownloadBody extends ResponseBody {
 
     private void sendStatus(long totalBytesRead) {
         if (mCallback != null) {
-            mCallback.inProgress((int) ((totalBytesRead * 1f / contentLength()) * 100));
+            int progress = (int) ((totalBytesRead * 1f / contentLength()) * 100);
+            if (currentProgress != progress) {
+                currentProgress = progress;
+                mCallback.inProgress(progress);
+            }
         }
     }
 }
