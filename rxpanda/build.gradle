@@ -42,7 +42,7 @@ uploadArchives {
         // 模块名称
         pom.artifactId = 'rxpanda'
         // 版本号
-        pom.version = '1.1.5'
+        pom.version = '1.1.6'
     }
 }
 

@@ -3,13 +3,15 @@ package com.pandaq.rxpanda.callbacks;
 import com.pandaq.rxpanda.HttpCode;
 import com.pandaq.rxpanda.exception.ApiException;
 import com.pandaq.rxpanda.utils.ThreadUtils;
-import io.reactivex.observers.DisposableObserver;
-import okhttp3.ResponseBody;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import io.reactivex.annotations.NonNull;
+import io.reactivex.observers.DisposableObserver;
+import okhttp3.ResponseBody;
 
 /**
  * Created by huxinyu on 2019/7/11.
@@ -21,13 +23,23 @@ public abstract class DownloadCallBack extends DisposableObserver<ResponseBody> 
     private File targetFile;
     private boolean success = true;
 
+    private final boolean autoBackMainThread;
+
+    public DownloadCallBack() {
+        this.autoBackMainThread = true;
+    }
+
+    public DownloadCallBack(boolean autoBackMainThread) {
+        this.autoBackMainThread = autoBackMainThread;
+    }
+
     public void setTargetFile(File targetFile) {
         this.targetFile = targetFile;
     }
 
     @Override
-    public void onNext(ResponseBody body) {
-        if (body == null || targetFile == null) {
+    public void onNext(@NonNull ResponseBody body) {
+        if (targetFile == null) {
             success = false;
             onError(new IOException());
             return;
@@ -58,20 +70,33 @@ public abstract class DownloadCallBack extends DisposableObserver<ResponseBody> 
             }
         }
         // 成功
-        ThreadUtils.getMainHandler().post(() -> done(success));
+        if (autoBackMainThread) {
+            ThreadUtils.getMainHandler().post(() -> done(success));
+        } else {
+            done(success);
+        }
     }
 
     @Override
-    public void onError(Throwable e) {
-        ThreadUtils.getMainHandler().post(() -> {
+    public void onError(@NonNull Throwable e) {
+        if (autoBackMainThread) {
+            ThreadUtils.getMainHandler().post(() -> {
+                if (e instanceof ApiException) {
+                    onFailed((ApiException) e);
+                } else {
+                    onFailed(new ApiException(e, HttpCode.FRAME_WORK.UNKNOWN));
+                }
+                done(false);
+            });
+            e.printStackTrace();
+        } else {
             if (e instanceof ApiException) {
                 onFailed((ApiException) e);
             } else {
                 onFailed(new ApiException(e, HttpCode.FRAME_WORK.UNKNOWN));
             }
             done(false);
-        });
-        e.printStackTrace();
+        }
     }
 
     @Override
