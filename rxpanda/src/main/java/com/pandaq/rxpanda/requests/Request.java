@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.annotations.NonNull;
 import okhttp3.ConnectionPool;
 import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
 import retrofit2.CallAdapter;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -43,6 +44,11 @@ public class Request<T extends Request<T>> {
     private final Map<String, String> headers = new LinkedHashMap<>();
     private final List<Interceptor> interceptors = new ArrayList<>();
     private final List<Interceptor> networkInterceptors = new ArrayList<>();
+    protected OkHttpClient.Builder clientBuilder = null;
+
+    public Request() {
+        clientBuilder = null;
+    }
 
     /**
      * 获取子类指定的模拟数据，默认为空
@@ -159,27 +165,27 @@ public class Request<T extends Request<T>> {
         if (getGlobalConfig().getHostnameVerifier() == null) {
             getGlobalConfig().hostVerifier(new SSLManager.SafeHostnameVerifier(getGlobalConfig().getBaseUrl()));
         }
-        getGlobalConfig().getClientBuilder().hostnameVerifier(getGlobalConfig().getHostnameVerifier());
+        getClientBuilder().hostnameVerifier(getGlobalConfig().getHostnameVerifier());
 
         if (getGlobalConfig().getSslSocketFactory() == null) {
             getGlobalConfig().sslFactory(SSLManager.getSslSocketFactory(null, null, null));
         }
-        getGlobalConfig().getClientBuilder().sslSocketFactory(getGlobalConfig().getSslSocketFactory());
-        getGlobalConfig().getClientBuilder().connectTimeout(getGlobalConfig().getConnectTimeout(), TimeUnit.MILLISECONDS);
-        getGlobalConfig().getClientBuilder().readTimeout(getGlobalConfig().getReadTimeout(), TimeUnit.MILLISECONDS);
-        getGlobalConfig().getClientBuilder().writeTimeout(getGlobalConfig().getWriteTimeout(), TimeUnit.MILLISECONDS);
+        getClientBuilder().sslSocketFactory(getGlobalConfig().getSslSocketFactory());
+        getClientBuilder().connectTimeout(getGlobalConfig().getConnectTimeout(), TimeUnit.MILLISECONDS);
+        getClientBuilder().readTimeout(getGlobalConfig().getReadTimeout(), TimeUnit.MILLISECONDS);
+        getClientBuilder().writeTimeout(getGlobalConfig().getWriteTimeout(), TimeUnit.MILLISECONDS);
         // 添加全局的拦截器
         for (Interceptor interceptor : getGlobalConfig().getInterceptors()) {
-            if (!getGlobalConfig().getClientBuilder().interceptors().contains(interceptor)) {
-                getGlobalConfig().getClientBuilder().addInterceptor(interceptor);
+            if (!getClientBuilder().interceptors().contains(interceptor)) {
+                getClientBuilder().addInterceptor(interceptor);
             }
         }
         for (Interceptor interceptor : getGlobalConfig().getNetInterceptors()) {
-            if (!getGlobalConfig().getClientBuilder().networkInterceptors().contains(interceptor)) {
-                getGlobalConfig().getClientBuilder().addNetworkInterceptor(interceptor);
+            if (!getClientBuilder().networkInterceptors().contains(interceptor)) {
+                getClientBuilder().addNetworkInterceptor(interceptor);
             }
         }
-        getGlobalConfig().getClientBuilder().retryOnConnectionFailure(true);
+        getClientBuilder().retryOnConnectionFailure(true);
     }
 
     /**
@@ -196,33 +202,33 @@ public class Request<T extends Request<T>> {
             headers.putAll(getGlobalConfig().getGlobalHeaders());
         }
         if (!headers.isEmpty()) {
-            getGlobalConfig().getClientBuilder().addInterceptor(new HeaderInterceptor(headers));
+            getClientBuilder().addInterceptor(new HeaderInterceptor(headers));
         }
         // 添加请求拦截器
         if (!interceptors.isEmpty()) {
             for (Interceptor interceptor : interceptors) {
-                if (!getGlobalConfig().getClientBuilder().interceptors().contains(interceptor)) {
-                    getGlobalConfig().getClientBuilder().addInterceptor(interceptor);
+                if (!getClientBuilder().interceptors().contains(interceptor)) {
+                    getClientBuilder().addInterceptor(interceptor);
                 }
             }
         }
         // 添加请求网络拦截器
         if (!networkInterceptors.isEmpty()) {
             for (Interceptor interceptor : networkInterceptors) {
-                if (!getGlobalConfig().getClientBuilder().networkInterceptors().contains(interceptor)) {
-                    getGlobalConfig().getClientBuilder().addInterceptor(interceptor);
+                if (!getClientBuilder().networkInterceptors().contains(interceptor)) {
+                    getClientBuilder().addInterceptor(interceptor);
                 }
             }
         }
         //设置局部超时时间和重试次数
         if (readTimeout > 0) {
-            getGlobalConfig().getClientBuilder().readTimeout(readTimeout, TimeUnit.MILLISECONDS);
+            getClientBuilder().readTimeout(readTimeout, TimeUnit.MILLISECONDS);
         }
         if (writeTimeout > 0) {
-            getGlobalConfig().getClientBuilder().writeTimeout(writeTimeout, TimeUnit.MILLISECONDS);
+            getClientBuilder().writeTimeout(writeTimeout, TimeUnit.MILLISECONDS);
         }
         if (connectTimeout > 0) {
-            getGlobalConfig().getClientBuilder().connectTimeout(connectTimeout, TimeUnit.MILLISECONDS);
+            getClientBuilder().connectTimeout(connectTimeout, TimeUnit.MILLISECONDS);
         }
     }
 
@@ -257,7 +263,7 @@ public class Request<T extends Request<T>> {
      */
     protected Retrofit getCommonRetrofit() {
         // retrofit config
-        Retrofit.Builder retrofitBuilder = getGlobalConfig().getRetrofitBuilder();
+        Retrofit.Builder retrofitBuilder = new Retrofit.Builder();
         if (!TextUtils.isEmpty(getGlobalConfig().getBaseUrl())) {
             retrofitBuilder.baseUrl(getGlobalConfig().getBaseUrl());
         } else {
@@ -276,12 +282,12 @@ public class Request<T extends Request<T>> {
         // 添加日志拦截器
         if (getGlobalConfig().getLoggingInterceptor() != null) {
             if (RxPanda.globalConfig().getLoggingInterceptor().isNetInterceptor()) {
-                if (!getGlobalConfig().getClientBuilder().networkInterceptors().contains(RxPanda.globalConfig().getLoggingInterceptor())) {
-                    getGlobalConfig().getClientBuilder().addNetworkInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
+                if (!getClientBuilder().networkInterceptors().contains(RxPanda.globalConfig().getLoggingInterceptor())) {
+                    getClientBuilder().addNetworkInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
                 }
             } else {
-                if (!getGlobalConfig().getClientBuilder().interceptors().contains(RxPanda.globalConfig().getLoggingInterceptor())) {
-                    getGlobalConfig().getClientBuilder().addInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
+                if (!getClientBuilder().interceptors().contains(RxPanda.globalConfig().getLoggingInterceptor())) {
+                    getClientBuilder().addInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
                 }
             }
         }
@@ -289,14 +295,23 @@ public class Request<T extends Request<T>> {
         if (getGlobalConfig().isDebug()) {
             MockDataInterceptor dataInterceptor = getGlobalConfig().getMockDataInterceptor();
             dataInterceptor.setLocalMockJson(getMockJson());
-            if (!getGlobalConfig().getClientBuilder().networkInterceptors().contains(dataInterceptor)) {
-                getGlobalConfig().getClientBuilder().addNetworkInterceptor(dataInterceptor);
+            if (!getClientBuilder().networkInterceptors().contains(dataInterceptor)) {
+                getClientBuilder().addNetworkInterceptor(dataInterceptor);
             }
         }
-        return retrofitBuilder.client(getGlobalConfig().getClientBuilder().build()).build();
+        OkHttpClient client = getClientBuilder().build();
+        return retrofitBuilder.client(client).build();
     }
 
     protected HttpGlobalConfig getGlobalConfig() {
         return RxPanda.globalConfig();
+    }
+
+    protected OkHttpClient.Builder getClientBuilder() {
+        // GlobalConfig 中的 builder 只用于保存属性，request 根据其属性各自创建新的 builder
+        if (clientBuilder == null) {
+            clientBuilder = getGlobalConfig().getClientBuilder1().build().newBuilder();
+        }
+        return clientBuilder;
     }
 }

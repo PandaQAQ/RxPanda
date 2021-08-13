@@ -17,7 +17,7 @@ import okhttp3.Response;
  */
 public class DownloadInterceptor implements Interceptor {
 
-    private TransmitCallback mCallback;
+    private final TransmitCallback mCallback;
 
     public DownloadInterceptor(TransmitCallback callback) {
         mCallback = callback;

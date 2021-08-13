@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import com.google.gson.Gson
 import com.pandaq.rxpanda.RxPanda
+import com.pandaq.rxpanda.callbacks.DownloadCallBack
 import com.pandaq.rxpanda.entity.ApiData
 import com.pandaq.rxpanda.transformer.RxScheduler
 import com.pandaq.rxpanda.utils.GsonUtil
@@ -22,10 +23,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private val apiService = RxPanda
         .retrofit()
-        .interceptor { chain ->
-            Log.d("Interceptor", "local Interceptor")
-            chain.proceed(chain.request())
-        }
+        .connectTimeout(200)
+        .create(ApiService::class.java)
+    private val apiService1 = RxPanda
+        .retrofit()
         .connectTimeout(200)
         .create(ApiService::class.java)
 
@@ -42,26 +43,43 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.stringData -> {
-                apiService.stringData()
-                    .doOnSubscribe { t -> compositeDisposable.add(t) }
-                    .compose(RxScheduler.sync())
-                    .subscribe(object : AppCallBack<Any>() {
-                        override fun success(data: Any) {
-//                            dataString.text = data
-                            dataString.setTextColor(Color.parseColor("#000000"))
+                RxPanda.download("https://v-cdn.zjol.com.cn/276982.mp4")
+                    .target(filesDir.absolutePath + "/sources", "aaa.mp4")
+                    .request(object : DownloadCallBack() {
+                        override fun done(success: Boolean) {
+                            Log.e("download","下载资源成功了")
                         }
 
-                        @SuppressLint("SetTextI18n")
-                        override fun fail(code: String?, msg: String?) {
-                            dataString.text = "error:::$msg"
-                            dataString.setTextColor(Color.parseColor("#ff0000"))
+                        override fun onFailed(exception: Exception?) {
+                            // 进行错误上报
+                            Log.e("download","下载资源失败了")
                         }
 
-                        override fun finish(success: Boolean) {
-
+                        override fun inProgress(process: Int) {
+                            Log.e("download","下载资源 $process%")
                         }
 
                     })
+//                apiService.stringData()
+//                    .doOnSubscribe { t -> compositeDisposable.add(t) }
+//                    .compose(RxScheduler.sync())
+//                    .subscribe(object : AppCallBack<Any>() {
+//                        override fun success(data: Any) {
+////                            dataString.text = data
+//                            dataString.setTextColor(Color.parseColor("#000000"))
+//                        }
+//
+//                        @SuppressLint("SetTextI18n")
+//                        override fun fail(code: String?, msg: String?) {
+//                            dataString.text = "error:::$msg"
+//                            dataString.setTextColor(Color.parseColor("#ff0000"))
+//                        }
+//
+//                        override fun finish(success: Boolean) {
+//
+//                        }
+//
+//                    })
             }
 
             R.id.intData -> {

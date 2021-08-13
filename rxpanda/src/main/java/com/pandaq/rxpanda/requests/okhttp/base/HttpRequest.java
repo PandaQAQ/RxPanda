@@ -50,6 +50,7 @@ public abstract class HttpRequest<R extends HttpRequest<R>> extends Request<R> {
         if (!TextUtils.isEmpty(url)) {
             this.url = url;
         }
+        clientBuilder = null;
     }
 
     public <T> Observable<T> request(Type type) {

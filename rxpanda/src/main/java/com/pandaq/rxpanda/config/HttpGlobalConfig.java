@@ -56,8 +56,7 @@ public class HttpGlobalConfig {
     private Class<? extends IApiData> apiDataClazz = ApiData.class;
     private HttpLoggingInterceptor loggingInterceptor;
     private OkHttpClient.Builder clientBuilder = getDefaultClientBuilder();
-    // 全局的 Retrofit对象
-    private final Retrofit.Builder retrofitBuilder = new Retrofit.Builder();
+
     private MockDataInterceptor mMockDataInterceptor;
     private ParamsInterceptor paramsInterceptor;
 
@@ -334,7 +333,7 @@ public class HttpGlobalConfig {
 
     //    ######################################## getter ########################################
 
-    public OkHttpClient.Builder getClientBuilder() {
+    public OkHttpClient.Builder getClientBuilder1() {
         return clientBuilder;
     }
 
@@ -344,10 +343,6 @@ public class HttpGlobalConfig {
 
     public List<Interceptor> getNetInterceptors() {
         return netInterceptors;
-    }
-
-    public Retrofit.Builder getRetrofitBuilder() {
-        return retrofitBuilder;
     }
 
     private OkHttpClient.Builder getDefaultClientBuilder() {
