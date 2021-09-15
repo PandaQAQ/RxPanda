@@ -2,7 +2,6 @@ package com.pandaq.rxpanda.requests.retrofit;
 
 import android.text.TextUtils;
 
-import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.interceptor.MockDataInterceptor;
 import com.pandaq.rxpanda.interceptor.ParamsInterceptor;
 import com.pandaq.rxpanda.requests.Request;
@@ -70,7 +69,7 @@ public class RetrofitRequest extends Request<RetrofitRequest> {
                 dataInterceptor.setLocalMockJson(getMockJson());
                 getClientBuilder().addNetworkInterceptor(dataInterceptor);
             }
-            newRetrofitBuilder.client(getGlobalConfig().getClientBuilder().build());
+            newRetrofitBuilder.client(getGlobalConfig().getClientBuilder().build().newBuilder().build());
             retrofit = newRetrofitBuilder.build();
         } else { // 使用默认配置的对象
             retrofit = getCommonRetrofit();

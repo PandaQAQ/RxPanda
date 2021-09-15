@@ -26,23 +26,27 @@ public class CacheNeededInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
+        boolean needCache = false;
         Invocation invocation = request.tag(Invocation.class);
         if (invocation != null) {
             Method method = invocation.method();
             CacheIt cacheIt = method.getAnnotation(CacheIt.class);
-            if (cacheIt != null) {
-                // 一般接口，进行缓存策略处理
-                if (!isNetworkConnected()) {
-                    request = request.newBuilder().cacheControl(CacheControl.FORCE_CACHE).build();
-                }
-                Response response = chain.proceed(request);
-                if (response.code() != 200) {
-                    return response.newBuilder()
-                            .header("Cache-Control", CacheControl.FORCE_CACHE.toString()).build();
-                }
-            }
+            needCache = cacheIt != null;
         }
-        return chain.proceed(request);
+        if (!needCache) {
+            return chain.proceed(request);
+        }
+        // 一般接口，进行缓存策略处理
+        if (!isNetworkConnected()) {
+            request = request.newBuilder().cacheControl(CacheControl.FORCE_CACHE).build();
+            return chain.proceed(request);
+        }
+        Response response = chain.proceed(request);
+        if (response.code() != 200) {
+            return response.newBuilder()
+                    .header("Cache-Control", CacheControl.FORCE_CACHE.toString()).build();
+        }
+        return response;
     }
 
     private boolean isNetworkConnected() {

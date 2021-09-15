@@ -65,7 +65,7 @@ public class HttpGlobalConfig {
     private Cache cache;
     // false 只有标注使用缓存的接口才使用缓存，true 除了忽略注解和 IO 请求外的所有请求都使用缓存
     private boolean cacheAll;
-
+    private Interceptor cacheInterceptor;
 
     private MockDataInterceptor mMockDataInterceptor;
     private ParamsInterceptor paramsInterceptor;
@@ -356,12 +356,18 @@ public class HttpGlobalConfig {
     //    ######################################## getter ########################################
 
     public OkHttpClient.Builder getClientBuilder() {
+        // 缓存拦截器只添加一次
         if (cache != null) {
             this.clientBuilder.cache(cache);
-            if (cacheAll) {
-                this.clientBuilder.addInterceptor(new CacheAllInterceptor());
-            } else {
-                this.clientBuilder.addInterceptor(new CacheNeededInterceptor());
+            if (cacheInterceptor == null) {
+                if (cacheAll) {
+                    cacheInterceptor = new CacheAllInterceptor();
+                } else {
+                    cacheInterceptor = new CacheNeededInterceptor();
+                }
+                if (!this.clientBuilder.interceptors().contains(cacheInterceptor)) {
+                    this.clientBuilder.addInterceptor(cacheInterceptor);
+                }
             }
         }
         return clientBuilder;

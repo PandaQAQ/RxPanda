@@ -47,6 +47,7 @@ public class CacheAllInterceptor implements Interceptor {
         // 一般接口，进行缓存策略处理
         if (!isNetworkConnected()) {
             request = request.newBuilder().cacheControl(CacheControl.FORCE_CACHE).build();
+            return chain.proceed(request);
         }
         Response response = chain.proceed(request);
         if (response.code() != 200) {
