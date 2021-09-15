@@ -1,6 +1,7 @@
 package com.pandaq.rxpanda.transformer;
 
 import com.pandaq.rxpanda.RxPanda;
+import com.pandaq.rxpanda.config.HttpGlobalConfig;
 
 import io.reactivex.ObservableTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -24,7 +25,7 @@ public class RxScheduler {
      * @return 指定了在 io 线程执行，UI 线程观察结果的观察对象
      */
     public static <T> ObservableTransformer<T, T> retrySync() {
-        return retrySync(RxPanda.globalConfig().getRetryCount());
+        return retrySync(HttpGlobalConfig.getInstance().getRetryCount());
     }
 
     /**
@@ -39,7 +40,7 @@ public class RxScheduler {
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retryWhen(new RetryFunc(count,
-                        RxPanda.globalConfig().getRetryDelayMillis()));
+                        HttpGlobalConfig.getInstance().getRetryDelayMillis()));
     }
 
     /**

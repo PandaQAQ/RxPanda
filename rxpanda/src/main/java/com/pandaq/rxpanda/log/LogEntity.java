@@ -2,6 +2,8 @@ package com.pandaq.rxpanda.log;
 
 import android.util.Log;
 import com.pandaq.rxpanda.RxPanda;
+import com.pandaq.rxpanda.config.HttpGlobalConfig;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,7 +36,7 @@ class LogEntity {
      * @param log 日志
      */
     void addLog(String log) {
-        if (!RxPanda.globalConfig().isDebug()) return;
+        if (!HttpGlobalConfig.getInstance().isDebug()) return;
         if (log == null) return;
         if (log.equals(" ") || log.startsWith("{")
                 || log.startsWith("╔") || log.startsWith("╚")) {
@@ -48,7 +50,7 @@ class LogEntity {
      * 输出日志到控制台
      */
     void printLog() {
-        if (!RxPanda.globalConfig().isDebug()) return;
+        if (!HttpGlobalConfig.getInstance().isDebug()) return;
         addLog("");
         addLog("╚════════════════════════  HTTP  END  ═══════════════════════════");
         addLog(" ");
@@ -75,14 +77,14 @@ class LogEntity {
                 message = jsonArray.toString(2);
             } else {
                 message = msg;
-                if (RxPanda.globalConfig().isDebug()) {
+                if (HttpGlobalConfig.getInstance().isDebug()) {
                     Log.d(tag, message);
                 }
                 return;
             }
         } catch (JSONException e) {
             message = msg;
-            if (RxPanda.globalConfig().isDebug()) {
+            if (HttpGlobalConfig.getInstance().isDebug()) {
                 Log.d(tag, message);
             }
             return;
@@ -92,7 +94,7 @@ class LogEntity {
         message = LINE_SEPARATOR + message;
         String[] lines = message.split(LINE_SEPARATOR);
         for (String line : lines) {
-            if (!line.isEmpty() && RxPanda.globalConfig().isDebug()) {
+            if (!line.isEmpty() && HttpGlobalConfig.getInstance().isDebug()) {
                 Log.d(tag, "║ " + line);
             }
         }
@@ -106,12 +108,12 @@ class LogEntity {
      */
     private void printLine(boolean isTop) {
         if (isTop) {
-            if (RxPanda.globalConfig().isDebug()) {
+            if (HttpGlobalConfig.getInstance().isDebug()) {
                 Log.d(tag, "║");
                 Log.d(tag, "║——————————————————JSON START——————————————————");
             }
         } else {
-            if (RxPanda.globalConfig().isDebug()) {
+            if (HttpGlobalConfig.getInstance().isDebug()) {
                 Log.d(tag, "║——————————————————JSON END———————————————————");
                 Log.d(tag, "║");
             }

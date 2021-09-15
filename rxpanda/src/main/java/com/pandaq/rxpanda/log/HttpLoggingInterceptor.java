@@ -16,6 +16,7 @@
 package com.pandaq.rxpanda.log;
 
 import com.pandaq.rxpanda.RxPanda;
+import com.pandaq.rxpanda.config.HttpGlobalConfig;
 
 import okhttp3.*;
 import okio.Buffer;
@@ -147,7 +148,7 @@ public final class HttpLoggingInterceptor implements Interceptor {
         }
 
         if (level == Level.NONE ||
-                !RxPanda.globalConfig().isDebug()) {
+                !HttpGlobalConfig.getInstance().isDebug()) {
             return chain.proceed(request);
         }
         LogEntity entity = new LogEntity();

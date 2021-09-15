@@ -2,6 +2,7 @@ package com.pandaq.rxpanda.ssl;
 
 import android.util.Log;
 import com.pandaq.rxpanda.RxPanda;
+import com.pandaq.rxpanda.config.HttpGlobalConfig;
 
 import javax.net.ssl.*;
 import java.io.IOException;
@@ -147,7 +148,7 @@ public class SSLManager {
         @Override
         public boolean verify(String hostname, SSLSession session) {
             // if allow all return true
-            if (RxPanda.globalConfig().isTrustAllHost()) return true;
+            if (HttpGlobalConfig.getInstance().isTrustAllHost()) return true;
             if (this.hosts == null || hosts.isEmpty()) return false;
             for (String host : hosts) {
                 if (host.contains(hostname)) {

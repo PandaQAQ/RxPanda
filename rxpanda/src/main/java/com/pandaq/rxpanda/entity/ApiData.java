@@ -2,6 +2,7 @@ package com.pandaq.rxpanda.entity;
 
 
 import com.pandaq.rxpanda.RxPanda;
+import com.pandaq.rxpanda.config.HttpGlobalConfig;
 
 /**
  * Created by huxinyu on 2018/5/27.
@@ -63,6 +64,6 @@ public class ApiData<T> implements IApiData<T> {
      */
     public boolean isSuccess() {
         if (this.code == null) return false;
-        return RxPanda.globalConfig().getApiSuccessCode().equals(this.code);
+        return HttpGlobalConfig.getInstance().getApiSuccessCode().equals(this.code);
     }
 }

@@ -1,9 +1,12 @@
 package com.pandaq.rxpanda.config;
 
+import android.app.Application;
+
 import com.pandaq.rxpanda.converter.PandaConvertFactory;
 import com.pandaq.rxpanda.entity.ApiData;
 import com.pandaq.rxpanda.entity.IApiData;
 import com.pandaq.rxpanda.entity.NullDataValue;
+import com.pandaq.rxpanda.interceptor.CacheInterceptor;
 import com.pandaq.rxpanda.interceptor.MockDataInterceptor;
 import com.pandaq.rxpanda.interceptor.ParamsInterceptor;
 import com.pandaq.rxpanda.log.HttpLoggingInterceptor;
@@ -19,6 +22,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 
 import io.reactivex.annotations.NonNull;
+import okhttp3.Cache;
 import okhttp3.ConnectionPool;
 import okhttp3.ConnectionSpec;
 import okhttp3.Interceptor;
@@ -26,7 +30,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.TlsVersion;
 import retrofit2.CallAdapter;
 import retrofit2.Converter;
-import retrofit2.Retrofit;
 
 /**
  * Created by huxinyu on 2019/1/9.
@@ -36,6 +39,7 @@ import retrofit2.Retrofit;
  */
 public class HttpGlobalConfig {
 
+    private Application application;
     private final List<Interceptor> interceptors = new ArrayList<>();
     private final List<Interceptor> netInterceptors = new ArrayList<>();
     private final List<CallAdapter.Factory> callAdapterFactories = new ArrayList<>();//Call适配器工厂
@@ -56,7 +60,7 @@ public class HttpGlobalConfig {
     private Class<? extends IApiData> apiDataClazz = ApiData.class;
     private HttpLoggingInterceptor loggingInterceptor;
     private OkHttpClient.Builder clientBuilder = getDefaultClientBuilder();
-
+    private Cache cache;
     private MockDataInterceptor mMockDataInterceptor;
     private ParamsInterceptor paramsInterceptor;
 
@@ -82,14 +86,14 @@ public class HttpGlobalConfig {
     }
 
     public MockDataInterceptor getMockDataInterceptor() {
-        if (mMockDataInterceptor==null){
+        if (mMockDataInterceptor == null) {
             mMockDataInterceptor = new MockDataInterceptor();
         }
         return mMockDataInterceptor;
     }
 
     public ParamsInterceptor getParamsInterceptor() {
-        if (paramsInterceptor==null){
+        if (paramsInterceptor == null) {
             paramsInterceptor = new ParamsInterceptor();
         }
         return paramsInterceptor;
@@ -103,6 +107,17 @@ public class HttpGlobalConfig {
      */
     public HttpGlobalConfig client(OkHttpClient.Builder clientBuilder) {
         this.clientBuilder = clientBuilder;
+        return this;
+    }
+
+    /**
+     * set Cache Strategy, if do not set, will cache nothing
+     *
+     * @param cache cache Strategy
+     * @return Config self
+     */
+    public HttpGlobalConfig cache(Cache cache) {
+        this.cache = cache;
         return this;
     }
 
@@ -333,7 +348,11 @@ public class HttpGlobalConfig {
 
     //    ######################################## getter ########################################
 
-    public OkHttpClient.Builder getClientBuilder1() {
+    public OkHttpClient.Builder getClientBuilder() {
+        if (cache != null) {
+            this.clientBuilder.cache(cache);
+            this.clientBuilder.addInterceptor(new CacheInterceptor());
+        }
         return clientBuilder;
     }
 
@@ -407,6 +426,14 @@ public class HttpGlobalConfig {
     public HttpGlobalConfig debug(boolean debug) {
         isDebug = debug;
         return this;
+    }
+
+    public void setApplication(Application application) {
+        this.application = application;
+    }
+
+    public Application getApplication() {
+        return application;
     }
 
     public boolean isTrustAll() {

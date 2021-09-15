@@ -281,13 +281,13 @@ public class Request<T extends Request<T>> {
         }
         // 添加日志拦截器
         if (getGlobalConfig().getLoggingInterceptor() != null) {
-            if (RxPanda.globalConfig().getLoggingInterceptor().isNetInterceptor()) {
-                if (!getClientBuilder().networkInterceptors().contains(RxPanda.globalConfig().getLoggingInterceptor())) {
-                    getClientBuilder().addNetworkInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
+            if (getGlobalConfig().getLoggingInterceptor().isNetInterceptor()) {
+                if (!getClientBuilder().networkInterceptors().contains(getGlobalConfig().getLoggingInterceptor())) {
+                    getClientBuilder().addNetworkInterceptor(getGlobalConfig().getLoggingInterceptor());
                 }
             } else {
-                if (!getClientBuilder().interceptors().contains(RxPanda.globalConfig().getLoggingInterceptor())) {
-                    getClientBuilder().addInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
+                if (!getClientBuilder().interceptors().contains(getGlobalConfig().getLoggingInterceptor())) {
+                    getClientBuilder().addInterceptor(getGlobalConfig().getLoggingInterceptor());
                 }
             }
         }
@@ -304,13 +304,13 @@ public class Request<T extends Request<T>> {
     }
 
     protected HttpGlobalConfig getGlobalConfig() {
-        return RxPanda.globalConfig();
+        return HttpGlobalConfig.getInstance();
     }
 
     protected OkHttpClient.Builder getClientBuilder() {
         // GlobalConfig 中的 builder 只用于保存属性，request 根据其属性各自创建新的 builder
         if (clientBuilder == null) {
-            clientBuilder = getGlobalConfig().getClientBuilder1().build().newBuilder();
+            clientBuilder = getGlobalConfig().getClientBuilder().build().newBuilder();
         }
         return clientBuilder;
     }

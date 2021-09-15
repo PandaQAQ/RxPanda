@@ -58,10 +58,10 @@ public class RetrofitRequest extends Request<RetrofitRequest> {
             getClientBuilder().hostnameVerifier(new SSLManager.SafeHostnameVerifier(baseUrl));
             // 添加日志拦截器
             if (getGlobalConfig().getLoggingInterceptor() != null) {
-                if (RxPanda.globalConfig().getLoggingInterceptor().isNetInterceptor()) {
-                    getClientBuilder().addNetworkInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
+                if (getGlobalConfig().getLoggingInterceptor().isNetInterceptor()) {
+                    getClientBuilder().addNetworkInterceptor(getGlobalConfig().getLoggingInterceptor());
                 } else {
-                    getClientBuilder().addInterceptor(RxPanda.globalConfig().getLoggingInterceptor());
+                    getClientBuilder().addInterceptor(getGlobalConfig().getLoggingInterceptor());
                 }
             }
             // 添加调试阶段的模拟数据拦截器
@@ -70,7 +70,7 @@ public class RetrofitRequest extends Request<RetrofitRequest> {
                 dataInterceptor.setLocalMockJson(getMockJson());
                 getClientBuilder().addNetworkInterceptor(dataInterceptor);
             }
-            newRetrofitBuilder.client(getGlobalConfig().getClientBuilder1().build());
+            newRetrofitBuilder.client(getGlobalConfig().getClientBuilder().build());
             retrofit = newRetrofitBuilder.build();
         } else { // 使用默认配置的对象
             retrofit = getCommonRetrofit();

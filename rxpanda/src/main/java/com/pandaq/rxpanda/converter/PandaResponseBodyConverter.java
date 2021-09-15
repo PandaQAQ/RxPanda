@@ -52,7 +52,7 @@ public class PandaResponseBodyConverter<T> implements Converter<ResponseBody, T>
     public T convert(@NonNull ResponseBody value) throws IOException {
         String response = value.string();
         if (apiDataClazz == null) {
-            apiDataClazz = RxPanda.globalConfig().getApiDataClazz();
+            apiDataClazz = HttpGlobalConfig.getInstance().getApiDataClazz();
         }
         IApiData<T> apiData = gson.fromJson(response, (Type) apiDataClazz);
         /* 如是按约定格式返回数据 apiData 中的 code 是必须的。

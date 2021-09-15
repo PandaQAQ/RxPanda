@@ -1,5 +1,7 @@
 package com.pandaq.rxpanda;
 
+import android.app.Application;
+
 import com.pandaq.rxpanda.config.HttpGlobalConfig;
 import com.pandaq.rxpanda.requests.okhttp.GetRequest;
 import com.pandaq.rxpanda.requests.okhttp.io.DownloadRequest;
@@ -21,8 +23,10 @@ public class RxPanda {
 
     }
 
-    public static HttpGlobalConfig globalConfig() {
-        return HttpGlobalConfig.getInstance();
+    public static HttpGlobalConfig globalConfig(Application application) {
+        HttpGlobalConfig config = HttpGlobalConfig.getInstance();
+        config.setApplication(application);
+        return config;
     }
 
     /**
