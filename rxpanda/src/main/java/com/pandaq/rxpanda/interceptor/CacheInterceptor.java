@@ -57,7 +57,7 @@ public class CacheInterceptor implements Interceptor {
     }
 
     private boolean isNetworkConnected() {
-        ConnectivityManager manager = (ConnectivityManager) HttpGlobalConfig.getInstance().getApplication()
+        ConnectivityManager manager = (ConnectivityManager) HttpGlobalConfig.getInstance().getContext()
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         for (Network allNetwork : manager.getAllNetworks()) {
             NetworkInfo info = manager.getNetworkInfo(allNetwork);

@@ -1,6 +1,7 @@
 package com.pandaq.rxpanda.config;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.pandaq.rxpanda.converter.PandaConvertFactory;
 import com.pandaq.rxpanda.entity.ApiData;
@@ -39,7 +40,7 @@ import retrofit2.Converter;
  */
 public class HttpGlobalConfig {
 
-    private Application application;
+    private Context context;
     private final List<Interceptor> interceptors = new ArrayList<>();
     private final List<Interceptor> netInterceptors = new ArrayList<>();
     private final List<CallAdapter.Factory> callAdapterFactories = new ArrayList<>();//Call适配器工厂
@@ -428,12 +429,11 @@ public class HttpGlobalConfig {
         return this;
     }
 
-    public void setApplication(Application application) {
-        this.application = application;
+    public void setContext(Context context) {
+        this.context = context;
     }
-
-    public Application getApplication() {
-        return application;
+    public Context getContext() {
+        return context;
     }
 
     public boolean isTrustAll() {

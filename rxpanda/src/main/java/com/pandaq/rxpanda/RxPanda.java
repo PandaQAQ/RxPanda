@@ -1,6 +1,6 @@
 package com.pandaq.rxpanda;
 
-import android.app.Application;
+import android.content.Context;
 
 import com.pandaq.rxpanda.config.HttpGlobalConfig;
 import com.pandaq.rxpanda.requests.okhttp.GetRequest;
@@ -23,10 +23,16 @@ public class RxPanda {
 
     }
 
-    public static HttpGlobalConfig globalConfig(Application application) {
-        HttpGlobalConfig config = HttpGlobalConfig.getInstance();
-        config.setApplication(application);
-        return config;
+    public static HttpGlobalConfig init(Context context) {
+        HttpGlobalConfig.getInstance().setContext(context.getApplicationContext());
+        return HttpGlobalConfig.getInstance();
+    }
+
+    public static HttpGlobalConfig getConfig() {
+        if (HttpGlobalConfig.getInstance().getContext() == null) {
+            throw new RuntimeException("must call init(application) first!");
+        }
+        return HttpGlobalConfig.getInstance();
     }
 
     /**
