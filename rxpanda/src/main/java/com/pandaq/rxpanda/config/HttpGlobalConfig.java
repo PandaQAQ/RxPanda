@@ -1,13 +1,13 @@
 package com.pandaq.rxpanda.config;
 
-import android.app.Application;
 import android.content.Context;
 
 import com.pandaq.rxpanda.converter.PandaConvertFactory;
 import com.pandaq.rxpanda.entity.ApiData;
 import com.pandaq.rxpanda.entity.IApiData;
 import com.pandaq.rxpanda.entity.NullDataValue;
-import com.pandaq.rxpanda.interceptor.CacheInterceptor;
+import com.pandaq.rxpanda.interceptor.CacheAllInterceptor;
+import com.pandaq.rxpanda.interceptor.CacheNeededInterceptor;
 import com.pandaq.rxpanda.interceptor.MockDataInterceptor;
 import com.pandaq.rxpanda.interceptor.ParamsInterceptor;
 import com.pandaq.rxpanda.log.HttpLoggingInterceptor;
@@ -61,7 +61,12 @@ public class HttpGlobalConfig {
     private Class<? extends IApiData> apiDataClazz = ApiData.class;
     private HttpLoggingInterceptor loggingInterceptor;
     private OkHttpClient.Builder clientBuilder = getDefaultClientBuilder();
+    // 简单的缓存，无网或请求失败用缓存，有网用新数据
     private Cache cache;
+    // false 只有标注使用缓存的接口才使用缓存，true 除了忽略注解和 IO 请求外的所有请求都使用缓存
+    private boolean cacheAll;
+
+
     private MockDataInterceptor mMockDataInterceptor;
     private ParamsInterceptor paramsInterceptor;
 
@@ -117,8 +122,9 @@ public class HttpGlobalConfig {
      * @param cache cache Strategy
      * @return Config self
      */
-    public HttpGlobalConfig cache(Cache cache) {
+    public HttpGlobalConfig cache(Cache cache, boolean cacheAll) {
         this.cache = cache;
+        this.cacheAll = cacheAll;
         return this;
     }
 
@@ -352,7 +358,11 @@ public class HttpGlobalConfig {
     public OkHttpClient.Builder getClientBuilder() {
         if (cache != null) {
             this.clientBuilder.cache(cache);
-            this.clientBuilder.addInterceptor(new CacheInterceptor());
+            if (cacheAll) {
+                this.clientBuilder.addInterceptor(new CacheAllInterceptor());
+            } else {
+                this.clientBuilder.addInterceptor(new CacheNeededInterceptor());
+            }
         }
         return clientBuilder;
     }
@@ -432,6 +442,7 @@ public class HttpGlobalConfig {
     public void setContext(Context context) {
         this.context = context;
     }
+
     public Context getContext() {
         return context;
     }
