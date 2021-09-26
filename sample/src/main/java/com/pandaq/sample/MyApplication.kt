@@ -2,6 +2,7 @@ package com.pandaq.sample
 
 import android.app.Application
 import android.util.Log
+import com.pandaq.rxpanda.BuildConfig
 import com.pandaq.rxpanda.RxPanda
 import com.pandaq.rxpanda.entity.NullDataValue
 import com.pandaq.rxpanda.log.HttpLoggingInterceptor
