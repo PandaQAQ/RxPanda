@@ -11,7 +11,7 @@ dependencies {
 }
 ```
 ## >= 1.0.4 
-- 1
+- step 1
 ```groovy
 // project 的 build.gradle 中配置
 allprojects {
@@ -21,7 +21,7 @@ allprojects {
     }
 }
 ```
-- 2
+- step 2
 ```grovy
 > - rxjava2 版本
 dependencies {
