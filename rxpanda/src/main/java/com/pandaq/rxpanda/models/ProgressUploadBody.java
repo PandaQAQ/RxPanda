@@ -1,8 +1,9 @@
 package com.pandaq.rxpanda.models;
 
-import io.reactivex.annotations.NonNull;
 import com.pandaq.rxpanda.callbacks.TransmitCallback;
 import com.pandaq.rxpanda.utils.ThreadUtils;
+
+import io.reactivex.rxjava3.annotations.NonNull;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okio.*;

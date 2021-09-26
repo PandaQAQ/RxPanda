@@ -19,8 +19,8 @@ import com.pandaq.rxpanda.utils.GsonUtil;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
-import io.reactivex.annotations.NonNull;
-import io.reactivex.annotations.Nullable;
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.annotations.Nullable;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Converter;

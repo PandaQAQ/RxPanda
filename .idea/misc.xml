@@ -2,7 +2,7 @@
 <project version="4">
   <component name="NullableNotNullManager">
     <option name="myDefaultNullable" value="androidx.annotation.Nullable" />
-    <option name="myDefaultNotNull" value="io.reactivex.annotations.NonNull" />
+    <option name="myDefaultNotNull" value="io.reactivex.rxjava3.annotations.NonNull" />
     <option name="myNullables">
       <value>
         <list size="14">

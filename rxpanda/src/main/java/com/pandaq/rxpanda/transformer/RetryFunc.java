@@ -1,13 +1,14 @@
 package com.pandaq.rxpanda.transformer;
 
 import com.pandaq.rxpanda.exception.ApiException;
-import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
-import io.reactivex.functions.Function;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeUnit;
+
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.ObservableSource;
+import io.reactivex.rxjava3.functions.Function;
 
 /**
  * Created by huxinyu on 2019/3/11.

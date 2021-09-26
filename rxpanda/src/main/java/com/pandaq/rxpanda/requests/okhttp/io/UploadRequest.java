@@ -6,7 +6,8 @@ import com.pandaq.rxpanda.callbacks.UploadCallBack;
 import com.pandaq.rxpanda.constants.MediaTypes;
 import com.pandaq.rxpanda.interceptor.UploadInterceptor;
 import com.pandaq.rxpanda.transformer.RxScheduler;
-import io.reactivex.annotations.NonNull;
+
+import io.reactivex.rxjava3.annotations.NonNull;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;

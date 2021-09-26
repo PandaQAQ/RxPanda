@@ -12,7 +12,8 @@ import com.pandaq.rxpanda.utils.CastUtils;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import io.reactivex.annotations.NonNull;
+import io.reactivex.rxjava3.annotations.NonNull;
+
 
 /**
  * Created by huxinyu on 2019/7/11.

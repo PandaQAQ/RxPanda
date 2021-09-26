@@ -9,7 +9,7 @@ import com.pandaq.rxpanda.utils.GsonUtil;
 
 import java.lang.reflect.Type;
 
-import io.reactivex.functions.Function;
+import io.reactivex.rxjava3.functions.Function;
 import okhttp3.ResponseBody;
 
 /**

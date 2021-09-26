@@ -2,7 +2,6 @@ package com.pandaq.rxpanda.requests;
 
 import android.text.TextUtils;
 
-import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.config.CONFIG;
 import com.pandaq.rxpanda.config.HttpGlobalConfig;
 import com.pandaq.rxpanda.converter.PandaConvertFactory;
@@ -19,13 +18,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.annotations.NonNull;
+import io.reactivex.rxjava3.annotations.NonNull;
 import okhttp3.ConnectionPool;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import retrofit2.CallAdapter;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 
 /**
  * Created by huxinyu on 2019/1/9.
@@ -274,7 +273,7 @@ public class Request<T extends Request<T>> {
         }
         retrofitBuilder.addConverterFactory(getGlobalConfig().getConverterFactory());
         if (getGlobalConfig().getCallAdapterFactories().isEmpty()) {
-            getGlobalConfig().addCallAdapterFactory(RxJava2CallAdapterFactory.create());
+            getGlobalConfig().addCallAdapterFactory(RxJava3CallAdapterFactory.create());
         }
         for (CallAdapter.Factory factory : getGlobalConfig().getCallAdapterFactories()) {
             retrofitBuilder.addCallAdapterFactory(factory);

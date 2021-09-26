@@ -24,7 +24,7 @@ class MyApplication : Application() {
         defValues.defLong = -1L
         defValues.defString = "这是自动补全数据"
 
-        RxPanda.globalConfig()
+        RxPanda.init(this)
             .baseUrl("https://www.easy-mock.com/mock/5cef4b3e651e4075bad237f8/example/")
             .trustAllHost(true)
             .defaultValue(defValues)

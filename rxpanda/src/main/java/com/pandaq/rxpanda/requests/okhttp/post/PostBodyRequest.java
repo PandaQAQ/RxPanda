@@ -7,7 +7,7 @@ import com.pandaq.rxpanda.observer.ApiObserver;
 import com.pandaq.rxpanda.requests.okhttp.base.HttpRequest;
 import com.pandaq.rxpanda.utils.GsonUtil;
 
-import io.reactivex.Observable;
+import io.reactivex.rxjava3.core.Observable;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 

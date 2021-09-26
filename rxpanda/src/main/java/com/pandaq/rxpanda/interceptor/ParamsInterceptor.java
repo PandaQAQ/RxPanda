@@ -1,6 +1,6 @@
 package com.pandaq.rxpanda.interceptor;
 
-import io.reactivex.annotations.NonNull;
+import io.reactivex.rxjava3.annotations.NonNull;
 import okhttp3.*;
 
 import java.io.IOException;

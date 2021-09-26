@@ -5,7 +5,7 @@ import android.util.Log;
 import com.pandaq.rxpanda.exception.ApiException;
 import com.pandaq.rxpanda.observer.ApiObserver;
 
-import io.reactivex.annotations.NonNull;
+import io.reactivex.rxjava3.annotations.NonNull;
 
 /**
  * Created by huxinyu on 2019/3/8.

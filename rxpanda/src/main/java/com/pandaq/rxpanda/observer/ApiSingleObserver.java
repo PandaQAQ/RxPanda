@@ -1,7 +1,8 @@
 package com.pandaq.rxpanda.observer;
 
 import com.pandaq.rxpanda.exception.ApiException;
-import io.reactivex.observers.DisposableSingleObserver;
+
+import io.reactivex.rxjava3.observers.DisposableSingleObserver;
 
 /**
  * Created by huxinyu on 2019/3/8.

@@ -6,7 +6,7 @@ import com.pandaq.rxpanda.utils.ThreadUtils;
 
 import java.io.IOException;
 
-import io.reactivex.annotations.NonNull;
+import io.reactivex.rxjava3.annotations.NonNull;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import okio.Buffer;

@@ -7,7 +7,7 @@ import com.pandaq.sample.entities.UserTest;
 
 import java.util.List;
 
-import io.reactivex.Observable;
+import io.reactivex.rxjava3.core.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
@@ -18,7 +18,7 @@ import retrofit2.http.Query;
  */
 public interface ApiService {
 
-//    @MockJson(json = Constants.MOCK_STRING)
+    //    @MockJson(json = Constants.MOCK_STRING)
     @GET("https://www.baidu.com")
     Observable<Object> stringData();
 
@@ -31,10 +31,9 @@ public interface ApiService {
     @GET("https://www.baidu.com")
     Observable<Integer> intData();
 
-//
-//    @MockJson(json = Constants.MOCK_TYPE_ERROR)
-//    @GET("https://www.baidu.com")
-//    Observable<User> typeError();
+    @MockJson(json = Constants.MOCK_TYPE_ERROR)
+    @GET("https://www.baidu.com")
+    Observable<User> typeError();
 
     @MockJson(json = Constants.MOCK_DATA)
     @GET("https://www.baidu.com")

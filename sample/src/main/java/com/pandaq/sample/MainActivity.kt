@@ -16,7 +16,7 @@ import com.pandaq.sample.apis.ApiService
 import com.pandaq.sample.apis.AppCallBack
 import com.pandaq.sample.entities.User
 import com.pandaq.sample.entities.UserTest
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {

@@ -3,9 +3,10 @@ package com.pandaq.rxpanda.requests.okhttp;
 import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.observer.ApiObserver;
 import com.pandaq.rxpanda.requests.okhttp.base.HttpRequest;
-import io.reactivex.Observable;
 
 import java.lang.reflect.Type;
+
+import io.reactivex.rxjava3.core.Observable;
 
 /**
  * Created by huxinyu on 2019/6/3.

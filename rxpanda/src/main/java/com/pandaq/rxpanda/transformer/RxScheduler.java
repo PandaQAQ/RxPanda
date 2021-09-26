@@ -1,14 +1,12 @@
 package com.pandaq.rxpanda.transformer;
 
-import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.config.HttpGlobalConfig;
 
-import io.reactivex.ObservableTransformer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.ObservableTransformer;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.functions.Action;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 /**
  * Created by huxinyu on 2018/5/27.
@@ -77,7 +75,7 @@ public class RxScheduler {
         final Disposable[] disposables = new Disposable[1];
         return upstream -> upstream
                 .doOnSubscribe(disposable -> disposables[0] = disposable)
-                .doOnComplete((Action) () -> {
+                .doOnComplete(() -> {
                     if (disposables[0] != null) {
                         disposables[0].dispose();
                     }

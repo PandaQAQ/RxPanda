@@ -5,7 +5,7 @@ import com.pandaq.rxpanda.models.ProgressUploadBody;
 
 import java.io.IOException;
 
-import io.reactivex.annotations.NonNull;
+import io.reactivex.rxjava3.annotations.NonNull;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;

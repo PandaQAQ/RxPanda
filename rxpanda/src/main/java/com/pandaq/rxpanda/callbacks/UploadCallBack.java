@@ -4,7 +4,7 @@ import com.pandaq.rxpanda.exception.ApiException;
 import com.pandaq.rxpanda.observer.ApiObserver;
 import com.pandaq.rxpanda.utils.ThreadUtils;
 
-import io.reactivex.annotations.NonNull;
+import io.reactivex.rxjava3.annotations.NonNull;
 import okhttp3.ResponseBody;
 
 /**
