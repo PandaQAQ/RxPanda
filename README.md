@@ -28,7 +28,7 @@ dependencies {
 }
 ```
 # RxPanda
-基于 `RxJava2` `Retrofit2` `Okhttp3` 封装的网络库，处理了数据格式封装，gson 数据类型处理，gson 类解析空安全问题，使用时推荐使用 Release Log 中的最新版本目前为 1.0.3版本。
+基于 `RxJava` `Retrofit2` `Okhttp3` 封装的网络库，处理了数据格式封装，gson 数据类型处理，gson 类解析空安全问题，使用时推荐使用 Release Log 中的最新版本目前为 1.1.7版本。 master 分支基于 `rxjava3`,rxpanda2 分支基于 `rxjava2`
 
 > - 1、支持解析数据壳 key 自定义
 > - 2、支持接口单独配置禁用脱壳返回接口定义的原始对象
@@ -42,6 +42,7 @@ dependencies {
 > - 10、支持开发阶段单接口返回模拟json数据（适用于脱离后端接口开发，提高开发效率）
 
 # Release Log
+> - 1.1.7  修复部分兼容性 bug
 > - 1.1.6  下载请求回调增加在子线程进行回调
 > - 1.1.5  修复因全局使用一个 client 导致配置重叠的问题
 > - 1.1.4  优化下载进度日志打印
@@ -99,7 +100,7 @@ dependencies {
 | hosts(String... hosts)                                      | 添加信任域名未配置默认只允许 baseUrl 配置的地址                                                                 | false				|
 | trustAllHost(boolean trustAll)                              | 是否信任所有域名优先级大于 hosts，配置此为 true 则信任所有 host 不管是否添加 | false				|
 | hostVerifier(@NonNull HostnameVerifier verifier)            | 配置 Host 验证规则对象，未配置默认为 `SafeHostnameVerifier`  **(与 hosts()、trustAllHost() 方法冲突，添加此配置后另两个配置失效，验证规则以此配置为准)**                                                 | false				|
-| addCallAdapterFactory(@NonNull CallAdapter.Factory factory) | 添加 CallAdapterFactory 未添加默认值为 `RxJava2CallAdapterFactory`           | false				|
+| addCallAdapterFactory(@NonNull CallAdapter.Factory factory) | 添加 CallAdapterFactory 未添加默认值为 `RxJava2CallAdapterFactory`/ `RxJava3CallAdapterFactory`          | false				|
 | converterFactory(@NonNull Converter.Factory factory)        | 配置 ConverterFactory 未添加默认值为 `PandaConvertFactory`                   | false				|
 | callFactory(@NonNull Call.Factory factory)                  | 配置 CallFactory                                                             | false				|
 | sslFactory(@NonNull SSLSocketFactory factory)               | 配置 SSLFactory 未添加则通过 SSLManager 配置一个初始参数全为 null 的默认对象 | false				|
