@@ -42,9 +42,9 @@ uploadArchives {
         // 唯一标识
         pom.groupId = 'com.pandaq'
         // 模块名称
-        pom.artifactId = 'rxpanda'
+        pom.artifactId = 'rxpanda-rxjava3'
         // 版本号
-        pom.version = '1.1.7'
+        pom.version = '1.0.0'
     }
 }
 
