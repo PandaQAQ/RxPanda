@@ -291,7 +291,7 @@ public class Request<T extends Request<T>> {
             }
         }
         // 添加调试阶段的模拟数据拦截器
-        if (getGlobalConfig().isDebug()) {
+        if (getGlobalConfig().isAlwaysUseMock() || getGlobalConfig().isDebug()) {
             MockDataInterceptor dataInterceptor = getGlobalConfig().getMockDataInterceptor();
             dataInterceptor.setLocalMockJson(getMockJson());
             if (!getClientBuilder().networkInterceptors().contains(dataInterceptor)) {

@@ -76,6 +76,9 @@ public class HttpGlobalConfig {
     private long readTimeout = CONFIG.DEFAULT_TIMEOUT * 1000L; //连接超时时间，默认 10 秒
     private long writeTimeout = CONFIG.DEFAULT_TIMEOUT * 1000L; //连接超时时间，默认 10 秒
 
+    //@Mock 标注或者配置了 mockJson 的接口，是否总是使用模拟数据（false 为默认值，只有 Debug 模式下才使用 mock 数据）
+    private boolean alwaysUseMock = false;
+
     private HttpGlobalConfig() {
 
     }
@@ -351,6 +354,18 @@ public class HttpGlobalConfig {
     public HttpGlobalConfig trustAllHost(boolean trustAll) {
         this.trustAll = trustAll;
         return this;
+    }
+
+    /**
+     * 是否强制所有环境 mockJson 生效
+     */
+    public HttpGlobalConfig alwaysUseMock(boolean alwaysUseMock) {
+        this.alwaysUseMock = alwaysUseMock;
+        return this;
+    }
+
+    public boolean isAlwaysUseMock() {
+        return alwaysUseMock;
     }
 
     //    ######################################## getter ########################################
