@@ -6,8 +6,10 @@ import com.pandaq.rxpanda.RxPanda;
 import com.pandaq.rxpanda.config.CONFIG;
 import com.pandaq.rxpanda.config.HttpGlobalConfig;
 import com.pandaq.rxpanda.converter.PandaConvertFactory;
+import com.pandaq.rxpanda.interceptor.CacheInterceptor;
 import com.pandaq.rxpanda.interceptor.HeaderInterceptor;
 import com.pandaq.rxpanda.interceptor.MockDataInterceptor;
+import com.pandaq.rxpanda.interceptor.TimeoutInterceptor;
 import com.pandaq.rxpanda.ssl.SSLManager;
 import com.pandaq.rxpanda.utils.CastUtils;
 
@@ -279,26 +281,28 @@ public class Request<T extends Request<T>> {
         for (CallAdapter.Factory factory : getGlobalConfig().getCallAdapterFactories()) {
             retrofitBuilder.addCallAdapterFactory(factory);
         }
-        // 添加日志拦截器
+        // 添加日志拦截器，为网络拦截器
         if (getGlobalConfig().getLoggingInterceptor() != null) {
             if (getGlobalConfig().getLoggingInterceptor().isNetInterceptor()) {
-                if (!getClientBuilder().networkInterceptors().contains(getGlobalConfig().getLoggingInterceptor())) {
-                    getClientBuilder().addNetworkInterceptor(getGlobalConfig().getLoggingInterceptor());
-                }
+                getClientBuilder().addNetworkInterceptor(getGlobalConfig().getLoggingInterceptor());
             } else {
-                if (!getClientBuilder().interceptors().contains(getGlobalConfig().getLoggingInterceptor())) {
-                    getClientBuilder().addInterceptor(getGlobalConfig().getLoggingInterceptor());
-                }
+                getClientBuilder().addInterceptor(getGlobalConfig().getLoggingInterceptor());
             }
         }
+
+        // 缓存拦截器
+        getClientBuilder().addInterceptor(new CacheInterceptor());
+
+        // 时长拦截器
+        getClientBuilder().addInterceptor(new TimeoutInterceptor());
+
         // 添加调试阶段的模拟数据拦截器
         if (getGlobalConfig().isAlwaysUseMock() || getGlobalConfig().isDebug()) {
-            MockDataInterceptor dataInterceptor = getGlobalConfig().getMockDataInterceptor();
+            MockDataInterceptor dataInterceptor = new MockDataInterceptor();
             dataInterceptor.setLocalMockJson(getMockJson());
-            if (!getClientBuilder().networkInterceptors().contains(dataInterceptor)) {
-                getClientBuilder().addNetworkInterceptor(dataInterceptor);
-            }
+            getClientBuilder().addNetworkInterceptor(dataInterceptor);
         }
+
         OkHttpClient client = getClientBuilder().build();
         return retrofitBuilder.client(client).build();
     }

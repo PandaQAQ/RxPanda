@@ -2,8 +2,10 @@ package com.pandaq.rxpanda.requests.retrofit;
 
 import android.text.TextUtils;
 
+import com.pandaq.rxpanda.interceptor.CacheInterceptor;
 import com.pandaq.rxpanda.interceptor.MockDataInterceptor;
 import com.pandaq.rxpanda.interceptor.ParamsInterceptor;
+import com.pandaq.rxpanda.interceptor.TimeoutInterceptor;
 import com.pandaq.rxpanda.requests.Request;
 import com.pandaq.rxpanda.ssl.SSLManager;
 
@@ -63,9 +65,13 @@ public class RetrofitRequest extends Request<RetrofitRequest> {
                     getClientBuilder().addInterceptor(getGlobalConfig().getLoggingInterceptor());
                 }
             }
+            // 缓存拦截器
+            getClientBuilder().addInterceptor(new CacheInterceptor());
+            // 时长拦截器
+            getClientBuilder().addInterceptor(new TimeoutInterceptor());
             // 添加调试阶段的模拟数据拦截器
             if (getGlobalConfig().isAlwaysUseMock() || getGlobalConfig().isDebug()) {
-                MockDataInterceptor dataInterceptor = getGlobalConfig().getMockDataInterceptor();
+                MockDataInterceptor dataInterceptor = new MockDataInterceptor();
                 dataInterceptor.setLocalMockJson(getMockJson());
                 getClientBuilder().addNetworkInterceptor(dataInterceptor);
             }
@@ -86,7 +92,7 @@ public class RetrofitRequest extends Request<RetrofitRequest> {
         }
 
         if (!localParams.isEmpty()) {
-            ParamsInterceptor paramsInterceptor = getGlobalConfig().getParamsInterceptor();
+            ParamsInterceptor paramsInterceptor = new ParamsInterceptor();
             paramsInterceptor.setParamsMap(localParams);
             if (!getClientBuilder().networkInterceptors().contains(paramsInterceptor)) {
                 // 将参数添加到请求中
