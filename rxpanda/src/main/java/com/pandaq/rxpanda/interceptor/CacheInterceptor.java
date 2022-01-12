@@ -6,6 +6,8 @@ import android.net.Network;
 import android.net.NetworkInfo;
 import android.text.TextUtils;
 
+import com.pandaq.rxpanda.RxPanda;
+import com.pandaq.rxpanda.annotation.CacheIt;
 import com.pandaq.rxpanda.annotation.IgnoreCache;
 import com.pandaq.rxpanda.config.HttpGlobalConfig;
 import com.pandaq.rxpanda.log.HttpLoggingInterceptor;
@@ -24,19 +26,10 @@ import retrofit2.Invocation;
  * Email : panda.h@foxmail.com
  * Description :是否使用缓存的拦截器，对添加了不需要缓存注解的接口和IO接口以外的所有接口操作
  */
-public class CacheAllInterceptor implements Interceptor {
+public class CacheInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
-        //添加忽略缓存注解的接口直接返回请求结果，不做缓存相关处理
-        Invocation invocation = request.tag(Invocation.class);
-        if (invocation != null) {
-            Method method = invocation.method();
-            IgnoreCache ignoreCache = method.getAnnotation(IgnoreCache.class);
-            if (ignoreCache != null) {
-                return chain.proceed(request);
-            }
-        }
         // IO 相关的接口直接返回请求结果，不做缓存相关处理
         String ioFlag = request.header(HttpLoggingInterceptor.IO_FLAG_HEADER);
         boolean isIoRequest = !TextUtils.isEmpty(ioFlag);
@@ -44,6 +37,42 @@ public class CacheAllInterceptor implements Interceptor {
             return chain.proceed(request);
         }
 
+        //添加忽略缓存注解的接口直接返回请求结果，不做缓存相关处理
+        Invocation invocation = request.tag(Invocation.class);
+        if (invocation != null) {
+            if (RxPanda.getConfig().cacheAll()) { //全局使用缓存
+                Method method = invocation.method();
+                IgnoreCache ignoreCache = method.getAnnotation(IgnoreCache.class);
+                if (ignoreCache != null) { //忽略缓存，使用真实数据
+                    return chain.proceed(request);
+                } else {
+                    // 返回缓存数据
+                    return getCacheResponse(chain, request);
+                }
+            } else { //根据配置使用缓存
+                Method method = invocation.method();
+                CacheIt cacheIt = method.getAnnotation(CacheIt.class);
+                if (cacheIt != null) {
+                    // 返回缓存数据
+                    return getCacheResponse(chain, request);
+                } else {
+                    return chain.proceed(request);
+                }
+            }
+        } else {
+            return chain.proceed(request);
+        }
+    }
+
+    /**
+     * 构建缓存请求
+     *
+     * @param chain   请求的 chain
+     * @param request 请求体
+     * @return 结果
+     * @throws IOException 异常
+     */
+    private Response getCacheResponse(Chain chain, Request request) throws IOException {
         // 一般接口，进行缓存策略处理
         if (!isNetworkConnected()) {
             request = request.newBuilder().cacheControl(CacheControl.FORCE_CACHE).build();

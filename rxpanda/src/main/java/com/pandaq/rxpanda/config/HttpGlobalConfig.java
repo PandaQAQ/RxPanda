@@ -6,10 +6,6 @@ import com.pandaq.rxpanda.converter.PandaConvertFactory;
 import com.pandaq.rxpanda.entity.ApiData;
 import com.pandaq.rxpanda.entity.IApiData;
 import com.pandaq.rxpanda.entity.NullDataValue;
-import com.pandaq.rxpanda.interceptor.CacheAllInterceptor;
-import com.pandaq.rxpanda.interceptor.CacheNeededInterceptor;
-import com.pandaq.rxpanda.interceptor.MockDataInterceptor;
-import com.pandaq.rxpanda.interceptor.ParamsInterceptor;
 import com.pandaq.rxpanda.log.HttpLoggingInterceptor;
 import com.pandaq.rxpanda.ssl.SSLManager;
 
@@ -65,11 +61,6 @@ public class HttpGlobalConfig {
     private Cache cache;
     // false 只有标注使用缓存的接口才使用缓存，true 除了忽略注解和 IO 请求外的所有请求都使用缓存
     private boolean cacheAll;
-    private Interceptor cacheInterceptor;
-
-    private MockDataInterceptor mMockDataInterceptor;
-    private ParamsInterceptor paramsInterceptor;
-
     private long retryDelayMillis;//请求失败重试间隔时间
     private int retryCount;//请求失败重试次数
     private long connectTimeout = CONFIG.DEFAULT_TIMEOUT * 1000L; //连接超时时间，默认 10 秒
@@ -92,20 +83,6 @@ public class HttpGlobalConfig {
             }
         }
         return sHttpGlobalConfig;
-    }
-
-    public MockDataInterceptor getMockDataInterceptor() {
-        if (mMockDataInterceptor == null) {
-            mMockDataInterceptor = new MockDataInterceptor();
-        }
-        return mMockDataInterceptor;
-    }
-
-    public ParamsInterceptor getParamsInterceptor() {
-        if (paramsInterceptor == null) {
-            paramsInterceptor = new ParamsInterceptor();
-        }
-        return paramsInterceptor;
     }
 
     /**
@@ -374,19 +351,10 @@ public class HttpGlobalConfig {
         // 缓存拦截器只添加一次
         if (cache != null) {
             this.clientBuilder.cache(cache);
-            if (cacheInterceptor == null) {
-                if (cacheAll) {
-                    cacheInterceptor = new CacheAllInterceptor();
-                } else {
-                    cacheInterceptor = new CacheNeededInterceptor();
-                }
-                if (!this.clientBuilder.interceptors().contains(cacheInterceptor)) {
-                    this.clientBuilder.addInterceptor(cacheInterceptor);
-                }
-            }
         }
         return clientBuilder;
     }
+
 
     public List<Interceptor> getInterceptors() {
         return interceptors;
@@ -458,6 +426,10 @@ public class HttpGlobalConfig {
     public HttpGlobalConfig debug(boolean debug) {
         isDebug = debug;
         return this;
+    }
+
+    public boolean cacheAll() {
+        return cacheAll;
     }
 
     public void setContext(Context context) {
