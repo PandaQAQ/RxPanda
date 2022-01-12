@@ -68,7 +68,7 @@ public class RetrofitRequest extends Request<RetrofitRequest> {
             // 缓存拦截器
             getClientBuilder().addInterceptor(new CacheInterceptor());
             // 时长拦截器
-            getClientBuilder().addInterceptor(new TimeoutInterceptor());
+            getClientBuilder().addNetworkInterceptor(new TimeoutInterceptor());
             // 添加调试阶段的模拟数据拦截器
             if (getGlobalConfig().isAlwaysUseMock() || getGlobalConfig().isDebug()) {
                 MockDataInterceptor dataInterceptor = new MockDataInterceptor();
