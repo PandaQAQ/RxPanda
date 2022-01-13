@@ -21,3 +21,9 @@ Hrxpanda/src/main/java/com/pandaq/rxpanda/log/HttpLoggingInterceptor.java,f/1/f
 Prxpanda/src/main/java/com/pandaq/rxpanda/interceptor/CacheNeededInterceptor.java,8/3/832d231eb1ebc7d23af679ba8a1a11e92e073ca7
 <
 build.gradle,f/0/f07866736216be0ee2aba49e392191aeae700a35
+D
+rxpanda/build.gradle,d/c/dc67d33f093125d35abcea5907114160a0fe8495
+C
+sample/build.gradle,9/b/9b89863268e42b4a5bcc2fac056177949b697b34
+
+Orxpanda/src/main/java/com/pandaq/rxpanda/requests/retrofit/RetrofitRequest.java,1/8/18e9b13a8cd6a65c3d432315960eef8ac31d5e8f
