@@ -26,9 +26,11 @@ public class TimeoutInterceptor implements Interceptor {
             Method method = invocation.method();
             Timeout timeout = method.getAnnotation(Timeout.class);
             if (timeout != null) {
-                chain.withConnectTimeout(timeout.connectTimeout(), TimeUnit.MILLISECONDS);
-                chain.withReadTimeout(timeout.readTimeout(), TimeUnit.MILLISECONDS);
-                chain.withWriteTimeout(timeout.writeTimeout(), TimeUnit.MILLISECONDS);
+                Chain timeOutChain;
+                timeOutChain = chain.withConnectTimeout(timeout.connectTimeout(), TimeUnit.MILLISECONDS);
+                timeOutChain = timeOutChain.withReadTimeout(timeout.readTimeout(), TimeUnit.MILLISECONDS);
+                timeOutChain = timeOutChain.withWriteTimeout(timeout.writeTimeout(), TimeUnit.MILLISECONDS);
+                return timeOutChain.proceed(request);
             }
         }
         return chain.proceed(request);

@@ -1,10 +1,6 @@
 
 i
 9sample/src/main/java/com/pandaq/sample/entities/User.java,d/3/d313a5f36ebab33e0691975388e0c2176b5dfe65
-k
-;sample/src/main/java/com/pandaq/sample/apis/ApiService.java,7/8/78470d51c7d26bfb20fcc3e252c53dfb141f130b
-C
-sample/build.gradle,9/b/9b89863268e42b4a5bcc2fac056177949b697b34
 B
 rxpanda/.gitignore,b/5/b59e5454b7eafce16b2808e1b80539a4a40ec9a9
 {
@@ -25,5 +21,3 @@ Hrxpanda/src/main/java/com/pandaq/rxpanda/log/HttpLoggingInterceptor.java,f/1/f
 Prxpanda/src/main/java/com/pandaq/rxpanda/interceptor/CacheNeededInterceptor.java,8/3/832d231eb1ebc7d23af679ba8a1a11e92e073ca7
 <
 build.gradle,f/0/f07866736216be0ee2aba49e392191aeae700a35
-e
-5rxpanda/src/main/java/com/pandaq/rxpanda/RxPanda.java,1/e/1e2fefdf10f170a9535c314449a8765230b17add

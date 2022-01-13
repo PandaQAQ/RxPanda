@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private val apiService = RxPanda
         .retrofit()
-        .connectTimeout(200)
         .create(ApiService::class.java)
     private val apiService1 = RxPanda
         .retrofit()
