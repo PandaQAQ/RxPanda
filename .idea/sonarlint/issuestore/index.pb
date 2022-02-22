@@ -1,6 +1,4 @@
 
-i
-9sample/src/main/java/com/pandaq/sample/entities/User.java,d/3/d313a5f36ebab33e0691975388e0c2176b5dfe65
 B
 rxpanda/.gitignore,b/5/b59e5454b7eafce16b2808e1b80539a4a40ec9a9
 {
@@ -19,11 +17,11 @@ x
 Hrxpanda/src/main/java/com/pandaq/rxpanda/log/HttpLoggingInterceptor.java,f/1/f1f5ecab27d389fd11186a653a09b7dc55c1f222
 €
 Prxpanda/src/main/java/com/pandaq/rxpanda/interceptor/CacheNeededInterceptor.java,8/3/832d231eb1ebc7d23af679ba8a1a11e92e073ca7
-<
-build.gradle,f/0/f07866736216be0ee2aba49e392191aeae700a35
-D
-rxpanda/build.gradle,d/c/dc67d33f093125d35abcea5907114160a0fe8495
-C
-sample/build.gradle,9/b/9b89863268e42b4a5bcc2fac056177949b697b34
 
 Orxpanda/src/main/java/com/pandaq/rxpanda/requests/retrofit/RetrofitRequest.java,1/8/18e9b13a8cd6a65c3d432315960eef8ac31d5e8f
+k
+;sample/src/main/java/com/pandaq/sample/apis/ApiService.java,7/8/78470d51c7d26bfb20fcc3e252c53dfb141f130b
+n
+>rxpanda/src/main/java/com/pandaq/rxpanda/requests/Request.java,3/1/310d862cdaaefcdab1aa5273bf0243c904188f20
+|
+Lrxpanda/src/main/java/com/pandaq/rxpanda/interceptor/TimeoutInterceptor.java,b/5/b5fc8baf2b5b6e5eb5bec3a4dbbdaa4875743332
