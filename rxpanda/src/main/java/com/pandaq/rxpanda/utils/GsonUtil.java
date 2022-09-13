@@ -38,7 +38,7 @@ public class GsonUtil {
                 .registerTypeAdapter(Number.class, DefaultTypeAdapters.NUMBER)
                 .registerTypeAdapter(String.class, DefaultTypeAdapters.STRING)
                 .registerTypeAdapter(BigDecimal.class, DefaultTypeAdapters.BIG_DECIMAL)
-                .serializeNulls() //不忽略为 null 的参数
+//                .serializeNulls() //不忽略为 null 的参数
                 .create();
     }
 }
