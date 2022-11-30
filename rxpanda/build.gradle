@@ -46,7 +46,7 @@ publishing {
             // 模块名称
             artifactId = 'rxpanda'
             // 版本号
-            version = "1.2.0"
+            version = "1.2.1"
 
             afterEvaluate {
                 artifact bundleReleaseAar
