@@ -3,9 +3,9 @@ package com.pandaq.sample
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.pandaq.rxpanda.RxPanda
 import com.pandaq.rxpanda.callbacks.DownloadCallBack
@@ -14,29 +14,31 @@ import com.pandaq.rxpanda.transformer.RxScheduler
 import com.pandaq.rxpanda.utils.GsonUtil
 import com.pandaq.sample.apis.ApiService
 import com.pandaq.sample.apis.AppCallBack
+import com.pandaq.sample.databinding.ActivityMainBinding
 import com.pandaq.sample.entities.User
 import com.pandaq.sample.entities.UserTest
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
+
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private val apiService = RxPanda
         .retrofit()
-        .connectTimeout(200)
         .create(ApiService::class.java)
     private val apiService1 = RxPanda
         .retrofit()
         .connectTimeout(200)
         .create(ApiService::class.java)
+    lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        stringData.setOnClickListener(this)
-        intData.setOnClickListener(this)
-        userData.setOnClickListener(this)
-        mockdata.setOnClickListener(this)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.stringData.setOnClickListener(this)
+        binding.intData.setOnClickListener(this)
+        binding.userData.setOnClickListener(this)
+        binding.mockdata.setOnClickListener(this)
         this.javaClass.isAnonymousClass
     }
 
@@ -47,16 +49,16 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     .target(filesDir.absolutePath + "/sources", "aaa.mp4")
                     .request(object : DownloadCallBack() {
                         override fun done(success: Boolean) {
-                            Log.e("download","下载资源成功了")
+                            Log.e("download", "下载资源成功了")
                         }
 
                         override fun onFailed(exception: Exception?) {
                             // 进行错误上报
-                            Log.e("download","下载资源失败了")
+                            Log.e("download", "下载资源失败了")
                         }
 
                         override fun inProgress(process: Int) {
-                            Log.e("download","下载资源 $process%")
+                            Log.e("download", "下载资源 $process%")
                         }
 
                     })
@@ -88,14 +90,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     .compose(RxScheduler.sync())
                     .subscribe(object : AppCallBack<Int>() {
                         override fun success(data: Int) {
-                            dataString.text = data.toString()
-                            dataString.setTextColor(Color.parseColor("#000000"))
+                            binding.dataString.text = data.toString()
+                            binding.dataString.setTextColor(Color.parseColor("#000000"))
                         }
 
                         @SuppressLint("SetTextI18n")
                         override fun fail(code: String?, msg: String?) {
-                            dataString.text = "error:::$msg"
-                            dataString.setTextColor(Color.parseColor("#ff0000"))
+                            binding.dataString.text = "error:::$msg"
+                            binding.dataString.setTextColor(Color.parseColor("#ff0000"))
                         }
 
                         override fun finish(success: Boolean) {
@@ -111,14 +113,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     .compose(RxScheduler.sync())
                     .subscribe(object : AppCallBack<User>() {
                         override fun success(data: User) {
-                            dataString.text = Gson().toJson(data)
-                            dataString.setTextColor(Color.parseColor("#000000"))
+                            binding.dataString.text = Gson().toJson(data)
+                            binding.dataString.setTextColor(Color.parseColor("#000000"))
                         }
 
                         @SuppressLint("SetTextI18n")
                         override fun fail(code: String?, msg: String?) {
-                            dataString.text = "error:::$msg"
-                            dataString.setTextColor(Color.parseColor("#ff0000"))
+                            binding.dataString.text = "error:::$msg"
+                            binding.dataString.setTextColor(Color.parseColor("#ff0000"))
                         }
 
                         override fun finish(success: Boolean) {
@@ -153,14 +155,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     .request(
                         object : AppCallBack<ApiData<List<UserTest>>>() {
                             override fun success(data: ApiData<List<UserTest>>) {
-                                dataString.text = GsonUtil.gson().toJson(data)
-                                dataString.setTextColor(Color.parseColor("#000000"))
+                                binding.dataString.text = GsonUtil.gson().toJson(data)
+                                binding.dataString.setTextColor(Color.parseColor("#000000"))
                             }
 
                             @SuppressLint("SetTextI18n")
                             override fun fail(code: String?, msg: String?) {
-                                dataString.text = "error:::$msg"
-                                dataString.setTextColor(Color.parseColor("#ff0000"))
+                                binding.dataString.text = "error:::$msg"
+                                binding.dataString.setTextColor(Color.parseColor("#ff0000"))
                             }
 
                             override fun finish(success: Boolean) {

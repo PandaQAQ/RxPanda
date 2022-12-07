@@ -1,6 +1,6 @@
 package com.pandaq.sample.entities;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.pandaq.rxpanda.utils.GsonUtil;
 

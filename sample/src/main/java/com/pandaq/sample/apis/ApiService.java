@@ -1,6 +1,7 @@
 package com.pandaq.sample.apis;
 
 import com.pandaq.rxpanda.annotation.MockJson;
+import com.pandaq.rxpanda.annotation.Timeout;
 import com.pandaq.sample.Constants;
 import com.pandaq.sample.entities.User;
 import com.pandaq.sample.entities.UserTest;
@@ -28,12 +29,14 @@ public interface ApiService {
     Observable<User> getUser();
 
     @MockJson(json = Constants.MOCK_INT)
-    @GET("https://www.baidu.com")
+    @GET("https://www.google.com")
+    @Timeout(connectTimeout = 5000,readTimeout = 5000,writeTimeout = 5000)
     Observable<Integer> intData();
 
-    @MockJson(json = Constants.MOCK_TYPE_ERROR)
-    @GET("https://www.baidu.com")
-    Observable<User> typeError();
+
+//    @MockJson(json = Constants.MOCK_TYPE_ERROR)
+//    @GET("https://www.baidu.com")
+//    Observable<User> typeError();
 
     @MockJson(json = Constants.MOCK_DATA)
     @GET("https://www.baidu.com")
