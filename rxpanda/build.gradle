@@ -44,7 +44,7 @@ publishing {
             // 组名称
             groupId = 'com.pandaq'
             // 模块名称
-            artifactId = 'rxpanda'
+            artifactId = 'rxpanda-rxjava3'
             // 版本号
             version = "1.0.1"
 

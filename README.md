@@ -29,7 +29,7 @@ dependencies {
 }
 > - rxjava3 版本
 dependencies {
-   implementation "com.pandaq:rxpanda-rxjava3:1.0.0"
+   implementation "com.pandaq:rxpanda-rxjava3:1.0.1"
 }
 ```
 # RxPanda
