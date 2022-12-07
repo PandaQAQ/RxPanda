@@ -91,5 +91,5 @@ dependencies {
     api "com.squareup.retrofit2:converter-gson:2.6.0"
     api "com.squareup.retrofit2:adapter-rxjava2:2.6.0"
     // gson
-    api "com.google.code.gson:gson:2.8.6"
+    api "com.google.code.gson:gson:2.8.9"
 }

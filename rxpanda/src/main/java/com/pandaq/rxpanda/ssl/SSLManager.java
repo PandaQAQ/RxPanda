@@ -37,11 +37,7 @@ public class SSLManager {
             }
             sslContext.init(keyManagers, new TrustManager[]{trustManager}, new SecureRandom());
             return sslContext.getSocketFactory();
-        } catch (NoSuchAlgorithmException e) {
-            throw new AssertionError(e);
-        } catch (KeyManagementException e) {
-            throw new AssertionError(e);
-        } catch (KeyStoreException e) {
+        } catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
             throw new AssertionError(e);
         }
     }
