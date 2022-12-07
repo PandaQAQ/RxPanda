@@ -83,7 +83,7 @@ publishing {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    // rxJava 2
+    // rxJava 3
     api "io.reactivex.rxjava3:rxandroid:3.0.0"
     api "io.reactivex.rxjava3:rxjava:3.0.0"
     // retrofit 2

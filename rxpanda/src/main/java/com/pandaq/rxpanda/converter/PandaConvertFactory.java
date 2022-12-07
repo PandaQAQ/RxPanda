@@ -34,7 +34,7 @@ import retrofit2.Retrofit;
  */
 public class PandaConvertFactory extends Converter.Factory {
 
-    private Gson gson;
+    private final Gson gson;
 
     public static PandaConvertFactory create() {
         return create(GsonUtil.gson());
