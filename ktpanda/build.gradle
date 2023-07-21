@@ -1,0 +1,95 @@
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+    id 'kotlin-android'
+    id 'kotlin-parcelize'
+    id 'kotlin-kapt'
+}
+
+android {
+    compileSdkVersion 33
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 33
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            consumerProguardFiles 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+}
+
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            // 组名称
+            groupId = 'com.pandaq'
+            // 模块名称
+            artifactId = 'ktpanda'
+            // 版本号
+            version = "1.0.0"
+
+            afterEvaluate {
+                artifact bundleReleaseAar
+            }
+            artifact sourcesJar
+
+            pom.withXml {
+                //在pom.xml添加依赖关系
+                def dependenciesNode = asNode().appendNode('dependencies')
+                //拿到所有编译时的依赖
+                def dependenciesList = []
+                dependenciesList.addAll(configurations.implementation.allDependencies)
+                dependenciesList.addAll(configurations.api.allDependencies)
+                dependenciesList.each {
+                    if (null != it.group) {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', it.group)
+                        dependencyNode.appendNode('artifactId', it.name)
+                        dependencyNode.appendNode('version', it.version)
+                        dependencyNode.appendNode('scope', 'compile')
+                    }
+                }
+
+            }
+        }
+    }
+    repositories {
+        maven {
+            url = uri(LOCAL_MAVEN)
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    // retrofit 2
+    api "com.squareup.retrofit2:retrofit:2.9.0"
+    api "com.squareup.retrofit2:converter-gson:2.6.0"
+    // gson
+    api "com.google.code.gson:gson:2.8.9"
+    api "androidx.annotation:annotation:1.6.0"
+    // kotlin 协程
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
+}

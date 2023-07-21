@@ -2,7 +2,6 @@ package com.pandaq.sample
 
 import android.app.Application
 import android.util.Log
-import androidx.viewbinding.BuildConfig
 import com.pandaq.ktpanda.KtPanda
 import com.pandaq.ktpanda.entity.NullDataValue
 import com.pandaq.ktpanda.log.HttpLoggingInterceptor
