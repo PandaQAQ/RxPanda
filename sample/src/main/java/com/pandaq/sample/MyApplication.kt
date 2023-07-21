@@ -2,9 +2,10 @@ package com.pandaq.sample
 
 import android.app.Application
 import android.util.Log
-import com.pandaq.rxpanda.RxPanda
-import com.pandaq.rxpanda.entity.NullDataValue
-import com.pandaq.rxpanda.log.HttpLoggingInterceptor
+import androidx.viewbinding.BuildConfig
+import com.pandaq.ktpanda.KtPanda
+import com.pandaq.ktpanda.entity.NullDataValue
+import com.pandaq.ktpanda.log.HttpLoggingInterceptor
 
 /**
  * Created by huxinyu on 2019/6/30.
@@ -24,7 +25,7 @@ class MyApplication : Application() {
         defValues.defLong = -1L
         defValues.defString = "这是自动补全数据"
 
-        RxPanda.init(this)
+        KtPanda.init(this)
             .baseUrl("https://www.easy-mock.com/mock/5cef4b3e651e4075bad237f8/example/")
             .trustAllHost(true)
             .interceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))

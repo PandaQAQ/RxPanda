@@ -1,7 +1,7 @@
 package com.pandaq.sample.apis
 
-import com.pandaq.rxpanda.annotation.MockJson
-import com.pandaq.rxpanda.annotation.Timeout
+import com.pandaq.ktpanda.annotation.MockJson
+import com.pandaq.ktpanda.annotation.Timeout
 import com.pandaq.sample.Constants
 import com.pandaq.sample.entities.User
 import com.pandaq.sample.entities.UserTest

@@ -7,13 +7,10 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
-import com.pandaq.rxpanda.RxPanda
-import com.pandaq.rxpanda.callbacks.DownloadCallBack
-import com.pandaq.rxpanda.callbacks.UploadCallBack
-import com.pandaq.rxpanda.exception.ApiException
+import com.pandaq.ktpanda.KtPanda
+import com.pandaq.ktpanda.callbacks.DownloadCallBack
 import com.pandaq.sample.apis.ApiService
 import com.pandaq.sample.databinding.ActivityMainBinding
-import com.pandaq.sample.entities.UserTest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,10 +18,10 @@ import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
-    private val apiService = RxPanda
+    private val apiService = KtPanda
         .retrofit()
         .create(ApiService::class.java)
-    private val apiService1 = RxPanda
+    private val apiService1 = KtPanda
         .retrofit()
         .connectTimeout(200)
         .create(ApiService::class.java)
@@ -48,7 +45,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 val path =
                     Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path
                 CoroutineScope(Dispatchers.IO).launch {
-                    RxPanda.download("https://v-cdn.zjol.com.cn/276982.mp4")
+                    KtPanda.download("https://v-cdn.zjol.com.cn/276982.mp4")
                         .target("$path/sources", "aaa.mp4")
                         .request(object : DownloadCallBack() {
                             override fun onDone() {

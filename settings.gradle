@@ -11,5 +11,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "demo"
+rootProject.name = "sample"
 include ':sample', ':ktpanda'

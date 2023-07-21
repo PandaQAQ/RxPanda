@@ -1,7 +1,7 @@
 package com.pandaq.sample.entities.apidata
 
 import com.google.gson.annotations.SerializedName
-import com.pandaq.rxpanda.entity.IApiData
+import com.pandaq.ktpanda.entity.IApiData
 
 /**
  * Created by huxinyu on 2019/6/18.
