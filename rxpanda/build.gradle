@@ -90,6 +90,6 @@ dependencies {
     api "com.google.code.gson:gson:2.8.9"
     api "androidx.annotation:annotation:1.6.0"
     // kotlin 协程
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0"
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
 }
