@@ -46,7 +46,7 @@ publishing {
             // 模块名称
             artifactId = 'ktpanda'
             // 版本号
-            version = "1.0.0"
+            version = "1.0.1"
 
             afterEvaluate {
                 artifact bundleReleaseAar
