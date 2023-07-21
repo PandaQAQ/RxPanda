@@ -59,8 +59,8 @@
 -keep class com.google.gson.stream.** { *; }
 -keepattributes EnclosingMethod
 # Gson 自定义相关
--keep class com.pandaq.rxpanda.entity.**{*;}
--keep class com.pandaq.rxpanda.gsonadapter.**{*;}
+-keep class com.pandaq.ktpanda.entity.**{*;}
+-keep class com.pandaq.ktpanda.gsonadapter.**{*;}
 
 
 # Retrofit does reflection on generic parameters. InnerClasses is required to use Signature and

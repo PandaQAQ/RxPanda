@@ -1,4 +1,3 @@
-
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -12,5 +11,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "sample"
-include ':sample', ':rxpanda'
+rootProject.name = "demo"
+include ':sample', ':ktpanda'

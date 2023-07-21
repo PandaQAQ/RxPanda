@@ -1,8 +1,8 @@
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1a9236f222ac4293a509c9db710a13f5)](https://app.codacy.com/app/PandaQAQ/RxPanda?utm_source=github.com&utm_medium=referral&utm_content=PandaQAQ/RxPanda&utm_campaign=Badge_Grade_Dashboard)  [![License](https://img.shields.io/github/license/PandaQAQ/RxPanda.svg)](https://github.com/PandaQAQ/RxPanda/blob/master/LICENSE) 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1a9236f222ac4293a509c9db710a13f5)](https://app.codacy.com/app/PandaQAQ/KtPanda?utm_source=github.com&utm_medium=referral&utm_content=PandaQAQ/KtPanda&utm_campaign=Badge_Grade_Dashboard)  [![License](https://img.shields.io/github/license/PandaQAQ/KtPanda.svg)](https://github.com/PandaQAQ/KtPanda/blob/master/LICENSE) 
 
 # 项目地址
-[RxPanda](https://github.com/PandaQAQ/RxPanda)，欢迎使用和 star，提出的问题我会及时回复并处理。
+[KtPanda](https://github.com/PandaQAQ/RxPanda)，欢迎使用和 star，提出的问题我会及时回复并处理。Kotlin 和 Rxjava 版本注意切换分支
 # 接入方式
 ## kotlin 协程版本
 - 1
@@ -18,28 +18,11 @@ allprojects {
 - 2
 ```grovy
 dependencies {
-   implementation "com.pandaq:ktpanda:1.0.0"
+   implementation "com.pandaq:ktpanda:1.0.1"
 }
 ```
-## rxjava2 版本
-- 1
-```groovy
-// project 的 build.gradle 中配置
-allprojects {
-    repositories {
-        // your other properties
-        maven { url 'https://gitee.com/monkeies/maven/raw/master' }
-    }
-}
-```
-- 2
-```grovy
-dependencies {
-   implementation "com.pandaq:rxpanda:version"
-}
-```
-# RxPanda
-基于 `RxJava2/Kotlin Coroutine` `Retrofit2` `Okhttp3` 封装的网络库，处理了数据格式封装，gson 数据类型处理，gson 类解析空安全问题，使用时推荐使用 Release Log 中的最新版本目前为 1.0.3版本。
+# KtPanda
+基于 `Kotlin Coroutine` `Retrofit2` `Okhttp3` 封装的网络库，处理了数据格式封装，gson 数据类型处理，gson 类解析空安全问题，使用时推荐使用 Release Log 中的最新版本目前为 1.0.3版本。
 
 > - 1、支持解析数据壳 key 自定义
 > - 2、支持接口单独配置禁用脱壳返回接口定义的原始对象
@@ -64,7 +47,7 @@ dependencies {
         defValues.defLong =0L
         defValues.defString = ""
 
-        RxPanda.globalConfig()
+        KtPanda.globalConfig()
                 .baseUrl(ApiService.BASE_URL) //配置基础域名
                 .netInterceptor(new HttpLoggingInterceptor()
                         .setLevel(HttpLoggingInterceptor.Level.BODY)) //添加日志拦截器
@@ -87,7 +70,7 @@ dependencies {
 | hosts(String... hosts)                                      | 添加信任域名未配置默认只允许 baseUrl 配置的地址                                                                 | false				|
 | trustAllHost(boolean trustAll)                              | 是否信任所有域名优先级大于 hosts，配置此为 true 则信任所有 host 不管是否添加 | false				|
 | hostVerifier(@NonNull HostnameVerifier verifier)            | 配置 Host 验证规则对象，未配置默认为 `SafeHostnameVerifier`  **(与 hosts()、trustAllHost() 方法冲突，添加此配置后另两个配置失效，验证规则以此配置为准)**                                                 | false				|
-| addCallAdapterFactory(@NonNull CallAdapter.Factory factory) | 添加 CallAdapterFactory 未添加默认值为 `RxJava2CallAdapterFactory`           | false				|
+| addCallAdapterFactory(@NonNull CallAdapter.Factory factory) | 添加 CallAdapterFactory            | false				|
 | converterFactory(@NonNull Converter.Factory factory)        | 配置 ConverterFactory 未添加默认值为 `PandaConvertFactory`                   | false				|
 | callFactory(@NonNull Call.Factory factory)                  | 配置 CallFactory                                                             | false				|
 | sslFactory(@NonNull SSLSocketFactory factory)               | 配置 SSLFactory 未添加则通过 SSLManager 配置一个初始参数全为 null 的默认对象 | false				|
@@ -107,7 +90,7 @@ dependencies {
 | apiSuccessCode(Long apiSuccessCode)             | Json解析接口数据结构外壳对象为 `ApiData` 结构时，配置成功 Code，默认值为 `0L`				| false |
 | debug(boolean debug)             | 配置是否为 debug 模式，非 debug 模式网络库将不会输出 日志 | false |
 | defaultValue(NullDataValue defaultValue)             | 配置对应数据类型返回结果为 null 或对应数据接口未返回时的默认值| false |
-| client(new OkHttpClient.Builder())              |补充配置 OkHttpClient，相同的配置会被 RxPanda 配置项覆盖，例如超时时长等|false|
+| client(new OkHttpClient.Builder())              |补充配置 OkHttpClient，相同的配置会被 KtPanda 配置项覆盖，例如超时时长等|false|
 
 ### 二、接口定义
 
@@ -164,9 +147,9 @@ data class ZooApiData<T>(
   .apiDataClazz(ZooApiData::class.java)
 ```
 - 3、 @MockJson(json = jsonString)
-    后端给出数据结构但接口尚在开发时，可通过此注解配置模拟数据（仅在 RxPanda debug 模式下有效）。使用时在对应的接口上此注解指定返回的 json 字符串，任意请求一个可请求通的接口即可
+    后端给出数据结构但接口尚在开发时，可通过此注解配置模拟数据（仅在 KtPanda debug 模式下有效）。使用时在对应的接口上此注解指定返回的 json 字符串，任意请求一个可请求通的接口即可
 ```kotlin
-    // 给这个接口指定模拟返回的 json 为 Constants.MOCK_JSON（仅当 RxPanda.globalConfig().isDebug()=true 时有效），请求地址为任意能正常请求的地址即可
+    // 给这个接口指定模拟返回的 json 为 Constants.MOCK_JSON（仅当 KtPanda.globalConfig().isDebug()=true 时有效），请求地址为任意能正常请求的地址即可
     @MockJson(json = Constants.MOCK_JSON)
     @GET("https://www.baidu.com")
     Observable<List<ZooData>> newJsonKeyData();
@@ -199,7 +182,7 @@ public class UserInfo {
 
 #### Retrofit 方式
 ``` kotlin
-    private val apiService = RxPanda.retrofit().create(ApiService::class.java)
+    private val apiService = KtPanda.retrofit().create(ApiService::class.java)
 
 				. . .
 
@@ -231,7 +214,7 @@ public class UserInfo {
 
 这只是一个最简例子，可以通过链式调用添加`参数` `请求头` `拦截器` `标签` 等属性
 ``` kotlin
-    RxPanda.get("https://www.xx.xx.xx/xx/xx/xx")
+    KtPanda.get("https://www.xx.xx.xx/xx/xx/xx")
     .addParam(paramsMap)
     .request(object :ApiObserver<List<ZooData>>(){
         override fun onSuccess(data: List<ZooData>?) {
@@ -253,7 +236,7 @@ public class UserInfo {
 
 这只是一个最简例子，可以通过链式调用添加`参数` `请求头` `拦截器` `标签` 等属性
 ```kotlin
-                RxPanda.post("xxxxxx")
+                KtPanda.post("xxxxxx")
                     .addHeader("header", "value")
                     .urlParams("key", "value")
                     .request(object : AppCallBack<String>() {
@@ -273,7 +256,7 @@ public class UserInfo {
 ```
 #### 文件上传
 ```kotlin
-        RxPanda.upload("url")
+        KtPanda.upload("url")
             .addImageFile("key",file)
 //            .addBytes("key",bytes)
 //            .addStream("key",stream)
@@ -295,7 +278,7 @@ public class UserInfo {
 ```
 #### 文件下载
 ```kotlin
-        RxPanda.download("url")
+        KtPanda.download("url")
             .target(file)
 //            .target(path,fileName)
             .request(object : UploadCallBack() {
@@ -317,67 +300,67 @@ public class UserInfo {
 - 日志数据格式化
 以下是一次完整的网络请求，包含了数据和请求的基本参数数据
 ```md
-2019-08-13 10:04:02.088 22957-23059/com.pandaq.sample D/RxPanda:
-2019-08-13 10:04:02.088 22957-23059/com.pandaq.sample D/RxPanda: ╔════════════════════════  HTTP  START  ══════════════════════════
-2019-08-13 10:04:02.088 22957-23059/com.pandaq.sample D/RxPanda: ║
-2019-08-13 10:04:02.088 22957-23059/com.pandaq.sample D/RxPanda: ║==> GET https://www.easy-mock.com/mock/5cef4b3e651e4075bad237f8/example/customApiData http/1.1
-2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/RxPanda: ║Host: www.easy-mock.com
-2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/RxPanda: ║Connection: Keep-Alive
-2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/RxPanda: ║Accept-Encoding: gzip
-2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/RxPanda: ║User-Agent: okhttp/3.10.0
-2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/RxPanda: ║Info: GET
-2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/RxPanda: ║==> 200 OK https://www.easy-mock.com/mock/5cef4b3e651e4075bad237f8/example/customApiData (245ms)
-2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/RxPanda: ║Server: Tengine
-2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/RxPanda: ║Date: Tue, 13 Aug 2019 02:04:01 GMT
-2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/RxPanda: ║Content-Type: application/json; charset=utf-8
-2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/RxPanda: ║Content-Length: 495
-2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/RxPanda: ║Connection: keep-alive
-2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/RxPanda: ║X-Request-Id: 71a77b24-9822-47df-94b1-fd477cfcdaa9
-2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/RxPanda: ║Vary: Accept, Origin
-2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/RxPanda: ║Rate-Limit-Remaining: 1
-2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/RxPanda: ║Rate-Limit-Reset: 1565661842
-2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/RxPanda: ║Rate-Limit-Total: 2
-2019-08-13 10:04:02.094 22957-23059/com.pandaq.sample D/RxPanda: ║
-2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/RxPanda: ║——————————————————JSON START——————————————————
-2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/RxPanda: ║ {
-2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/RxPanda: ║   "errorCode": 100,
-2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/RxPanda: ║   "errorMsg": "我是错误信息",
-2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/RxPanda: ║   "response": [
-2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/RxPanda: ║     {
-2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/RxPanda: ║       "zooId": 28,
-2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/RxPanda: ║       "name": "成都市动物园",
-2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/RxPanda: ║       "englishName": "chengdu zoo",
-2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/RxPanda: ║       "address": "中国·四川·成都·成华区昭觉寺南路234号",
-2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/RxPanda: ║       "tel": "028-83516953"
-2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/RxPanda: ║     },
-2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/RxPanda: ║     {
-2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/RxPanda: ║       "zooId": 28,
-2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/RxPanda: ║       "name": "北京市动物园",
-2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/RxPanda: ║       "englishName": "beijing zoo",
-2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/RxPanda: ║       "address": "中国·北京·北京·XX路XX号",
-2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/RxPanda: ║       "tel": "028-83316953"
-2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/RxPanda: ║     },
-2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/RxPanda: ║     {
-2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/RxPanda: ║       "zooId": 28,
-2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/RxPanda: ║       "name": "重庆市动物园",
-2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/RxPanda: ║       "englishName": "chongqing zoo",
-2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/RxPanda: ║       "address": "中国·重庆·重庆·XX路XX号",
-2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/RxPanda: ║       "tel": "028-83513353"
-2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/RxPanda: ║     }
-2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/RxPanda: ║   ]
-2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/RxPanda: ║ }
-2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/RxPanda: ║——————————————————JSON END———————————————————
-2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/RxPanda: ║
-2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/RxPanda: ║Info: 495-byte body
-2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/RxPanda: ║
-2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/RxPanda: ╚════════════════════════  HTTP  END  ═══════════════════════════
-2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/RxPanda:
+2019-08-13 10:04:02.088 22957-23059/com.pandaq.sample D/KtPanda:
+2019-08-13 10:04:02.088 22957-23059/com.pandaq.sample D/KtPanda: ╔════════════════════════  HTTP  START  ══════════════════════════
+2019-08-13 10:04:02.088 22957-23059/com.pandaq.sample D/KtPanda: ║
+2019-08-13 10:04:02.088 22957-23059/com.pandaq.sample D/KtPanda: ║==> GET https://www.easy-mock.com/mock/5cef4b3e651e4075bad237f8/example/customApiData http/1.1
+2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/KtPanda: ║Host: www.easy-mock.com
+2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/KtPanda: ║Connection: Keep-Alive
+2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/KtPanda: ║Accept-Encoding: gzip
+2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/KtPanda: ║User-Agent: okhttp/3.10.0
+2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/KtPanda: ║Info: GET
+2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/KtPanda: ║==> 200 OK https://www.easy-mock.com/mock/5cef4b3e651e4075bad237f8/example/customApiData (245ms)
+2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/KtPanda: ║Server: Tengine
+2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/KtPanda: ║Date: Tue, 13 Aug 2019 02:04:01 GMT
+2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/KtPanda: ║Content-Type: application/json; charset=utf-8
+2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/KtPanda: ║Content-Length: 495
+2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/KtPanda: ║Connection: keep-alive
+2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/KtPanda: ║X-Request-Id: 71a77b24-9822-47df-94b1-fd477cfcdaa9
+2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/KtPanda: ║Vary: Accept, Origin
+2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/KtPanda: ║Rate-Limit-Remaining: 1
+2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/KtPanda: ║Rate-Limit-Reset: 1565661842
+2019-08-13 10:04:02.089 22957-23059/com.pandaq.sample D/KtPanda: ║Rate-Limit-Total: 2
+2019-08-13 10:04:02.094 22957-23059/com.pandaq.sample D/KtPanda: ║
+2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/KtPanda: ║——————————————————JSON START——————————————————
+2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/KtPanda: ║ {
+2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/KtPanda: ║   "errorCode": 100,
+2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/KtPanda: ║   "errorMsg": "我是错误信息",
+2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/KtPanda: ║   "response": [
+2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/KtPanda: ║     {
+2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/KtPanda: ║       "zooId": 28,
+2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/KtPanda: ║       "name": "成都市动物园",
+2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/KtPanda: ║       "englishName": "chengdu zoo",
+2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/KtPanda: ║       "address": "中国·四川·成都·成华区昭觉寺南路234号",
+2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/KtPanda: ║       "tel": "028-83516953"
+2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/KtPanda: ║     },
+2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/KtPanda: ║     {
+2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/KtPanda: ║       "zooId": 28,
+2019-08-13 10:04:02.095 22957-23059/com.pandaq.sample D/KtPanda: ║       "name": "北京市动物园",
+2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/KtPanda: ║       "englishName": "beijing zoo",
+2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/KtPanda: ║       "address": "中国·北京·北京·XX路XX号",
+2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/KtPanda: ║       "tel": "028-83316953"
+2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/KtPanda: ║     },
+2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/KtPanda: ║     {
+2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/KtPanda: ║       "zooId": 28,
+2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/KtPanda: ║       "name": "重庆市动物园",
+2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/KtPanda: ║       "englishName": "chongqing zoo",
+2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/KtPanda: ║       "address": "中国·重庆·重庆·XX路XX号",
+2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/KtPanda: ║       "tel": "028-83513353"
+2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/KtPanda: ║     }
+2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/KtPanda: ║   ]
+2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/KtPanda: ║ }
+2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/KtPanda: ║——————————————————JSON END———————————————————
+2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/KtPanda: ║
+2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/KtPanda: ║Info: 495-byte body
+2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/KtPanda: ║
+2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/KtPanda: ╚════════════════════════  HTTP  END  ═══════════════════════════
+2019-08-13 10:04:02.096 22957-23059/com.pandaq.sample D/KtPanda:
 ```
 
 - 多线程并发请求时日志输出交错错乱的问题
 为了避免请求日志穿插问题，定义了 `LogEntity` 日志对象类，将一次请求的各个阶段的日志输出暂存起来，到当次网络请求结束时统一打印数据，打印时使用了线程安全的 LogPrinter 类有序输出。（因此上线一定要关闭 Log（一般使用第一步的 BuildConfig.DEBUG 来动态配置），日志的线程锁会有性能损耗。）
 # Gson 解析处理
-以 String 类型解析 TypeAdapter 为例，其他处理可在 [DefaultTypeAdapters](https://github.com/PandaQAQ/RxPanda/blob/master/rxpanda/src/main/java/com/pandaq/rxpanda/gsonadapter/DefaultTypeAdapters.java) 查看
+以 String 类型解析 TypeAdapter 为例，其他处理可在 [DefaultTypeAdapters](https://github.com/PandaQAQ/KtPanda/blob/master/KtPanda/src/main/java/com/pandaq/KtPanda/gsonadapter/DefaultTypeAdapters.java) 查看
 ``` java
     public static final TypeAdapter<String> STRING = new TypeAdapter<String>() {
         @Override
@@ -464,7 +447,6 @@ Gson 解析由于 Gson 库默认的 ObjectTypeAdapter 中 Number 类型数据直
 -keep class okhttp3.internal.**{*;}
 -dontwarn okio.**
 
-########### RxJava RxAndroid ###########
 -dontwarn sun.misc.**
 -keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
     long producerIndex;
@@ -481,6 +463,6 @@ Gson 解析由于 Gson 库默认的 ObjectTypeAdapter 中 Number 类型数据直
 -keep class com.google.gson.stream.** { *; }
 -keepattributes EnclosingMethod
 # Gson 自定义相关
--keep class com.pandaq.rxpanda.entity.**{*;}
--keep class com.pandaq.rxpanda.gsonadapter.**{*;}
+-keep class com.pandaq.KtPanda.entity.**{*;}
+-keep class com.pandaq.KtPanda.gsonadapter.**{*;}
 ```

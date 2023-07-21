@@ -2,7 +2,7 @@ package com.pandaq.sample.entities;
 
 import androidx.annotation.NonNull;
 
-import com.pandaq.rxpanda.utils.GsonUtil;
+import com.pandaq.ktpanda.utils.GsonUtil;
 
 //@AutoWired
 public class User {
