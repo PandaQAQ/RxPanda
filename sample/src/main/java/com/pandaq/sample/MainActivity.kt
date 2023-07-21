@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.Gson
 import com.pandaq.rxpanda.RxPanda
 import com.pandaq.rxpanda.callbacks.DownloadCallBack
 import com.pandaq.rxpanda.callbacks.UploadCallBack
@@ -15,6 +17,7 @@ import com.pandaq.sample.entities.UserTest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -57,7 +60,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                             }
 
                             override fun onProgress(progress: Int) {
-                                binding.dataString.text = "下载资源 $progress%"
                                 Log.e("download", "下载资源 $progress%")
                             }
 
@@ -66,63 +68,42 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             R.id.intData -> {
-
+                CoroutineScope(Dispatchers.IO).launch {
+                    try {
+                        val result = apiService.intData()
+                        withContext(Dispatchers.Main) {
+                            binding.dataString.text = "下载资源 $result"
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    } finally {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(this@MainActivity, "请求结束", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
             }
 
             R.id.userData -> {
-
+                CoroutineScope(Dispatchers.IO).launch {
+                    try {
+                        val result = apiService.getUser()
+                        withContext(Dispatchers.Main) {
+                            binding.dataString.text = "${Gson().toJson(result)}"
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    } finally {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(this@MainActivity, "请求结束", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
             }
 
             R.id.mockdata -> {
-//                apiService.typeError("hah")
-//                    .doOnSubscribe { t -> compositeDisposable.add(t) }
-//                    .compose(RxScheduler.retrySync(10))
-//                    .subscribe(object : AppCallBack<List<UserTest>>() {
-//                        override fun success(data: List<UserTest>) {
-//                            dataString.text = GsonUtil.gson().toJson(data)
-//                            dataString.setTextColor(Color.parseColor("#000000"))
-//                        }
-//
-//                        override fun fail(code: Long?, msg: String?) {
-//                            dataString.text = "error:::$msg"
-//                            dataString.setTextColor(Color.parseColor("#ff0000"))
-//                        }
-//
-//                        override fun finish(success: Boolean) {
-//
-//                        }
-//
-//                    })
-                CoroutineScope(Dispatchers.IO)
-                    .launch {
-                        val result = RxPanda.post("https://www.baidu.com")
-                            .mockData(Constants.MOCK_DATA)
-                            .request(UserTest::class.java)
-                        result
-                    }
 
-//                object : AppCallBack<ApiData<List<UserTest>>>() {
-//                    override fun success(data: ApiData<List<UserTest>>) {
-//                        binding.dataString.text = GsonUtil.gson().toJson(data)
-//                        binding.dataString.setTextColor(Color.parseColor("#000000"))
-//                    }
-//
-//                    @SuppressLint("SetTextI18n")
-//                    override fun fail(code: String?, msg: String?) {
-//                        binding.dataString.text = "error:::$msg"
-//                        binding.dataString.setTextColor(Color.parseColor("#ff0000"))
-//                    }
-//
-//                    override fun finish(success: Boolean) {
-//
-//                    }
-//
-//                }
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 }

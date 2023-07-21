@@ -24,7 +24,7 @@ interface ApiService {
     suspend fun getUser(): User?
 
     @MockJson(json = Constants.MOCK_INT)
-    @GET("https://www.google.com")
+    @GET("https://www.baidu.com")
     @Timeout(connectTimeout = 5000, readTimeout = 5000, writeTimeout = 5000)
     suspend fun intData(): Int?
 
