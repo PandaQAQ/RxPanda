@@ -1,116 +1,123 @@
-package com.pandaq.rxpanda.ssl;
+package com.pandaq.rxpanda.ssl
 
-import android.util.Log;
-import com.pandaq.rxpanda.RxPanda;
-import com.pandaq.rxpanda.config.HttpGlobalConfig;
-
-import javax.net.ssl.*;
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.*;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import android.annotation.SuppressLint
+import android.util.Log
+import com.pandaq.rxpanda.config.HttpGlobalConfig
+import java.io.IOException
+import java.io.InputStream
+import java.security.KeyManagementException
+import java.security.KeyStore
+import java.security.KeyStoreException
+import java.security.NoSuchAlgorithmException
+import java.security.SecureRandom
+import java.security.cert.CertificateException
+import java.security.cert.CertificateFactory
+import java.security.cert.X509Certificate
+import javax.net.ssl.HostnameVerifier
+import javax.net.ssl.KeyManager
+import javax.net.ssl.KeyManagerFactory
+import javax.net.ssl.SSLContext
+import javax.net.ssl.SSLSession
+import javax.net.ssl.SSLSocketFactory
+import javax.net.ssl.TrustManager
+import javax.net.ssl.TrustManagerFactory
+import javax.net.ssl.X509TrustManager
 
 /**
  * Created by huxinyu on 2019/2/15.
  * Email : panda.h@foxmail.com
  * Description :
  */
-public class SSLManager {
-
-    public static SSLSocketFactory getSslSocketFactory(InputStream[] certificates, InputStream bksFile, String
-            password) {
-        try {
-            TrustManager[] trustManagers = prepareTrustManager(certificates);
-            KeyManager[] keyManagers = prepareKeyManager(bksFile, password);
-            SSLContext sslContext = SSLContext.getInstance("TLS");
-            TrustManager trustManager;
-            if (trustManagers != null) {
-                trustManager = new MyTrustManager(chooseTrustManager(trustManagers));
+object SSLManager {
+    fun getSslSocketFactory(
+        certificates: Array<InputStream?>?,
+        bksFile: InputStream?,
+        password: String?
+    ): SSLSocketFactory {
+        return try {
+            val trustManagers = prepareTrustManager(certificates)
+            val keyManagers = prepareKeyManager(bksFile, password)
+            val sslContext = SSLContext.getInstance("TLS")
+            val trustManager: TrustManager = if (trustManagers != null) {
+                MyTrustManager(chooseTrustManager(trustManagers))
             } else {
-                trustManager = new UnSafeTrustManager();
+                UnSafeTrustManager()
             }
-            sslContext.init(keyManagers, new TrustManager[]{trustManager}, new SecureRandom());
-            return sslContext.getSocketFactory();
-        } catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
-            throw new AssertionError(e);
+            sslContext.init(keyManagers, arrayOf(trustManager), SecureRandom())
+            sslContext.socketFactory
+        } catch (e: NoSuchAlgorithmException) {
+            throw AssertionError(e)
+        } catch (e: KeyManagementException) {
+            throw AssertionError(e)
+        } catch (e: KeyStoreException) {
+            throw AssertionError(e)
         }
     }
 
-    private static TrustManager[] prepareTrustManager(InputStream... certificates) {
-        if (certificates == null || certificates.length <= 0) return null;
+    private fun prepareTrustManager(certificates: Array<InputStream?>?): Array<TrustManager>? {
+        if (certificates.isNullOrEmpty()) return null
         try {
-
-            CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
-            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            keyStore.load(null);
-            int index = 0;
-            for (InputStream certificate : certificates) {
-                String certificateAlias = Integer.toString(index++);
-                keyStore.setCertificateEntry(certificateAlias, certificateFactory.generateCertificate(certificate));
+            val certificateFactory = CertificateFactory.getInstance("X.509")
+            val keyStore = KeyStore.getInstance(KeyStore.getDefaultType())
+            keyStore.load(null)
+            for ((index, certificate) in certificates.withIndex()) {
+                val certificateAlias = index.toString()
+                keyStore.setCertificateEntry(
+                    certificateAlias,
+                    certificateFactory.generateCertificate(certificate)
+                )
                 try {
-                    if (certificate != null) certificate.close();
-                } catch (IOException e) {
+                    certificate?.close()
+                } catch (e: IOException) {
+                    e.printStackTrace()
                 }
             }
-            TrustManagerFactory trustManagerFactory;
-
-            trustManagerFactory = TrustManagerFactory.
-                    getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            trustManagerFactory.init(keyStore);
-
-            return trustManagerFactory.getTrustManagers();
-        } catch (Exception e) {
-            e.printStackTrace();
+            val trustManagerFactory: TrustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
+            trustManagerFactory.init(keyStore)
+            return trustManagerFactory.trustManagers
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        return null;
-
+        return null
     }
 
-    private static KeyManager[] prepareKeyManager(InputStream bksFile, String password) {
+    private fun prepareKeyManager(bksFile: InputStream?, password: String?): Array<KeyManager>? {
         try {
-            if (bksFile == null || password == null) return null;
-
-            KeyStore clientKeyStore = KeyStore.getInstance("BKS");
-            clientKeyStore.load(bksFile, password.toCharArray());
-            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm
-                    ());
-            keyManagerFactory.init(clientKeyStore, password.toCharArray());
-            return keyManagerFactory.getKeyManagers();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            if (bksFile == null || password == null) return null
+            val clientKeyStore = KeyStore.getInstance("BKS")
+            clientKeyStore.load(bksFile, password.toCharArray())
+            val keyManagerFactory =
+                KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm())
+            keyManagerFactory.init(clientKeyStore, password.toCharArray())
+            return keyManagerFactory.keyManagers
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        return null;
+        return null
     }
 
-    private static X509TrustManager chooseTrustManager(TrustManager[] trustManagers) {
-        for (TrustManager trustManager : trustManagers) {
-            if (trustManager instanceof X509TrustManager) {
-                return (X509TrustManager) trustManager;
+    private fun chooseTrustManager(trustManagers: Array<TrustManager>): X509TrustManager? {
+        for (trustManager in trustManagers) {
+            if (trustManager is X509TrustManager) {
+                return trustManager
             }
         }
-        return null;
+        return null
     }
 
-    public static class SafeHostnameVerifier implements HostnameVerifier {
-        private Set<String> hosts = new HashSet<>();
+    class SafeHostnameVerifier : HostnameVerifier {
+        private val hosts: MutableSet<String> = HashSet()
 
-        public SafeHostnameVerifier(String host) {
-            this.hosts.add(host);
+        constructor(host: String) {
+            hosts.add(host)
         }
 
-        public SafeHostnameVerifier(List<String> hosts) {
-            this.hosts.addAll(hosts);
+        constructor(hosts: List<String>?) {
+            this.hosts.addAll(hosts!!)
         }
 
-        public SafeHostnameVerifier(String... hosts) {
-            this.hosts.addAll(Arrays.asList(hosts));
+        constructor(vararg hosts: String) {
+            this.hosts.addAll(hosts)
         }
 
         /**
@@ -118,8 +125,8 @@ public class SSLManager {
          *
          * @param host 添加的 host
          */
-        public void addHost(String host) {
-            this.hosts.add(host);
+        fun addHost(host: String) {
+            hosts.add(host)
         }
 
         /**
@@ -127,8 +134,8 @@ public class SSLManager {
          *
          * @param hosts 添加的 host
          */
-        public void addHosts(List<String> hosts) {
-            this.hosts.addAll(hosts);
+        fun addHosts(hosts: List<String>) {
+            this.hosts.addAll(hosts)
         }
 
         /**
@@ -136,70 +143,69 @@ public class SSLManager {
          *
          * @param hosts 支持的 hosts
          */
-        public void resetHosts(List<String> hosts) {
-            this.hosts.clear();
-            this.hosts.addAll(hosts);
+        fun resetHosts(hosts: List<String>) {
+            this.hosts.clear()
+            this.hosts.addAll(hosts)
         }
 
-        @Override
-        public boolean verify(String hostname, SSLSession session) {
+        override fun verify(hostname: String, session: SSLSession): Boolean {
             // if allow all return true
-            if (HttpGlobalConfig.getInstance().isTrustAllHost()) return true;
-            if (this.hosts == null || hosts.isEmpty()) return false;
-            for (String host : hosts) {
+            if (HttpGlobalConfig.instance.isTrustAllHost) return true
+            if (hosts.isEmpty()) return false
+            for (host in hosts) {
                 if (host.contains(hostname)) {
-                    return true;
+                    return true
                 }
             }
-            return false;
+            return false
         }
     }
 
-    private static class UnSafeTrustManager implements X509TrustManager {
-        @Override
-        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-            Log.d("SSLManager", authType);
+    @SuppressLint("CustomX509TrustManager")
+    private class UnSafeTrustManager : X509TrustManager {
+        @Throws(CertificateException::class)
+        override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {
+            Log.d("SSLManager", authType)
         }
 
-        @Override
-        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-            Log.d("SSLManager", authType);
+        @Throws(CertificateException::class)
+        override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {
+            Log.d("SSLManager", authType)
         }
 
-        @Override
-        public X509Certificate[] getAcceptedIssuers() {
-            return new X509Certificate[]{};
+        override fun getAcceptedIssuers(): Array<X509Certificate> {
+            return arrayOf()
         }
     }
 
-    private static class MyTrustManager implements X509TrustManager {
-        private X509TrustManager defaultTrustManager;
-        private X509TrustManager localTrustManager;
+    @SuppressLint("CustomX509TrustManager")
+    private class MyTrustManager(localTrustManager: X509TrustManager?) : X509TrustManager {
+        private val defaultTrustManager: X509TrustManager?
+        private val localTrustManager: X509TrustManager?
 
-        public MyTrustManager(X509TrustManager localTrustManager) throws NoSuchAlgorithmException, KeyStoreException {
-            TrustManagerFactory var4 = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            var4.init((KeyStore) null);
-            defaultTrustManager = chooseTrustManager(var4.getTrustManagers());
-            this.localTrustManager = localTrustManager;
+        init {
+            val var4 = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
+            var4.init(null as KeyStore?)
+            defaultTrustManager = chooseTrustManager(var4.trustManagers)
+            this.localTrustManager = localTrustManager
         }
 
-        @Override
-        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-            Log.d("SSLManager", authType);
+        @Throws(CertificateException::class)
+        override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {
+            Log.d("SSLManager", authType)
         }
 
-        @Override
-        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        @Throws(CertificateException::class)
+        override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {
             try {
-                defaultTrustManager.checkServerTrusted(chain, authType);
-            } catch (CertificateException ce) {
-                localTrustManager.checkServerTrusted(chain, authType);
+                defaultTrustManager!!.checkServerTrusted(chain, authType)
+            } catch (ce: CertificateException) {
+                localTrustManager!!.checkServerTrusted(chain, authType)
             }
         }
 
-        @Override
-        public X509Certificate[] getAcceptedIssuers() {
-            return new X509Certificate[0];
+        override fun getAcceptedIssuers(): Array<X509Certificate> {
+            return arrayOf()
         }
     }
 }

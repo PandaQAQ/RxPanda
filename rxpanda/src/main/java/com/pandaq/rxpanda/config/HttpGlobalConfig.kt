@@ -1,89 +1,84 @@
-package com.pandaq.rxpanda.config;
+package com.pandaq.rxpanda.config
 
-import android.content.Context;
-
-import com.pandaq.rxpanda.converter.PandaConvertFactory;
-import com.pandaq.rxpanda.entity.ApiData;
-import com.pandaq.rxpanda.entity.IApiData;
-import com.pandaq.rxpanda.entity.NullDataValue;
-import com.pandaq.rxpanda.log.HttpLoggingInterceptor;
-import com.pandaq.rxpanda.ssl.SSLManager;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSocketFactory;
-
-import io.reactivex.annotations.NonNull;
-import okhttp3.Cache;
-import okhttp3.ConnectionPool;
-import okhttp3.ConnectionSpec;
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import okhttp3.TlsVersion;
-import retrofit2.CallAdapter;
-import retrofit2.Converter;
+import android.annotation.SuppressLint
+import android.content.Context
+import androidx.annotation.NonNull
+import com.pandaq.rxpanda.converter.PandaConvertFactory
+import com.pandaq.rxpanda.entity.ApiData
+import com.pandaq.rxpanda.entity.IApiData
+import com.pandaq.rxpanda.entity.NullDataValue
+import com.pandaq.rxpanda.log.HttpLoggingInterceptor
+import com.pandaq.rxpanda.ssl.SSLManager.SafeHostnameVerifier
+import okhttp3.Cache
+import okhttp3.ConnectionPool
+import okhttp3.ConnectionSpec
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import okhttp3.TlsVersion
+import retrofit2.CallAdapter
+import retrofit2.Converter
+import java.util.Arrays
+import javax.net.ssl.HostnameVerifier
+import javax.net.ssl.SSLSocketFactory
 
 /**
  * Created by huxinyu on 2019/1/9.
  * Email : panda.h@foxmail.com
- * <p>
+ *
+ *
  * Description :http global config
  */
-public class HttpGlobalConfig {
+class HttpGlobalConfig private constructor() {
+    private var context: Context? = null
+    private val interceptors: MutableList<Interceptor> = ArrayList()
+    private val netInterceptors: MutableList<Interceptor> = ArrayList()
+    private val callAdapterFactories: MutableList<CallAdapter.Factory> = ArrayList() //Call适配器工厂
 
-    private Context context;
-    private final List<Interceptor> interceptors = new ArrayList<>();
-    private final List<Interceptor> netInterceptors = new ArrayList<>();
-    private final List<CallAdapter.Factory> callAdapterFactories = new ArrayList<>();//Call适配器工厂
-    private Converter.Factory converterFactory = PandaConvertFactory.create();//转换工厂,默认为 PandaConvertFactory
-    private SSLSocketFactory sslSocketFactory;//SSL工厂
-    private HostnameVerifier hostnameVerifier;//主机域名验证
-    private ConnectionPool connectionPool;//连接池
-    private final Map<String, String> globalHeaders = new LinkedHashMap<>();//请求头
-    private final Map<String, String> globalParams = new LinkedHashMap<>();//请求参数
-    private String baseUrl;//基础域名
-    private static HttpGlobalConfig sHttpGlobalConfig;
-    private boolean isDebug = false;
-    private String apiSuccessCode = "0";
+    //转换工厂,默认为 PandaConvertFactory
+    var converterFactory: Converter.Factory = PandaConvertFactory.create()
+
+    //SSL工厂
+    var sslSocketFactory: SSLSocketFactory? = null
+
+    //主机域名验证
+    var hostnameVerifier: HostnameVerifier? = null
+
+    //连接池
+    var connectionPool: ConnectionPool? = null
+    private val globalHeaders: MutableMap<String, String> = LinkedHashMap() //请求头
+    private val globalParams: MutableMap<String, String> = LinkedHashMap() //请求参数
+
+    //基础域名
+    var baseUrl: String = ""
+    var isDebug = false
+    var apiSuccessCode = "0"
+
     // 不验证 host 允许所有的 host
-    private boolean trustAll = false;
+    var isTrustAllHost = false
+
     // Gson 解析补空默认值
-    private NullDataValue defValues = null;
-    private Class<? extends IApiData> apiDataClazz = ApiData.class;
-    private HttpLoggingInterceptor loggingInterceptor;
-    private OkHttpClient.Builder clientBuilder = getDefaultClientBuilder();
+    var defValues: NullDataValue? = null
+    var loggingInterceptor: HttpLoggingInterceptor? = null
+    private var apiDataClazz: Class<out IApiData<*>?> = ApiData::class.java
+    private var clientBuilder = defaultClientBuilder
+
     // 简单的缓存，无网或请求失败用缓存，有网用新数据
-    private Cache cache;
+    private var cache: Cache? = null
+
     // false 只有标注使用缓存的接口才使用缓存，true 除了忽略注解和 IO 请求外的所有请求都使用缓存
-    private boolean cacheAll;
-    private long retryDelayMillis;//请求失败重试间隔时间
-    private int retryCount;//请求失败重试次数
-    private long connectTimeout = CONFIG.DEFAULT_TIMEOUT * 1000L; //连接超时时间，默认 10 秒
-    private long readTimeout = CONFIG.DEFAULT_TIMEOUT * 1000L; //连接超时时间，默认 10 秒
-    private long writeTimeout = CONFIG.DEFAULT_TIMEOUT * 1000L; //连接超时时间，默认 10 秒
+    private var cacheAll = false
+
+    //请求失败重试间隔时间
+    var retryDelayMillis: Long = 0
+
+    //请求失败重试次数
+    var retryCount = 0
+    var connectTimeout = CONFIG.DEFAULT_TIMEOUT * 1000L //连接超时时间，默认 10 秒
+    var readTimeout = CONFIG.DEFAULT_TIMEOUT * 1000L //连接超时时间，默认 10 秒
+    var writeTimeout = CONFIG.DEFAULT_TIMEOUT * 1000L //连接超时时间，默认 10 秒
 
     //@Mock 标注或者配置了 mockJson 的接口，是否总是使用模拟数据（false 为默认值，只有 Debug 模式下才使用 mock 数据）
-    private boolean alwaysUseMock = false;
-
-    private HttpGlobalConfig() {
-
-    }
-
-    public static HttpGlobalConfig getInstance() {
-        if (sHttpGlobalConfig == null) {
-            synchronized (HttpGlobalConfig.class) {
-                if (sHttpGlobalConfig == null) {
-                    sHttpGlobalConfig = new HttpGlobalConfig();
-                }
-            }
-        }
-        return sHttpGlobalConfig;
-    }
+    var isAlwaysUseMock = false
 
     /**
      * set custom clientConfigs,the same config will be covered by Rxpanda
@@ -91,9 +86,9 @@ public class HttpGlobalConfig {
      * @param clientBuilder CustomBuilder
      * @return Config self
      */
-    public HttpGlobalConfig client(OkHttpClient.Builder clientBuilder) {
-        this.clientBuilder = clientBuilder;
-        return this;
+    fun client(clientBuilder: OkHttpClient.Builder): HttpGlobalConfig {
+        this.clientBuilder = clientBuilder
+        return this
     }
 
     /**
@@ -102,21 +97,21 @@ public class HttpGlobalConfig {
      * @param cache cache Strategy
      * @return Config self
      */
-    public HttpGlobalConfig cache(Cache cache, boolean cacheAll) {
-        this.cache = cache;
-        this.cacheAll = cacheAll;
-        return this;
+    fun cache(cache: Cache?, cacheAll: Boolean): HttpGlobalConfig {
+        this.cache = cache
+        this.cacheAll = cacheAll
+        return this
     }
 
     /**
-     * add a CallAdapter.Factory,if never add ,will add a RxJava2CallAdapterFactory as default
+     * add a CallAdapter.Factory
      *
      * @param factory the factory to add
      * @return Config self
      */
-    public HttpGlobalConfig addCallAdapterFactory(@NonNull CallAdapter.Factory factory) {
-        this.callAdapterFactories.add(factory);
-        return this;
+    fun addCallAdapterFactory(factory: CallAdapter.Factory): HttpGlobalConfig {
+        callAdapterFactories.add(factory)
+        return this
     }
 
     /**
@@ -125,18 +120,18 @@ public class HttpGlobalConfig {
      * @param factory the factory to add
      * @return Config self
      */
-    public HttpGlobalConfig converterFactory(@NonNull Converter.Factory factory) {
-        this.converterFactory = factory;
-        return this;
+    fun converterFactory(factory: Converter.Factory): HttpGlobalConfig {
+        converterFactory = factory
+        return this
     }
 
     /**
      * @param factory the factory to add
      * @return Config self
      */
-    public HttpGlobalConfig sslFactory(@NonNull SSLSocketFactory factory) {
-        this.sslSocketFactory = factory;
-        return this;
+    fun sslFactory(factory: SSLSocketFactory): HttpGlobalConfig {
+        sslSocketFactory = factory
+        return this
     }
 
     /**
@@ -146,9 +141,9 @@ public class HttpGlobalConfig {
      * @param verifier the hostname verifier
      * @return Config self
      */
-    public HttpGlobalConfig hostVerifier(@NonNull HostnameVerifier verifier) {
-        this.hostnameVerifier = verifier;
-        return this;
+    fun hostVerifier(verifier: HostnameVerifier): HttpGlobalConfig {
+        hostnameVerifier = verifier
+        return this
     }
 
     /**
@@ -157,20 +152,20 @@ public class HttpGlobalConfig {
      * @param hosts hosts 地址
      * @return config self
      */
-    public HttpGlobalConfig hosts(String... hosts) {
+    fun hosts(vararg hosts: String): HttpGlobalConfig {
         // 默认添加基础域名
-        if (this.hostnameVerifier == null) {
-            this.hostnameVerifier = new SSLManager.SafeHostnameVerifier(hosts);
-            ((SSLManager.SafeHostnameVerifier) this.hostnameVerifier).addHost(baseUrl);
+        if (hostnameVerifier == null) {
+            hostnameVerifier = SafeHostnameVerifier(*hosts)
+            (hostnameVerifier as SafeHostnameVerifier?)?.addHost(baseUrl)
         } else {
-            if (this.hostnameVerifier instanceof SSLManager.SafeHostnameVerifier) {
-                ((SSLManager.SafeHostnameVerifier) this.hostnameVerifier).addHosts(Arrays.asList(hosts));
-                ((SSLManager.SafeHostnameVerifier) this.hostnameVerifier).addHost(baseUrl);
+            if (hostnameVerifier is SafeHostnameVerifier) {
+                (hostnameVerifier as SafeHostnameVerifier?)!!.addHosts(Arrays.asList(*hosts))
+                (hostnameVerifier as SafeHostnameVerifier?)!!.addHost(baseUrl)
             } else {
-                throw new IllegalArgumentException("please verifier host in your custom hostnameVerifier,or do not call hostVerifier()");
+                throw IllegalArgumentException("please verifier host in your custom hostnameVerifier,or do not call hostVerifier()")
             }
         }
-        return this;
+        return this
     }
 
     /**
@@ -179,9 +174,9 @@ public class HttpGlobalConfig {
      * @param pool custom pool
      * @return Config self
      */
-    public HttpGlobalConfig connectionPool(@NonNull ConnectionPool pool) {
-        this.connectionPool = pool;
-        return this;
+    fun connectionPool(pool: ConnectionPool): HttpGlobalConfig {
+        connectionPool = pool
+        return this
     }
 
     /**
@@ -191,9 +186,9 @@ public class HttpGlobalConfig {
      * @param header header value
      * @return Config self
      */
-    public HttpGlobalConfig addGlobalHeader(@NonNull String key, String header) {
-        this.globalHeaders.put(key, header);
-        return this;
+    fun addGlobalHeader(key: String, header: String): HttpGlobalConfig {
+        globalHeaders[key] = header
+        return this
     }
 
     /**
@@ -202,10 +197,10 @@ public class HttpGlobalConfig {
      * @param headers http request headers
      * @return Config self
      */
-    public HttpGlobalConfig globalHeader(@NonNull Map<String, String> headers) {
-        this.globalHeaders.clear();
-        this.globalHeaders.putAll(headers);
-        return this;
+    fun globalHeader(headers: Map<String, String>): HttpGlobalConfig {
+        globalHeaders.clear()
+        globalHeaders.putAll(headers!!)
+        return this
     }
 
     /**
@@ -214,10 +209,10 @@ public class HttpGlobalConfig {
      * @param params the params
      * @return config self
      */
-    public HttpGlobalConfig globalParams(@NonNull Map<String, String> params) {
-        this.globalParams.clear();
-        this.globalParams.putAll(params);
-        return this;
+    fun globalParams(params: Map<String, String>): HttpGlobalConfig {
+        globalParams.clear()
+        globalParams.putAll(params)
+        return this
     }
 
     /**
@@ -227,9 +222,9 @@ public class HttpGlobalConfig {
      * @param param the paramValue
      * @return config self
      */
-    public HttpGlobalConfig addGlobalParam(@NonNull String key, String param) {
-        this.globalParams.put(key, param);
-        return this;
+    fun addGlobalParam(key: String, param: String): HttpGlobalConfig {
+        globalParams[key] = param
+        return this
     }
 
     /**
@@ -238,9 +233,9 @@ public class HttpGlobalConfig {
      * @param defValues 默认值对象
      * @return 默认值
      */
-    public HttpGlobalConfig defaultValue(@NonNull NullDataValue defValues) {
-        this.defValues = defValues;
-        return this;
+    fun defaultValue(defValues: NullDataValue): HttpGlobalConfig {
+        this.defValues = defValues
+        return this
     }
 
     /**
@@ -249,9 +244,9 @@ public class HttpGlobalConfig {
      * @param baseUrl RetrofitRequest's baseUrl,and this url will be added to HostnameVerifier
      * @return config self
      */
-    public HttpGlobalConfig baseUrl(@NonNull String baseUrl) {
-        this.baseUrl = baseUrl;
-        return this;
+    fun baseUrl(baseUrl: String): HttpGlobalConfig {
+        this.baseUrl = baseUrl
+        return this
     }
 
     /**
@@ -260,9 +255,9 @@ public class HttpGlobalConfig {
      * @param retryDelay delay time (unit is 'ms')
      * @return config self
      */
-    public HttpGlobalConfig retryDelayMillis(long retryDelay) {
-        this.retryDelayMillis = retryDelay;
-        return this;
+    fun retryDelayMillis(retryDelay: Long): HttpGlobalConfig {
+        retryDelayMillis = retryDelay
+        return this
     }
 
     /**
@@ -271,55 +266,51 @@ public class HttpGlobalConfig {
      * @param retryCount retryCount
      * @return config self
      */
-    public HttpGlobalConfig retryCount(int retryCount) {
-        this.retryCount = retryCount;
-        return this;
+    fun retryCount(retryCount: Int): HttpGlobalConfig {
+        this.retryCount = retryCount
+        return this
     }
 
-    public HttpGlobalConfig interceptor(@NonNull Interceptor interceptor) {
+    fun interceptor(interceptor: Interceptor): HttpGlobalConfig {
         // 日志拦截器最后添加（避免其他拦截器添加的数据打印缺失）
-        if (interceptor instanceof HttpLoggingInterceptor) {
-            loggingInterceptor = (HttpLoggingInterceptor) interceptor;
-            loggingInterceptor.setNetInterceptor(false);
+        if (interceptor is HttpLoggingInterceptor) {
+            loggingInterceptor = interceptor
+            loggingInterceptor!!.isNetInterceptor = false
         } else {
-            interceptors.add(interceptor);
+            interceptors.add(interceptor)
         }
-        return this;
+        return this
     }
 
-    public HttpGlobalConfig netInterceptor(@NonNull Interceptor netInterceptor) {
+    fun netInterceptor(netInterceptor: Interceptor): HttpGlobalConfig {
         // 日志拦截器最后添加（避免其他拦截器添加的数据打印缺失）
-        if (netInterceptor instanceof HttpLoggingInterceptor) {
-            loggingInterceptor = (HttpLoggingInterceptor) netInterceptor;
-            loggingInterceptor.setNetInterceptor(true);
+        if (netInterceptor is HttpLoggingInterceptor) {
+            loggingInterceptor = netInterceptor
+            loggingInterceptor!!.isNetInterceptor = true
         } else {
-            netInterceptors.add(netInterceptor);
+            netInterceptors.add(netInterceptor)
         }
-        return this;
+        return this
     }
 
-    public HttpGlobalConfig readTimeout(long readTimeout) {
-        this.readTimeout = readTimeout;
-        return this;
+    fun readTimeout(readTimeout: Long): HttpGlobalConfig {
+        this.readTimeout = readTimeout
+        return this
     }
 
-    public HttpGlobalConfig writeTimeout(long writeTimeout) {
-        this.writeTimeout = writeTimeout;
-        return this;
+    fun writeTimeout(writeTimeout: Long): HttpGlobalConfig {
+        this.writeTimeout = writeTimeout
+        return this
     }
 
-    public HttpGlobalConfig connectTimeout(long connectTimeout) {
-        this.connectTimeout = connectTimeout;
-        return this;
+    fun connectTimeout(connectTimeout: Long): HttpGlobalConfig {
+        this.connectTimeout = connectTimeout
+        return this
     }
 
-    public HttpGlobalConfig apiDataClazz(Class<? extends IApiData> clazz) {
-        apiDataClazz = clazz;
-        return this;
-    }
-
-    public boolean isTrustAllHost() {
-        return trustAll;
+    fun apiDataClazz(clazz: Class<out IApiData<*>?>): HttpGlobalConfig {
+        apiDataClazz = clazz
+        return this
     }
 
     /**
@@ -328,148 +319,97 @@ public class HttpGlobalConfig {
      * @param trustAll 是否允许所有host
      * @return config
      */
-    public HttpGlobalConfig trustAllHost(boolean trustAll) {
-        this.trustAll = trustAll;
-        return this;
+    fun trustAllHost(trustAll: Boolean): HttpGlobalConfig {
+        isTrustAllHost = trustAll
+        return this
     }
 
     /**
      * 是否强制所有环境 mockJson 生效
      */
-    public HttpGlobalConfig alwaysUseMock(boolean alwaysUseMock) {
-        this.alwaysUseMock = alwaysUseMock;
-        return this;
-    }
-
-    public boolean isAlwaysUseMock() {
-        return alwaysUseMock;
+    fun alwaysUseMock(alwaysUseMock: Boolean): HttpGlobalConfig {
+        isAlwaysUseMock = alwaysUseMock
+        return this
     }
 
     //    ######################################## getter ########################################
-
-    public OkHttpClient.Builder getClientBuilder() {
+    fun getClientBuilder(): OkHttpClient.Builder {
         // 缓存拦截器只添加一次
         if (cache != null) {
-            this.clientBuilder.cache(cache);
+            clientBuilder.cache(cache)
         }
-        return clientBuilder;
+        return clientBuilder
     }
 
-
-    public List<Interceptor> getInterceptors() {
-        return interceptors;
+    fun getInterceptors(): List<Interceptor> {
+        return interceptors
     }
 
-    public List<Interceptor> getNetInterceptors() {
-        return netInterceptors;
+    fun getNetInterceptors(): List<Interceptor> {
+        return netInterceptors
     }
 
-    private OkHttpClient.Builder getDefaultClientBuilder() {
-        // 默认加密套件
-        ConnectionSpec cs = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
-                .tlsVersions(TlsVersion.TLS_1_2).build();
-        List<ConnectionSpec> specs = new ArrayList<>();
-        specs.add(cs);
-        specs.add(ConnectionSpec.COMPATIBLE_TLS);
-        specs.add(ConnectionSpec.CLEARTEXT);
-        return new OkHttpClient().newBuilder().connectionSpecs(specs);
+    // 默认加密套件
+    private val defaultClientBuilder: OkHttpClient.Builder
+        get() {
+            // 默认加密套件
+            val cs = ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
+                .tlsVersions(TlsVersion.TLS_1_2).build()
+            val specs: MutableList<ConnectionSpec> = ArrayList()
+            specs.add(cs)
+            specs.add(ConnectionSpec.COMPATIBLE_TLS)
+            specs.add(ConnectionSpec.CLEARTEXT)
+            return OkHttpClient().newBuilder().connectionSpecs(specs)
+        }
+
+    fun getCallAdapterFactories(): List<CallAdapter.Factory> {
+        return callAdapterFactories
     }
 
-    public List<CallAdapter.Factory> getCallAdapterFactories() {
-        return callAdapterFactories;
+    fun getGlobalHeaders(): Map<String, String> {
+        return globalHeaders
     }
 
-    public Converter.Factory getConverterFactory() {
-        return converterFactory;
+    fun getGlobalParams(): Map<String, String> {
+        return globalParams
     }
 
-    public SSLSocketFactory getSslSocketFactory() {
-        return sslSocketFactory;
+    fun debug(debug: Boolean): HttpGlobalConfig {
+        isDebug = debug
+        return this
     }
 
-    public HostnameVerifier getHostnameVerifier() {
-        return hostnameVerifier;
+    fun cacheAll(): Boolean {
+        return cacheAll
     }
 
-    public ConnectionPool getConnectionPool() {
-        return connectionPool;
+    fun getApiDataClazz(): Class<*> {
+        return apiDataClazz
     }
 
-    public Map<String, String> getGlobalHeaders() {
-        return globalHeaders;
+    fun apiSuccessCode(apiSuccessCode: String): HttpGlobalConfig {
+        this.apiSuccessCode = apiSuccessCode
+        return this
     }
 
-    public Map<String, String> getGlobalParams() {
-        return globalParams;
+    fun setContext(context: Context){
+        this.context = context
     }
 
-    public String getBaseUrl() {
-        return baseUrl;
+    fun getContext():Context?{
+        return context?.applicationContext
     }
 
-    public long getRetryDelayMillis() {
-        return retryDelayMillis;
-    }
+    companion object {
+        @SuppressLint("StaticFieldLeak")
+        private var singleton: HttpGlobalConfig? = null
+            get() {
+                if (field == null) {
+                    field = HttpGlobalConfig()
+                }
+                return field
+            }
 
-    public int getRetryCount() {
-        return retryCount;
-    }
-
-    public NullDataValue getDefValues() {
-        return defValues;
-    }
-
-    public boolean isDebug() {
-        return isDebug;
-    }
-
-    public HttpGlobalConfig debug(boolean debug) {
-        isDebug = debug;
-        return this;
-    }
-
-    public boolean cacheAll() {
-        return cacheAll;
-    }
-
-    public void setContext(Context context) {
-        this.context = context;
-    }
-
-    public Context getContext() {
-        return context;
-    }
-
-    public boolean isTrustAll() {
-        return trustAll;
-    }
-
-    public long getConnectTimeout() {
-        return connectTimeout;
-    }
-
-    public long getReadTimeout() {
-        return readTimeout;
-    }
-
-    public long getWriteTimeout() {
-        return writeTimeout;
-    }
-
-    public Class getApiDataClazz() {
-        return apiDataClazz;
-    }
-
-    public String getApiSuccessCode() {
-        return apiSuccessCode;
-    }
-
-    public HttpGlobalConfig apiSuccessCode(String apiSuccessCode) {
-        this.apiSuccessCode = apiSuccessCode;
-        return this;
-    }
-
-    public HttpLoggingInterceptor getLoggingInterceptor() {
-        return loggingInterceptor;
+        val instance: HttpGlobalConfig get() = singleton!!
     }
 }

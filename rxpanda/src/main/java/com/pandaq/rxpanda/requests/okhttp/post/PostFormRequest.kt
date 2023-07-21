@@ -1,60 +1,20 @@
-package com.pandaq.rxpanda.requests.okhttp.post;
+package com.pandaq.rxpanda.requests.okhttp.post
 
-
-import com.pandaq.rxpanda.RxPanda;
-import com.pandaq.rxpanda.observer.ApiObserver;
-import com.pandaq.rxpanda.requests.okhttp.base.HttpRequest;
-
-import io.reactivex.Observable;
-
-import java.lang.reflect.Type;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import com.pandaq.rxpanda.RxPanda.manager
+import com.pandaq.rxpanda.requests.okhttp.base.HttpRequest
+import okhttp3.ResponseBody
 
 /**
  * Created by huxinyu on 2019/3/15.
  * Email : panda.h@foxmail.com
  * Description :表单方式 post
  */
-public class PostFormRequest extends HttpRequest<PostFormRequest> {
-
+class PostFormRequest(url: String) : HttpRequest<PostFormRequest>(url) {
     // 表单方式 post
-    private Map<String, Object> forms = new LinkedHashMap<>();
+    private val form: MutableMap<String, Any> = LinkedHashMap()
+
     // url中带参数 post
-    private StringBuilder stringBuilder = new StringBuilder();
-
-
-    public PostFormRequest(String url) {
-        super(url);
-    }
-
-    @Override
-    protected <T> Observable<T> execute(Type type) {
-        if (stringBuilder.length() != 0) {
-            url = url + stringBuilder.toString();
-        }
-        if (localParams.size() > 0) {
-            forms.putAll(localParams);
-        }
-        return mApi.postForm(url, forms)
-                .doOnSubscribe(disposable -> {
-                    if (tag != null) {
-                        RxPanda.manager().addTag(tag, disposable);
-                    }
-                })
-                .compose(httpTransformer(type));
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    protected <T> void execute(ApiObserver<T> callback) {
-        if (tag != null) {
-            RxPanda.manager().addTag(tag, callback);
-        }
-        this.execute(getType(callback))
-                .map(o -> (T) o)
-                .subscribe(callback);
-    }
+    private val stringBuilder = StringBuilder()
 
     /**
      * post url 中添加参数
@@ -63,16 +23,16 @@ public class PostFormRequest extends HttpRequest<PostFormRequest> {
      * @param paramValue value
      * @return self
      */
-    public PostFormRequest urlParams(String paramKey, String paramValue) {
+    fun urlParams(paramKey: String?, paramValue: String?): PostFormRequest {
         if (paramKey != null && paramValue != null) {
-            if (stringBuilder.length() == 0) {
-                stringBuilder.append("?");
+            if (stringBuilder.isEmpty()) {
+                stringBuilder.append("?")
             } else {
-                stringBuilder.append("&");
+                stringBuilder.append("&")
             }
-            stringBuilder.append(paramKey).append("=").append(paramValue);
+            stringBuilder.append(paramKey).append("=").append(paramValue)
         }
-        return this;
+        return this
     }
 
     /**
@@ -80,10 +40,20 @@ public class PostFormRequest extends HttpRequest<PostFormRequest> {
      * @param paramValue 表单数据 value
      * @return self
      */
-    public PostFormRequest formParams(String paramKey, Object paramValue) {
+    fun formParams(paramKey: String?, paramValue: Any?): PostFormRequest {
         if (paramKey != null && paramValue != null) {
-            forms.put(paramKey, paramValue);
+            form[paramKey] = paramValue
         }
-        return this;
+        return this
+    }
+
+    override suspend fun execute(): ResponseBody? {
+        if (stringBuilder.isNotEmpty()) {
+            url += stringBuilder.toString()
+        }
+        if (localParams.isNotEmpty()) {
+            form.putAll(localParams)
+        }
+        return mApi?.postForm(url,form)
     }
 }

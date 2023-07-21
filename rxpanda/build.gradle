@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -44,9 +44,9 @@ publishing {
             // 组名称
             groupId = 'com.pandaq'
             // 模块名称
-            artifactId = 'rxpanda'
+            artifactId = 'ktpanda'
             // 版本号
-            version = "1.2.1"
+            version = "1.0.0"
 
             afterEvaluate {
                 artifact bundleReleaseAar
@@ -82,14 +82,14 @@ publishing {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    // rxJava 2
-    api "io.reactivex.rxjava2:rxandroid:2.1.1"
-    api "io.reactivex.rxjava2:rxjava:2.2.9"
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     // retrofit 2
-    api "com.squareup.retrofit2:retrofit:2.6.0"
+    api "com.squareup.retrofit2:retrofit:2.9.0"
     api "com.squareup.retrofit2:converter-gson:2.6.0"
-    api "com.squareup.retrofit2:adapter-rxjava2:2.6.0"
     // gson
     api "com.google.code.gson:gson:2.8.9"
+    api "androidx.annotation:annotation:1.6.0"
+    // kotlin 协程
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0"
 }

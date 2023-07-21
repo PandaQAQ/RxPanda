@@ -1,172 +1,147 @@
-package com.pandaq.rxpanda.requests.okhttp.io;
+package com.pandaq.rxpanda.requests.okhttp.io
 
-import com.pandaq.rxpanda.RequestManager;
-import com.pandaq.rxpanda.callbacks.TransmitCallback;
-import com.pandaq.rxpanda.callbacks.UploadCallBack;
-import com.pandaq.rxpanda.constants.MediaTypes;
-import com.pandaq.rxpanda.interceptor.UploadInterceptor;
-import com.pandaq.rxpanda.transformer.RxScheduler;
-import io.reactivex.annotations.NonNull;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import okhttp3.internal.Util;
-import okio.BufferedSink;
-import okio.Okio;
-import okio.Source;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import com.pandaq.rxpanda.callbacks.UploadCallBack
+import com.pandaq.rxpanda.constants.MediaTypes
+import com.pandaq.rxpanda.interceptor.UploadInterceptor
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.ResponseBody
+import okhttp3.internal.Util
+import okio.BufferedSink
+import okio.Okio
+import okio.Source
+import java.io.File
+import java.io.IOException
+import java.io.InputStream
 
 /**
  * Created by huxinyu on 2019/7/11.
  * Email : panda.h@foxmail.com
- * <p>
+ *
+ *
  * Description :
  */
-public class UploadRequest extends IORequest<UploadRequest> {
+open class UploadRequest(suffixUrl: String) : IORequest<UploadRequest>(suffixUrl) {
+    private val multipartBodyParts: MutableList<MultipartBody.Part?> = ArrayList()
+    private val stringBuilder = StringBuilder()
 
-    private List<MultipartBody.Part> multipartBodyParts = new ArrayList<>();
-    private StringBuilder stringBuilder = new StringBuilder();
-
-    public UploadRequest(String suffixUrl) {
-        super(suffixUrl);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    protected <T extends TransmitCallback> void execute(T t) {
-        UploadCallBack callback;
-        if (t instanceof UploadCallBack) {
-            callback = (UploadCallBack) t;
-        } else {
-            return;
+    override suspend fun execute():ResponseBody? {
+        if (stringBuilder.isNotEmpty()) {
+            url += stringBuilder.toString()
         }
-        if (super.tag != null) {
-            RequestManager.get().addTag(super.tag, callback);
-        }
-
-
-        if (stringBuilder.length() > 0) {
-            url = url + stringBuilder.toString();
-        }
-        if (localParams != null && localParams.size() > 0) {
-            Iterator<Map.Entry<String, String>> entryIterator = localParams.entrySet().iterator();
-            Map.Entry<String, String> entry;
+        if (localParams.isNotEmpty()) {
+            val entryIterator: Iterator<Map.Entry<String, String>> = localParams.entries.iterator()
+            var entry: Map.Entry<String, String>
             while (entryIterator.hasNext()) {
-                entry = entryIterator.next();
-                if (entry != null) {
-                    multipartBodyParts.add(MultipartBody.Part.createFormData(entry.getKey(), entry.getValue()));
-                }
+                entry = entryIterator.next()
+                multipartBodyParts.add(
+                    MultipartBody.Part.createFormData(
+                        entry.key,
+                        entry.value
+                    )
+                )
             }
         }
-        mApi.uploadFiles(url, multipartBodyParts)
-                .compose(RxScheduler.io())
-                .subscribe(callback);
+       return mApi?.uploadFiles(url, multipartBodyParts)
     }
 
-    public UploadRequest addUrlParam(String paramKey, String paramValue) {
+    fun addUrlParam(paramKey: String?, paramValue: String?): UploadRequest {
         if (paramKey != null && paramValue != null) {
-            if (stringBuilder.length() == 0) {
-                stringBuilder.append("?");
+            if (stringBuilder.isEmpty()) {
+                stringBuilder.append("?")
             } else {
-                stringBuilder.append("&");
+                stringBuilder.append("&")
             }
-            stringBuilder.append(paramKey).append("=").append(paramValue);
+            stringBuilder.append(paramKey).append("=").append(paramValue)
         }
-        return this;
+        return this
     }
 
-    public UploadRequest addFiles(Map<String, File> fileMap) {
+    fun addFiles(fileMap: Map<String?, File?>?): UploadRequest {
         if (fileMap == null) {
-            return this;
+            return this
         }
-        for (Map.Entry<String, File> entry : fileMap.entrySet()) {
-            addFile(entry.getKey(), entry.getValue());
+        for ((key, value) in fileMap) {
+            addFile(key, value)
         }
-        return this;
+        return this
     }
 
-
-    public UploadRequest addFile(String key, File file) {
+    fun addFile(key: String?, file: File?): UploadRequest {
         if (key == null || file == null) {
-            return this;
+            return this
         }
-        RequestBody requestBody = RequestBody.create(MediaTypes.APPLICATION_OCTET_STREAM_TYPE, file);
-        MultipartBody.Part part = MultipartBody.Part.createFormData(key, file.getName(), requestBody);
-        this.multipartBodyParts.add(part);
-        return this;
+        val requestBody: RequestBody =
+            RequestBody.create(MediaTypes.APPLICATION_OCTET_STREAM_TYPE, file)
+        val part: MultipartBody.Part =
+            MultipartBody.Part.createFormData(key, file.name, requestBody)
+        multipartBodyParts.add(part)
+        return this
     }
 
-    public UploadRequest addImageFile(String key, File file) {
+    fun addImageFile(key: String?, file: File?): UploadRequest {
         if (key == null || file == null) {
-            return this;
+            return this
         }
-        RequestBody requestBody = RequestBody.create(MediaTypes.IMAGE_TYPE, file);
-        MultipartBody.Part part = MultipartBody.Part.createFormData(key, file.getName(), requestBody);
-        this.multipartBodyParts.add(part);
-        return this;
+        val requestBody: RequestBody = RequestBody.create(MediaTypes.IMAGE_TYPE, file)
+        val part: MultipartBody.Part =
+            MultipartBody.Part.createFormData(key, file.name, requestBody)
+        multipartBodyParts.add(part)
+        return this
     }
 
-    public UploadRequest addBytes(String key, byte[] bytes, String name) {
+    fun addBytes(key: String?, bytes: ByteArray?, name: String?): UploadRequest {
         if (key == null || bytes == null || name == null) {
-            return this;
+            return this
         }
-        RequestBody requestBody = RequestBody.create(MediaTypes.APPLICATION_OCTET_STREAM_TYPE, bytes);
-        MultipartBody.Part part = MultipartBody.Part.createFormData(key, name, requestBody);
-        this.multipartBodyParts.add(part);
-        return this;
+        val requestBody: RequestBody =
+            RequestBody.create(MediaTypes.APPLICATION_OCTET_STREAM_TYPE, bytes)
+        val part: MultipartBody.Part = MultipartBody.Part.createFormData(key, name, requestBody)
+        multipartBodyParts.add(part)
+        return this
     }
 
-    public UploadRequest addStream(String key, InputStream inputStream, String name) {
+    fun addStream(key: String?, inputStream: InputStream?, name: String?): UploadRequest {
         if (key == null || inputStream == null || name == null) {
-            return this;
+            return this
         }
-
-        RequestBody requestBody = create(MediaTypes.APPLICATION_OCTET_STREAM_TYPE, inputStream);
-        MultipartBody.Part part = MultipartBody.Part.createFormData(key, name, requestBody);
-        this.multipartBodyParts.add(part);
-        return this;
+        val requestBody: RequestBody = create(MediaTypes.APPLICATION_OCTET_STREAM_TYPE, inputStream)
+        val part: MultipartBody.Part = MultipartBody.Part.createFormData(key, name, requestBody)
+        multipartBodyParts.add(part)
+        return this
     }
 
-    protected RequestBody create(final MediaType mediaType, final InputStream inputStream) {
-        return new RequestBody() {
-            @Override
-            public MediaType contentType() {
-                return mediaType;
+    protected fun create(mediaType: MediaType?, inputStream: InputStream): RequestBody {
+        return object : RequestBody() {
+            override fun contentType(): MediaType? {
+                return mediaType
             }
 
-            @Override
-            public long contentLength() {
-                try {
-                    return inputStream.available();
-                } catch (IOException e) {
-                    return 0;
+            override fun contentLength(): Long {
+                return try {
+                    inputStream.available().toLong()
+                } catch (e: IOException) {
+                    0
                 }
             }
 
-            @Override
-            public void writeTo(@NonNull BufferedSink sink) throws IOException {
-                Source source = null;
+            @Throws(IOException::class)
+            override fun writeTo(sink: BufferedSink) {
+                var source: Source? = null
                 try {
-                    source = Okio.source(inputStream);
-                    sink.writeAll(source);
+                    source = Okio.source(inputStream)
+                    source?.let { sink.writeAll(it) }
                 } finally {
-                    Util.closeQuietly(source);
+                    Util.closeQuietly(source)
                 }
             }
-        };
+        }
     }
 
-    public void request(UploadCallBack callback) {
-        netInterceptor(new UploadInterceptor(callback));
-        injectLocalParams();
-        execute(callback);
+    suspend fun request(callback: UploadCallBack?) {
+        netInterceptor(UploadInterceptor(callback))
+        injectLocalParams()
+        execute()
     }
-
 }

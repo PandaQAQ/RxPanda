@@ -1,85 +1,31 @@
-package com.pandaq.rxpanda.requests.okhttp.post;
+package com.pandaq.rxpanda.requests.okhttp.post
 
-
-import com.pandaq.rxpanda.RxPanda;
-import com.pandaq.rxpanda.constants.MediaTypes;
-import com.pandaq.rxpanda.observer.ApiObserver;
-import com.pandaq.rxpanda.requests.okhttp.base.HttpRequest;
-import com.pandaq.rxpanda.utils.GsonUtil;
-
-import io.reactivex.Observable;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
+import com.pandaq.rxpanda.constants.MediaTypes
+import com.pandaq.rxpanda.requests.okhttp.base.HttpRequest
+import com.pandaq.rxpanda.utils.GsonUtil
+import okhttp3.MediaType
+import okhttp3.RequestBody
+import okhttp3.ResponseBody
+import org.json.JSONArray
+import org.json.JSONObject
 
 /**
  * Created by huxinyu on 2019/3/15.
  * Email : panda.h@foxmail.com
  * Description :
  */
-public class PostBodyRequest extends HttpRequest<PostBodyRequest> {
-
+class PostBodyRequest(url: String) : HttpRequest<PostBodyRequest>(url) {
     // url中带参数 post
-    private StringBuilder stringBuilder = new StringBuilder();
+    private val stringBuilder = StringBuilder()
 
     // body Post
-    private RequestBody requestBody;
+    private var requestBody: RequestBody? = null
+
     // body post 参数类型
-    private MediaType mediaType;
+    private var mediaType: MediaType? = null
+
     // body post 内容
-    private String content;
-
-    public PostBodyRequest(String url) {
-        super(url);
-    }
-
-    @Override
-    protected <T> Observable<T> execute(Type type) {
-        if (stringBuilder.length() != 0) {
-            url = url + stringBuilder.toString();
-        }
-        if (requestBody != null) {
-            return mApi.postBody(url, requestBody)
-                    .doOnSubscribe(disposable -> {
-                        if (tag != null) {
-                            RxPanda.manager().addTag(tag, disposable);
-                        }
-                    })
-                    .compose(httpTransformer(type));
-        }
-        if (content != null && mediaType != null) {
-            requestBody = RequestBody.create(mediaType, content);
-            return mApi.postBody(url, requestBody)
-                    .doOnSubscribe(disposable -> {
-                        if (tag != null) {
-                            RxPanda.manager().addTag(tag, disposable);
-                        }
-                    })
-                    .compose(httpTransformer(type));
-        }
-        return mApi.post(url, localParams)
-                .doOnSubscribe(disposable -> {
-                    if (tag != null) {
-                        RxPanda.manager().addTag(tag, disposable);
-                    }
-                })
-                .compose(httpTransformer(type));
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    protected <T> void execute(ApiObserver<T> callback) {
-        if (tag != null) {
-            RxPanda.manager().addTag(tag, callback);
-        }
-        this.execute(getType(callback))
-                .map(o -> (T) o)
-                .subscribe(callback);
-    }
+    private var content: String? = null
 
     /**
      * post url 中添加参数
@@ -88,22 +34,21 @@ public class PostBodyRequest extends HttpRequest<PostBodyRequest> {
      * @param paramValue value
      * @return self
      */
-    public PostBodyRequest urlParam(String paramKey, String paramValue) {
+    fun urlParam(paramKey: String?, paramValue: String?): PostBodyRequest {
         if (paramKey != null && paramValue != null) {
-            if (stringBuilder.length() == 0) {
-                stringBuilder.append("?");
+            if (stringBuilder.isEmpty()) {
+                stringBuilder.append("?")
             } else {
-                stringBuilder.append("&");
+                stringBuilder.append("&")
             }
-            stringBuilder.append(paramKey).append("=").append(paramValue);
+            stringBuilder.append(paramKey).append("=").append(paramValue)
         }
-        return this;
+        return this
     }
 
-
-    public PostBodyRequest setRequestBody(RequestBody requestBody) {
-        this.requestBody = requestBody;
-        return this;
+    fun setRequestBody(requestBody: RequestBody?): PostBodyRequest {
+        this.requestBody = requestBody
+        return this
     }
 
     /**
@@ -112,57 +57,73 @@ public class PostBodyRequest extends HttpRequest<PostBodyRequest> {
      * @param body post 对象
      * @return self
      */
-    public PostBodyRequest setBody(Object body) {
-        this.content = GsonUtil.gson().toJson(body);
-        this.mediaType = MediaTypes.APPLICATION_JSON_TYPE;
-        return this;
+    fun setBody(body: Any?): PostBodyRequest {
+        content = GsonUtil.gson().toJson(body)
+        mediaType = MediaTypes.APPLICATION_JSON_TYPE
+        return this
     }
 
-    public PostBodyRequest setString(String string) {
-        this.content = string;
-        this.mediaType = MediaTypes.TEXT_PLAIN_TYPE;
-        return this;
+    fun setString(string: String?): PostBodyRequest {
+        content = string
+        mediaType = MediaTypes.TEXT_PLAIN_TYPE
+        return this
     }
 
-    public PostBodyRequest setHtml(String string) {
-        this.content = string;
-        this.mediaType = MediaTypes.TEXT_HTML_TYPE;
-        return this;
+    fun setHtml(string: String?): PostBodyRequest {
+        content = string
+        mediaType = MediaTypes.TEXT_HTML_TYPE
+        return this
     }
 
-    public PostBodyRequest setString(String string, MediaType mediaType) {
-        this.content = string;
-        this.mediaType = mediaType;
-        return this;
+    fun setString(string: String?, mediaType: MediaType?): PostBodyRequest {
+        content = string
+        this.mediaType = mediaType
+        return this
     }
 
-    public PostBodyRequest setXml(String xml) {
-        this.content = xml;
-        this.mediaType = MediaTypes.APPLICATION_XML_TYPE;
-        return this;
+    fun setXml(xml: String?): PostBodyRequest {
+        content = xml
+        mediaType = MediaTypes.APPLICATION_XML_TYPE
+        return this
     }
 
-    public PostBodyRequest setXmlText(String xml) {
-        this.content = xml;
-        this.mediaType = MediaTypes.TEXT_XML_TYPE;
-        return this;
+    fun setXmlText(xml: String?): PostBodyRequest {
+        content = xml
+        mediaType = MediaTypes.TEXT_XML_TYPE
+        return this
     }
 
-    public PostBodyRequest setJson(String json) {
-        this.content = json;
-        this.mediaType = MediaTypes.APPLICATION_JSON_TYPE;
-        return this;
+    fun setJson(json: String?): PostBodyRequest {
+        content = json
+        mediaType = MediaTypes.APPLICATION_JSON_TYPE
+        return this
     }
 
-    public PostBodyRequest setJson(JSONObject jsonObject) {
-        this.content = jsonObject.toString();
-        this.mediaType = MediaTypes.APPLICATION_JSON_TYPE;
-        return this;
+    fun setJson(jsonObject: JSONObject): PostBodyRequest {
+        content = jsonObject.toString()
+        mediaType = MediaTypes.APPLICATION_JSON_TYPE
+        return this
     }
 
-    public PostBodyRequest jsonArray(JSONArray jsonArray) {
-        this.content = jsonArray.toString();
-        this.mediaType = MediaTypes.APPLICATION_JSON_TYPE;
-        return this;
+    fun jsonArray(jsonArray: JSONArray): PostBodyRequest {
+        content = jsonArray.toString()
+        mediaType = MediaTypes.APPLICATION_JSON_TYPE
+        return this
+    }
+
+    override suspend fun execute(): ResponseBody? {
+        if (stringBuilder.isNotEmpty()) {
+            url += stringBuilder.toString()
+        }
+        requestBody?.let {
+            return mApi?.postBody(url, requestBody)
+        }
+        content?.let {
+            if (mediaType != null) {
+                requestBody = RequestBody.create(mediaType, it)
+                return mApi?.postBody(url, requestBody)
+            }
+        }
+        return mApi?.post(url, localParams)
     }
 }

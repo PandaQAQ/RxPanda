@@ -13,33 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.pandaq.rxpanda.converter;
+package com.pandaq.rxpanda.converter
 
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
+import com.google.gson.Gson
+import com.google.gson.TypeAdapter
+import com.google.gson.reflect.TypeToken
+import okhttp3.ResponseBody
+import retrofit2.Converter
+import java.io.IOException
+import java.lang.reflect.Type
 
-import java.io.IOException;
-import java.lang.reflect.Type;
+internal class GsonResponseBodyConverter<T>(private val gson: Gson, type: Type?) :
+    Converter<ResponseBody, T> {
+    private val adapter: TypeAdapter<T>
 
-import okhttp3.ResponseBody;
-import retrofit2.Converter;
-
-final class GsonResponseBodyConverter<T> implements Converter<ResponseBody, T> {
-    private final Gson gson;
-    private final TypeAdapter<T> adapter;
-
-    @SuppressWarnings("unchecked")
-    GsonResponseBodyConverter(Gson gson, Type type) {
-        this.gson = gson;
-        this.adapter = (TypeAdapter<T>) gson.getAdapter(TypeToken.get(type));
+    init {
+        adapter = gson.getAdapter(TypeToken.get(type)) as TypeAdapter<T>
     }
 
-    @Override
-    public T convert(ResponseBody value) throws IOException {
-        JsonReader jsonReader = gson.newJsonReader(value.charStream());
-        jsonReader.setLenient(true);
-        return adapter.read(jsonReader);
+    @Throws(IOException::class)
+    override fun convert(value: ResponseBody): T {
+        val jsonReader = gson.newJsonReader(value.charStream())
+        jsonReader.isLenient = true
+        return adapter.read(jsonReader)
     }
 }

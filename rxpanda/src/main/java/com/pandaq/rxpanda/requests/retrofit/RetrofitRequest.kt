@@ -1,35 +1,25 @@
-package com.pandaq.rxpanda.requests.retrofit;
+package com.pandaq.rxpanda.requests.retrofit
 
-import android.text.TextUtils;
-
-import com.pandaq.rxpanda.interceptor.CacheInterceptor;
-import com.pandaq.rxpanda.interceptor.MockDataInterceptor;
-import com.pandaq.rxpanda.interceptor.ParamsInterceptor;
-import com.pandaq.rxpanda.interceptor.TimeoutInterceptor;
-import com.pandaq.rxpanda.requests.Request;
-import com.pandaq.rxpanda.ssl.SSLManager;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import retrofit2.CallAdapter;
-import retrofit2.Retrofit;
+import android.text.TextUtils
+import com.pandaq.rxpanda.interceptor.CacheInterceptor
+import com.pandaq.rxpanda.interceptor.MockDataInterceptor
+import com.pandaq.rxpanda.interceptor.ParamsInterceptor
+import com.pandaq.rxpanda.interceptor.TimeoutInterceptor
+import com.pandaq.rxpanda.requests.Request
+import com.pandaq.rxpanda.ssl.SSLManager.SafeHostnameVerifier
+import retrofit2.Retrofit
 
 /**
  * Created by huxinyu on 2019/1/11.
  * Email : panda.h@foxmail.com
- * <p>
+ *
+ *
  * Description : request for use retrofit
  */
-public class RetrofitRequest extends Request<RetrofitRequest> {
-
+open class RetrofitRequest : Request<RetrofitRequest>() {
     // local basUrl
-    private String baseUrl = "";
-    protected Map<String, String> localParams = new LinkedHashMap<>();//请求参数
-
-    public RetrofitRequest() {
-        super();
-    }
+    private var baseUrl = ""
+    protected var localParams: MutableMap<String, String> = LinkedHashMap() //请求参数
 
     /**
      * set request base url
@@ -37,66 +27,60 @@ public class RetrofitRequest extends Request<RetrofitRequest> {
      * @param baseUrl base url
      * @return request
      */
-    public RetrofitRequest baseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
-        return this;
+    fun baseUrl(baseUrl: String): RetrofitRequest {
+        this.baseUrl = baseUrl
+        return this
     }
 
-    public <T> T create(Class<T> apiService) {
-        Retrofit retrofit;
-        injectLocalParams();
-        if (!TextUtils.isEmpty(baseUrl)) { // 如果基础地址改了者需要重新构建个 Retrofit 对象，避免影响默认请求的配置
-            Retrofit.Builder newRetrofitBuilder = new Retrofit.Builder();
-            newRetrofitBuilder.baseUrl(baseUrl);
-            if (getGlobalConfig().getConverterFactory() != null) {
-                newRetrofitBuilder.addConverterFactory(getGlobalConfig().getConverterFactory());
-            }
-            if (!getGlobalConfig().getCallAdapterFactories().isEmpty()) {
-                for (CallAdapter.Factory factory : getGlobalConfig().getCallAdapterFactories()) {
-                    newRetrofitBuilder.addCallAdapterFactory(factory);
+    fun <T> create(apiService: Class<T>): T {
+        injectLocalParams()
+        val retrofit: Retrofit = if (!TextUtils.isEmpty(baseUrl)) { // 如果基础地址改了者需要重新构建个 Retrofit 对象，避免影响默认请求的配置
+            val newRetrofitBuilder = Retrofit.Builder()
+            newRetrofitBuilder.baseUrl(baseUrl)
+            globalConfig.converterFactory
+            newRetrofitBuilder.addConverterFactory(globalConfig.converterFactory)
+            if (globalConfig.getCallAdapterFactories().isNotEmpty()) {
+                for (factory in globalConfig.getCallAdapterFactories()) {
+                    newRetrofitBuilder.addCallAdapterFactory(factory)
                 }
             }
-            getClientBuilder().hostnameVerifier(new SSLManager.SafeHostnameVerifier(baseUrl));
+            getClientBuilder().hostnameVerifier(SafeHostnameVerifier(baseUrl))
             // 添加日志拦截器
-            if (getGlobalConfig().getLoggingInterceptor() != null) {
-                if (getGlobalConfig().getLoggingInterceptor().isNetInterceptor()) {
-                    getClientBuilder().addNetworkInterceptor(getGlobalConfig().getLoggingInterceptor());
+            globalConfig.loggingInterceptor?.let {
+                if (it.isNetInterceptor) {
+                    getClientBuilder().addNetworkInterceptor(it)
                 } else {
-                    getClientBuilder().addInterceptor(getGlobalConfig().getLoggingInterceptor());
+                    getClientBuilder().addInterceptor(it)
                 }
             }
             // 缓存拦截器
-            getClientBuilder().addInterceptor(new CacheInterceptor());
+            getClientBuilder().addInterceptor(CacheInterceptor())
             // 时长拦截器
-            getClientBuilder().addInterceptor(new TimeoutInterceptor());
+            getClientBuilder().addInterceptor(TimeoutInterceptor())
             // 添加调试阶段的模拟数据拦截器
-            if (getGlobalConfig().isAlwaysUseMock() || getGlobalConfig().isDebug()) {
-                MockDataInterceptor dataInterceptor = new MockDataInterceptor();
-                dataInterceptor.setLocalMockJson(getMockJson());
-                getClientBuilder().addNetworkInterceptor(dataInterceptor);
+            if (globalConfig.isAlwaysUseMock || globalConfig.isDebug) {
+                val dataInterceptor = MockDataInterceptor()
+                dataInterceptor.setLocalMockJson(mockJson)
+                getClientBuilder().addNetworkInterceptor(dataInterceptor)
             }
-            newRetrofitBuilder.client(getGlobalConfig().getClientBuilder().build().newBuilder().build());
-            retrofit = newRetrofitBuilder.build();
+            newRetrofitBuilder.client(globalConfig.getClientBuilder().build().newBuilder().build())
+            newRetrofitBuilder.build()
         } else { // 使用默认配置的对象
-            retrofit = getCommonRetrofit();
+            commonRetrofit
         }
-        return retrofit.create(apiService);
+        return retrofit.create(apiService)
     }
 
-    @Override
-    protected void injectLocalParams() {
-        super.injectLocalParams();
+    override fun injectLocalParams() {
+        super.injectLocalParams()
         // retrofit 方式请求，通过拦截器添加参数
-        if (getGlobalConfig().getGlobalParams() != null) {
-            localParams.putAll(getGlobalConfig().getGlobalParams());
-        }
-
-        if (!localParams.isEmpty()) {
-            ParamsInterceptor paramsInterceptor = new ParamsInterceptor();
-            paramsInterceptor.setParamsMap(localParams);
+        localParams.putAll(globalConfig.getGlobalParams())
+        if (localParams.isNotEmpty()) {
+            val paramsInterceptor = ParamsInterceptor()
+            paramsInterceptor.paramsMap = localParams
             if (!getClientBuilder().networkInterceptors().contains(paramsInterceptor)) {
                 // 将参数添加到请求中
-                getClientBuilder().addNetworkInterceptor(paramsInterceptor);
+                getClientBuilder().addNetworkInterceptor(paramsInterceptor)
             }
         }
     }
@@ -108,11 +92,11 @@ public class RetrofitRequest extends Request<RetrofitRequest> {
      * @param paramValue
      * @return
      */
-    public RetrofitRequest addParam(String paramKey, String paramValue) {
+    fun addParam(paramKey: String?, paramValue: String?): RetrofitRequest {
         if (paramKey != null && paramValue != null) {
-            this.localParams.put(paramKey, paramValue);
+            localParams[paramKey] = paramValue
         }
-        return this;
+        return this
     }
 
     /**
@@ -121,11 +105,11 @@ public class RetrofitRequest extends Request<RetrofitRequest> {
      * @param params
      * @return
      */
-    public RetrofitRequest addParams(Map<String, String> params) {
+    fun addParams(params: Map<String, String>?): RetrofitRequest {
         if (params != null) {
-            this.localParams.putAll(params);
+            localParams.putAll(params)
         }
-        return this;
+        return this
     }
 
     /**
@@ -134,11 +118,11 @@ public class RetrofitRequest extends Request<RetrofitRequest> {
      * @param paramKey
      * @return
      */
-    public RetrofitRequest removeParam(String paramKey) {
+    fun removeParam(paramKey: String?): RetrofitRequest {
         if (paramKey != null) {
-            this.localParams.remove(paramKey);
+            localParams.remove(paramKey)
         }
-        return this;
+        return this
     }
 
     /**
@@ -147,10 +131,10 @@ public class RetrofitRequest extends Request<RetrofitRequest> {
      * @param params
      * @return
      */
-    public RetrofitRequest params(Map<String, String> params) {
+    fun params(params: MutableMap<String, String>?): RetrofitRequest {
         if (params != null) {
-            this.localParams = params;
+            localParams = params
         }
-        return this;
+        return this
     }
 }

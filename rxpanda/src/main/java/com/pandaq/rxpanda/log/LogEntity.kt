@@ -1,33 +1,28 @@
-package com.pandaq.rxpanda.log;
+package com.pandaq.rxpanda.log
 
-import android.util.Log;
-import com.pandaq.rxpanda.RxPanda;
-import com.pandaq.rxpanda.config.HttpGlobalConfig;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import android.util.Log
+import com.pandaq.rxpanda.config.HttpGlobalConfig
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
+import java.util.Objects
 
 /**
  * Created by huxinyu on 2019/6/13.
  * Email : panda.h@foxmail.com
- * <p>
+ *
+ *
  * Description :日志暂存对象
  */
-class LogEntity {
+internal class LogEntity {
+    private val tag = "RxPanda"
+    private var logs: MutableList<String>? = ArrayList()
+    private val LINE_SEPARATOR = Objects.requireNonNull(System.getProperty("line.separator"))
 
-    private final String tag = "RxPanda";
-    private List<String> logs = new ArrayList<>();
-    private final String LINE_SEPARATOR = Objects.requireNonNull(System.getProperty("line.separator"));
-
-    LogEntity() {
-        addLog(" ");
-        addLog("╔════════════════════════  HTTP  START  ══════════════════════════");
-        addLog("");
+    init {
+        addLog(" ")
+        addLog("╔════════════════════════  HTTP  START  ══════════════════════════")
+        addLog("")
     }
 
     /**
@@ -35,30 +30,31 @@ class LogEntity {
      *
      * @param log 日志
      */
-    void addLog(String log) {
-        if (!HttpGlobalConfig.getInstance().isDebug()) return;
-        if (log == null) return;
-        if (log.equals(" ") || log.startsWith("{")
-                || log.startsWith("╔") || log.startsWith("╚")) {
-            logs.add(log);
+    fun addLog(log: String?) {
+        if (!HttpGlobalConfig.instance.isDebug) return
+        if (log == null) return
+        if (log == " " || log.startsWith("{")
+            || log.startsWith("╔") || log.startsWith("╚")
+        ) {
+            logs!!.add(log)
         } else {
-            logs.add("║" + log);
+            logs!!.add("║$log")
         }
     }
 
     /**
      * 输出日志到控制台
      */
-    void printLog() {
-        if (!HttpGlobalConfig.getInstance().isDebug()) return;
-        addLog("");
-        addLog("╚════════════════════════  HTTP  END  ═══════════════════════════");
-        addLog(" ");
-        for (String log : logs) {
-            logJson(log);
+    fun printLog() {
+        if (!HttpGlobalConfig.instance.isDebug) return
+        addLog("")
+        addLog("╚════════════════════════  HTTP  END  ═══════════════════════════")
+        addLog(" ")
+        for (log in logs!!) {
+            logJson(log)
         }
-        logs.clear();
-        logs = null;
+        logs!!.clear()
+        logs = null
     }
 
     /**
@@ -66,39 +62,40 @@ class LogEntity {
      *
      * @param msg 格式化前 json 数据
      */
-    private void logJson(String msg) {
-        String message;
+    private fun logJson(msg: String) {
+        var message: String
         try {
             if (msg.startsWith("{")) {
-                JSONObject jsonObject = new JSONObject(msg);
-                message = jsonObject.toString(2);//最重要的方法，就一行，返回格式化的json字符串，其中的数字4是缩进字符数
+                val jsonObject = JSONObject(msg)
+                message = jsonObject.toString(2) //最重要的方法，就一行，返回格式化的json字符串，其中的数字4是缩进字符数
             } else if (msg.startsWith("[")) {
-                JSONArray jsonArray = new JSONArray(msg);
-                message = jsonArray.toString(2);
+                val jsonArray = JSONArray(msg)
+                message = jsonArray.toString(2)
             } else {
-                message = msg;
-                if (HttpGlobalConfig.getInstance().isDebug()) {
-                    Log.d(tag, message);
+                message = msg
+                if (HttpGlobalConfig.instance.isDebug) {
+                    Log.d(tag, message)
                 }
-                return;
+                return
             }
-        } catch (JSONException e) {
-            message = msg;
-            if (HttpGlobalConfig.getInstance().isDebug()) {
-                Log.d(tag, message);
+        } catch (e: JSONException) {
+            message = msg
+            if (HttpGlobalConfig.instance.isDebug) {
+                Log.d(tag, message)
             }
-            return;
+            return
         }
         // 输出 json 格式数据
-        printLine(true);
-        message = LINE_SEPARATOR + message;
-        String[] lines = message.split(LINE_SEPARATOR);
-        for (String line : lines) {
-            if (!line.isEmpty() && HttpGlobalConfig.getInstance().isDebug()) {
-                Log.d(tag, "║ " + line);
+        printLine(true)
+        message = LINE_SEPARATOR + message
+        val lines =
+            message.split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        for (line in lines) {
+            if (!line.isEmpty() && HttpGlobalConfig.instance.isDebug) {
+                Log.d(tag, "║ $line")
             }
         }
-        printLine(false);
+        printLine(false)
     }
 
     /**
@@ -106,16 +103,16 @@ class LogEntity {
      *
      * @param isTop 是否为顶部分割线
      */
-    private void printLine(boolean isTop) {
+    private fun printLine(isTop: Boolean) {
         if (isTop) {
-            if (HttpGlobalConfig.getInstance().isDebug()) {
-                Log.d(tag, "║");
-                Log.d(tag, "║——————————————————JSON START——————————————————");
+            if (HttpGlobalConfig.instance.isDebug) {
+                Log.d(tag, "║")
+                Log.d(tag, "║——————————————————JSON START——————————————————")
             }
         } else {
-            if (HttpGlobalConfig.getInstance().isDebug()) {
-                Log.d(tag, "║——————————————————JSON END———————————————————");
-                Log.d(tag, "║");
+            if (HttpGlobalConfig.instance.isDebug) {
+                Log.d(tag, "║——————————————————JSON END———————————————————")
+                Log.d(tag, "║")
             }
         }
     }

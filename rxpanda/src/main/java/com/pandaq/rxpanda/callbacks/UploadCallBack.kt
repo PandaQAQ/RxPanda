@@ -1,51 +1,41 @@
-package com.pandaq.rxpanda.callbacks;
+package com.pandaq.rxpanda.callbacks
 
-import com.pandaq.rxpanda.exception.ApiException;
-import com.pandaq.rxpanda.observer.ApiObserver;
-import com.pandaq.rxpanda.utils.ThreadUtils;
-
-import io.reactivex.annotations.NonNull;
-import okhttp3.ResponseBody;
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 /**
  * Created by huxinyu on 2019/7/11.
  * Email : panda.h@foxmail.com
  * Description :
  */
-public abstract class UploadCallBack extends ApiObserver<ResponseBody> implements TransmitCallback {
+abstract class UploadCallBack : TransmitCallback {
 
-    private final boolean autoBackMainThread;
+    private val mainScope = CoroutineScope(Dispatchers.Main)
 
-    public UploadCallBack() {
-        this.autoBackMainThread = true;
+    override fun done() {
+        mainScope.launch {
+            onDone()
+        }
+        mainScope.cancel()
     }
 
-    public UploadCallBack(boolean autoBackMainThread) {
-        this.autoBackMainThread = autoBackMainThread;
-    }
-
-    @Override
-    protected void onSuccess(@NonNull ResponseBody data) {
-
-    }
-
-    @Override
-    protected void onError(ApiException e) {
-        if (autoBackMainThread) {
-            ThreadUtils.getMainHandler().post(() -> onFailed(e));
-        } else {
-            onFailed(e);
+    override fun failed(e: Exception?) {
+        mainScope.launch {
+            onFail(e)
         }
     }
 
-    @Override
-    protected void finished(boolean success) {
-        if (autoBackMainThread) {
-            ThreadUtils.getMainHandler().postDelayed(() -> done(success)
-                    , 500);
-        } else {
-            done(success);
+    override fun progress(progress: Int) {
+        mainScope.launch {
+            onProgress(progress)
         }
     }
 
+    abstract fun onDone()
+
+    abstract fun onFail(e: Exception?)
+
+    abstract fun onProgress(progress: Int)
 }

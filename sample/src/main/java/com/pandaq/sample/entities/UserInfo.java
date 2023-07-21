@@ -48,6 +48,6 @@ public class UserInfo {
     @NonNull
     @Override
     public String toString() {
-        return GsonUtil.gson().toJson(this);
+        return GsonUtil.INSTANCE.gson().toJson(this);
     }
 }

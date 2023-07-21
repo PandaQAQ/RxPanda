@@ -155,7 +155,7 @@ public final class HttpLoggingInterceptor implements Interceptor {
         }
 
         if (level == Level.NONE ||
-                !HttpGlobalConfig.getInstance().isDebug()) {
+                !HttpGlobalConfig.Companion.getInstance().isDebug()) {
             return chain.proceed(request);
         }
         LogEntity entity = new LogEntity();

@@ -1,107 +1,57 @@
-package com.pandaq.rxpanda.callbacks;
+package com.pandaq.rxpanda.callbacks
 
-import com.pandaq.rxpanda.HttpCode;
-import com.pandaq.rxpanda.exception.ApiException;
-import com.pandaq.rxpanda.utils.ThreadUtils;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import io.reactivex.annotations.NonNull;
-import io.reactivex.observers.DisposableObserver;
-import okhttp3.ResponseBody;
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.newCoroutineContext
+import retrofit2.Call
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
 
 /**
  * Created by huxinyu on 2019/7/11.
  * Email : panda.h@foxmail.com
  * Description :
  */
-public abstract class DownloadCallBack extends DisposableObserver<ResponseBody> implements TransmitCallback {
+abstract class DownloadCallBack : TransmitCallback{
+    private var targetFile: File? = null
 
-    private File targetFile;
-    private boolean success = true;
-
-    private final boolean autoBackMainThread;
-
-    public DownloadCallBack() {
-        this.autoBackMainThread = true;
+    fun setTargetFile(targetFile: File?) {
+        this.targetFile = targetFile
     }
 
-    public DownloadCallBack(boolean autoBackMainThread) {
-        this.autoBackMainThread = autoBackMainThread;
+    fun getTargetFile():File?{
+        return targetFile
     }
 
-    public void setTargetFile(File targetFile) {
-        this.targetFile = targetFile;
-    }
 
-    @Override
-    public void onNext(@NonNull ResponseBody body) {
-        if (targetFile == null) {
-            success = false;
-            onError(new IOException());
-            return;
+    private val mainScope = CoroutineScope(Dispatchers.Main)
+
+    override fun done() {
+        mainScope.launch {
+            onDone()
         }
-        InputStream is = body.byteStream();
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(targetFile);
-            int len;
-            byte[] buffer = new byte[2048];
-            while (-1 != (len = is.read(buffer))) {
-                fos.write(buffer, 0, len);
-            }
-        } catch (IOException e) {
-            success = false;
-            onError(e);
-            return;
-        } finally {
-            try {
-                if (fos != null) {
-                    fos.flush();
-                    fos.close();
-                }
-                is.close();
-            } catch (Exception e) {
-                success = false;
-                onError(e);
-            }
-        }
-        // 成功
-        if (autoBackMainThread) {
-            ThreadUtils.getMainHandler().post(() -> done(success));
-        } else {
-            done(success);
+        mainScope.cancel()
+    }
+
+    override fun failed(e: Exception?) {
+        mainScope.launch {
+            onFail(e)
         }
     }
 
-    @Override
-    public void onError(@NonNull Throwable e) {
-        if (autoBackMainThread) {
-            ThreadUtils.getMainHandler().post(() -> {
-                if (e instanceof ApiException) {
-                    onFailed((ApiException) e);
-                } else {
-                    onFailed(new ApiException(e, HttpCode.FRAME_WORK.UNKNOWN));
-                }
-                done(false);
-            });
-            e.printStackTrace();
-        } else {
-            if (e instanceof ApiException) {
-                onFailed((ApiException) e);
-            } else {
-                onFailed(new ApiException(e, HttpCode.FRAME_WORK.UNKNOWN));
-            }
-            done(false);
+    override fun progress(progress: Int) {
+        mainScope.launch {
+            onProgress(progress)
         }
     }
 
-    @Override
-    public void onComplete() {
+    abstract fun onDone()
 
-    }
+    abstract fun onFail(e: Exception?)
 
+    abstract fun onProgress(progress: Int)
 }

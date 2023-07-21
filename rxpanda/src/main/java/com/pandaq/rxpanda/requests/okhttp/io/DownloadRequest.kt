@@ -1,88 +1,62 @@
-package com.pandaq.rxpanda.requests.okhttp.io;
+package com.pandaq.rxpanda.requests.okhttp.io
 
-import android.util.Log;
-import com.pandaq.rxpanda.RequestManager;
-import com.pandaq.rxpanda.RxPanda;
-import com.pandaq.rxpanda.callbacks.DownloadCallBack;
-import com.pandaq.rxpanda.callbacks.TransmitCallback;
-import com.pandaq.rxpanda.interceptor.DownloadInterceptor;
-import com.pandaq.rxpanda.transformer.RxScheduler;
-
-import java.io.File;
-import java.io.IOException;
-
+import android.util.Log
+import com.pandaq.rxpanda.callbacks.DownloadCallBack
+import com.pandaq.rxpanda.interceptor.DownloadInterceptor
+import okhttp3.ResponseBody
+import java.io.File
+import java.io.IOException
 
 /**
  * Created by huxinyu on 2019/7/11.
  * Email : panda.h@foxmail.com
- * <p>
+ *
+ *
  * Description :
  */
-public class DownloadRequest extends IORequest<DownloadRequest> {
+class DownloadRequest(url: String) : IORequest<DownloadRequest>(url) {
 
-    private File targetFile;
-
-
-    public DownloadRequest(String url) {
-        super(url);
-    }
-
-    public DownloadRequest target(String dirName, String fileName) {
-        File file = new File(dirName);
+    private var targetFile: File? = null
+    fun target(dirName: String, fileName: String): DownloadRequest {
+        val file = File(dirName)
         if (!file.exists()) {
-            boolean result = file.mkdirs();
+            val result = file.mkdirs()
             if (!result) {
-                Log.e("DownloadRequest :", "mkdirs failed !");
+                Log.e("DownloadRequest :", "mkdirs failed !")
             }
         }
-        targetFile = new File(dirName + File.separator + fileName);
-        if (!targetFile.exists()) {
+        targetFile = File(dirName + File.separator + fileName)
+        if (!targetFile!!.exists()) {
             try {
-                boolean res = targetFile.createNewFile();
+                val res = targetFile!!.createNewFile()
                 if (!res) {
-                    Log.e("DownloadRequest :", "createNewFile failed !");
+                    Log.e("DownloadRequest :", "createNewFile failed !")
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (e: IOException) {
+                e.printStackTrace()
             }
         }
-        return this;
+        return this
     }
 
-    public DownloadRequest target(File file) {
-        targetFile = file;
-        return this;
+    fun target(file: File?): DownloadRequest {
+        targetFile = file
+        return this
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    protected <T extends TransmitCallback> void execute(T t) {
-        DownloadCallBack callback;
-        if (t instanceof DownloadCallBack) {
-            callback = (DownloadCallBack) t;
-            callback.setTargetFile(targetFile);
-        } else {
-            return;
-        }
-        if (super.tag != null) {
-            RequestManager.get().addTag(super.tag, callback);
-        }
-        mApi.downFile(url, localParams)
-                .doOnSubscribe(disposable -> {
-                    if (tag != null) {
-                        RxPanda.manager().addTag(tag, disposable);
-                    }
-                })
-                .compose(RxScheduler.io())
-                .subscribe(callback);
+    override suspend fun execute(): ResponseBody? {
+        return mApi?.downFile(url, localParams)
     }
 
-    public void request(DownloadCallBack callback) {
-        if (targetFile == null || !targetFile.exists()) {
-            Log.d("DownloadRequest", "targeFile not found !!!");
+    suspend fun request(callback: DownloadCallBack?) {
+        if (targetFile == null || !targetFile!!.exists()) {
+            Log.d("DownloadRequest", "targeFile not found !!!")
         }
-        netInterceptor(new DownloadInterceptor(callback));
-        injectLocalParams();
-        execute(callback);
+        targetFile?.let {
+            callback?.setTargetFile(it)
+        }
+        netInterceptor(DownloadInterceptor(callback))
+        injectLocalParams()
+        execute()
     }
 }

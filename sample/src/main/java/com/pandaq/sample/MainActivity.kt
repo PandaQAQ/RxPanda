@@ -1,27 +1,23 @@
 package com.pandaq.sample
 
-import android.annotation.SuppressLint
-import android.graphics.Color
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.google.gson.Gson
 import com.pandaq.rxpanda.RxPanda
 import com.pandaq.rxpanda.callbacks.DownloadCallBack
-import com.pandaq.rxpanda.entity.ApiData
-import com.pandaq.rxpanda.transformer.RxScheduler
-import com.pandaq.rxpanda.utils.GsonUtil
+import com.pandaq.rxpanda.callbacks.UploadCallBack
+import com.pandaq.rxpanda.exception.ApiException
 import com.pandaq.sample.apis.ApiService
-import com.pandaq.sample.apis.AppCallBack
 import com.pandaq.sample.databinding.ActivityMainBinding
-import com.pandaq.sample.entities.User
 import com.pandaq.sample.entities.UserTest
-import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
-    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private val apiService = RxPanda
         .retrofit()
         .create(ApiService::class.java)
@@ -29,6 +25,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         .retrofit()
         .connectTimeout(200)
         .create(ApiService::class.java)
+
     lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,89 +42,35 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.stringData -> {
-                RxPanda.download("https://v-cdn.zjol.com.cn/276982.mp4")
-                    .target(filesDir.absolutePath + "/sources", "aaa.mp4")
-                    .request(object : DownloadCallBack() {
-                        override fun done(success: Boolean) {
-                            Log.e("download", "下载资源成功了")
-                        }
+                val path =
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path
+                CoroutineScope(Dispatchers.IO).launch {
+                    RxPanda.download("https://v-cdn.zjol.com.cn/276982.mp4")
+                        .target("$path/sources", "aaa.mp4")
+                        .request(object : DownloadCallBack() {
+                            override fun onDone() {
+                                Log.e("download", "下载资源成功了")
+                            }
 
-                        override fun onFailed(exception: Exception?) {
-                            // 进行错误上报
-                            Log.e("download", "下载资源失败了")
-                        }
+                            override fun onFail(e: Exception?) {
+                                Log.e("download", "下载资源失败了")
+                            }
 
-                        override fun inProgress(process: Int) {
-                            Log.e("download", "下载资源 $process%")
-                        }
+                            override fun onProgress(progress: Int) {
+                                binding.dataString.text = "下载资源 $progress%"
+                                Log.e("download", "下载资源 $progress%")
+                            }
 
-                    })
-//                apiService.stringData()
-//                    .doOnSubscribe { t -> compositeDisposable.add(t) }
-//                    .compose(RxScheduler.sync())
-//                    .subscribe(object : AppCallBack<Any>() {
-//                        override fun success(data: Any) {
-////                            dataString.text = data
-//                            dataString.setTextColor(Color.parseColor("#000000"))
-//                        }
-//
-//                        @SuppressLint("SetTextI18n")
-//                        override fun fail(code: String?, msg: String?) {
-//                            dataString.text = "error:::$msg"
-//                            dataString.setTextColor(Color.parseColor("#ff0000"))
-//                        }
-//
-//                        override fun finish(success: Boolean) {
-//
-//                        }
-//
-//                    })
+                        })
+                }
             }
 
             R.id.intData -> {
-                apiService.intData()
-                    .doOnSubscribe { t -> compositeDisposable.add(t) }
-                    .compose(RxScheduler.sync())
-                    .subscribe(object : AppCallBack<Int>() {
-                        override fun success(data: Int) {
-                            binding.dataString.text = data.toString()
-                            binding.dataString.setTextColor(Color.parseColor("#000000"))
-                        }
 
-                        @SuppressLint("SetTextI18n")
-                        override fun fail(code: String?, msg: String?) {
-                            binding.dataString.text = "error:::$msg"
-                            binding.dataString.setTextColor(Color.parseColor("#ff0000"))
-                        }
-
-                        override fun finish(success: Boolean) {
-
-                        }
-
-                    })
             }
 
             R.id.userData -> {
-                apiService.user
-                    .doOnSubscribe { t -> compositeDisposable.add(t) }
-                    .compose(RxScheduler.sync())
-                    .subscribe(object : AppCallBack<User>() {
-                        override fun success(data: User) {
-                            binding.dataString.text = Gson().toJson(data)
-                            binding.dataString.setTextColor(Color.parseColor("#000000"))
-                        }
 
-                        @SuppressLint("SetTextI18n")
-                        override fun fail(code: String?, msg: String?) {
-                            binding.dataString.text = "error:::$msg"
-                            binding.dataString.setTextColor(Color.parseColor("#ff0000"))
-                        }
-
-                        override fun finish(success: Boolean) {
-
-                        }
-
-                    })
             }
 
             R.id.mockdata -> {
@@ -150,33 +93,36 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 //                        }
 //
 //                    })
-                RxPanda.post("https://www.baidu.com")
-                    .mockData(Constants.MOCK_DATA)
-                    .request(
-                        object : AppCallBack<ApiData<List<UserTest>>>() {
-                            override fun success(data: ApiData<List<UserTest>>) {
-                                binding.dataString.text = GsonUtil.gson().toJson(data)
-                                binding.dataString.setTextColor(Color.parseColor("#000000"))
-                            }
+                CoroutineScope(Dispatchers.IO)
+                    .launch {
+                        val result = RxPanda.post("https://www.baidu.com")
+                            .mockData(Constants.MOCK_DATA)
+                            .request(UserTest::class.java)
+                        result
+                    }
 
-                            @SuppressLint("SetTextI18n")
-                            override fun fail(code: String?, msg: String?) {
-                                binding.dataString.text = "error:::$msg"
-                                binding.dataString.setTextColor(Color.parseColor("#ff0000"))
-                            }
-
-                            override fun finish(success: Boolean) {
-
-                            }
-
-                        }
-                    )
+//                object : AppCallBack<ApiData<List<UserTest>>>() {
+//                    override fun success(data: ApiData<List<UserTest>>) {
+//                        binding.dataString.text = GsonUtil.gson().toJson(data)
+//                        binding.dataString.setTextColor(Color.parseColor("#000000"))
+//                    }
+//
+//                    @SuppressLint("SetTextI18n")
+//                    override fun fail(code: String?, msg: String?) {
+//                        binding.dataString.text = "error:::$msg"
+//                        binding.dataString.setTextColor(Color.parseColor("#ff0000"))
+//                    }
+//
+//                    override fun finish(success: Boolean) {
+//
+//                    }
+//
+//                }
             }
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        compositeDisposable.dispose()
     }
 }

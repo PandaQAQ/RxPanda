@@ -1,53 +1,39 @@
-package com.pandaq.rxpanda.requests.okhttp.io;
+package com.pandaq.rxpanda.requests.okhttp.io
 
-import static com.pandaq.rxpanda.log.HttpLoggingInterceptor.IO_FLAG_HEADER;
-
-import android.text.TextUtils;
-
-import com.pandaq.rxpanda.api.Api;
-import com.pandaq.rxpanda.callbacks.TransmitCallback;
-import com.pandaq.rxpanda.requests.Request;
-import com.pandaq.rxpanda.utils.CastUtils;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import io.reactivex.annotations.NonNull;
+import android.text.TextUtils
+import androidx.annotation.NonNull
+import com.pandaq.rxpanda.api.Api
+import com.pandaq.rxpanda.callbacks.TransmitCallback
+import com.pandaq.rxpanda.log.HttpLoggingInterceptor
+import com.pandaq.rxpanda.requests.Request
+import com.pandaq.rxpanda.utils.CastUtils
+import okhttp3.ResponseBody
 
 /**
  * Created by huxinyu on 2019/7/11.
  * Email : panda.h@foxmail.com
  * Description :
  */
-public abstract class IORequest<R extends IORequest<R>> extends Request<R> {
-
+abstract class IORequest<R : IORequest<R>>(url: String) : Request<R>() {
     // http api,兼容 rxJava 观察者模式，需要返回观察对象时，将请求转换成 Retrofit 去请求
-    protected Api mApi;
-    protected String url = "";
-    // request tag
-    protected Object tag;
-    protected Map<String, String> localParams = new LinkedHashMap<>();//请求参数
+    @JvmField
+    protected var mApi: Api? = null
 
-    /**
-     * set request‘s tag，use to manage the request
-     *
-     * @param tag request's tag
-     * @return Request Object
-     */
-    public R tag(@NonNull Object tag) {
-        this.tag = tag;
-        return CastUtils.cast(this);
-    }
+    @JvmField
+    protected var url = ""
 
-    public IORequest(String url) {
+    @JvmField
+    protected var localParams: MutableMap<String, String> = LinkedHashMap() //请求参数
+
+    init {
         if (!TextUtils.isEmpty(url)) {
-            this.url = url;
+            this.url = url
         }
-        clientBuilder = null;
-        addHeader(IO_FLAG_HEADER, "IORequest ignore print log !!!");
+        clientBuilder = null
+        addHeader(HttpLoggingInterceptor.IO_FLAG_HEADER, "IORequest ignore print log !!!")
     }
 
-    protected abstract <T extends TransmitCallback> void execute(T callback);
+    protected abstract suspend fun execute(): ResponseBody?
 
     /**
      * 添加请求参数
@@ -56,11 +42,11 @@ public abstract class IORequest<R extends IORequest<R>> extends Request<R> {
      * @param paramValue
      * @return
      */
-    public R addParam(String paramKey, String paramValue) {
+    fun addParam(paramKey: String?, paramValue: String?): R {
         if (paramKey != null && paramValue != null) {
-            this.localParams.put(paramKey, paramValue);
+            localParams[paramKey] = paramValue
         }
-        return CastUtils.cast(this);
+        return CastUtils.cast(this)
     }
 
     /**
@@ -69,11 +55,11 @@ public abstract class IORequest<R extends IORequest<R>> extends Request<R> {
      * @param params
      * @return
      */
-    public R addParams(Map<String, String> params) {
+    fun addParams(params: Map<String, String>?): R {
         if (params != null) {
-            this.localParams.putAll(params);
+            localParams.putAll(params)
         }
-        return CastUtils.cast(this);
+        return CastUtils.cast(this)
     }
 
     /**
@@ -82,11 +68,11 @@ public abstract class IORequest<R extends IORequest<R>> extends Request<R> {
      * @param paramKey
      * @return
      */
-    public R removeParam(String paramKey) {
+    fun removeParam(paramKey: String?): R {
         if (paramKey != null) {
-            this.localParams.remove(paramKey);
+            localParams.remove(paramKey)
         }
-        return CastUtils.cast(this);
+        return CastUtils.cast(this)
     }
 
     /**
@@ -95,19 +81,16 @@ public abstract class IORequest<R extends IORequest<R>> extends Request<R> {
      * @param params
      * @return
      */
-    public R params(Map<String, String> params) {
+    fun params(params: MutableMap<String, String>?): R {
         if (params != null) {
-            this.localParams = params;
+            localParams = params
         }
-        return CastUtils.cast(this);
+        return CastUtils.cast(this)
     }
 
-    @Override
-    protected void injectLocalParams() {
-        super.injectLocalParams();
-        if (getGlobalConfig().getGlobalParams() != null) {
-            localParams.putAll(getGlobalConfig().getGlobalParams());
-        }
-        mApi = getCommonRetrofit().create(Api.class);
+    override fun injectLocalParams() {
+        super.injectLocalParams()
+        localParams.putAll(globalConfig.getGlobalParams())
+        mApi = commonRetrofit.create(Api::class.java)
     }
 }

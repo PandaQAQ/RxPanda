@@ -1,115 +1,133 @@
-package com.pandaq.rxpanda;
+package com.pandaq.rxpanda
 
 /**
  * Created by huxinyu on 2018/5/27.
  * Email : panda.h@foxmail.com
- * <p>
+ *
+ *
  * Description :http 请求的一些状态码
  */
-public class HttpCode {
-
+class HttpCode {
     /**
      * HTTP 部分为 http 协议 code
      */
-    public static class HTTP {
-
+    object HTTP {
         /**
          * http 请求创建
          */
-        public static final int CREATED = 201;
+        const val CREATED = 201
+
         /**
          * http 请求接受
          */
-        public static final int RECEIVED = 202;
+        const val RECEIVED = 202
+
         /**
          * 返回未授权内容（服务器已响应但可能返回的另一来源内容）
          */
-        public static final int UN_AUTH_CONTENT = 203;
+        const val UN_AUTH_CONTENT = 203
+
         /**
          * 无内容
          */
-        public static final int NONE_CONTENT = 204;
+        const val NONE_CONTENT = 204
+
         /**
          * 无内容并要求重置表单信息
          */
-        public static final int RESET = 205;
+        const val RESET = 205
+
         /**
          * 处理了部分的 get 请求
          */
-        public static final int PART_RESOLVED = 206;
+        const val PART_RESOLVED = 206
 
         /**
          * 400 错误请求
          */
-        public static final int ERROR = 400;
+        const val ERROR = 400
+
         /**
          * 未授权，需要登陆信息
          */
-        public static final int UNAUTHORIZED = 401;
+        const val UNAUTHORIZED = 401
+
         /**
          * 拒绝访问
          */
-        public static final int REFUSE = 403;
+        const val REFUSE = 403
+
         /**
          * 无法找到
          */
-        public static final int NOT_FOUND = 404;
+        const val NOT_FOUND = 404
+
         /**
          * 拒绝当前请求方法
          */
-        public static final int METHOD_REFUSE = 405;
+        const val METHOD_REFUSE = 405
+
         /**
          * 请求内容无法找到指定的响应
          */
-        public static final int CAN_NOT_RECEIVE = 406;
+        const val CAN_NOT_RECEIVE = 406
+
         /**
          * 服务器等候超时
          */
-        public static final int WAIT_TIME_OUT = 408;
+        const val WAIT_TIME_OUT = 408
 
         /**
          * 服务器内部错误
          */
-        public static final int INNER_EXCEPTION = 500;
+        const val INNER_EXCEPTION = 500
+
         /**
          * 请求接口尚未实现
          */
-        public static final int UMIMPLEMENTS = 501;
+        const val UN_IMPLEMENTS = 501
+
         /**
          * 网关错误
          */
-        public static final int GATEWAY_EXCEPTION = 502;
+        const val GATEWAY_EXCEPTION = 502
+
         /**
          * 服务不可用（宕机或维护中）
          */
-        public static final int SERVICE_UNUSEFUL = 503;
+        const val SERVICE_UNUSEFUL = 503
+
         /**
          * 网关超时
          */
-        public static final int GATEWAY_TIME_OUT = 504;
+        const val GATEWAY_TIME_OUT = 504
+
         /**
          * http 协议版本不支持
          */
-        public static final int HTTP_VERSION_UNSUPPORT = 505;
-
+        const val HTTP_VERSION_UNSUPPORT = 505
     }
 
     /**
      * 请求返回成功后，框架层处理错误.避免与服务端定义错误重复使用负数
      */
-    public static class FRAME_WORK {
+    object FRAMEWORK {
         //未知错误
-        public static final String UNKNOWN = "-1000";
-        //解析错误
-        public static final String PARSE_ERROR = "-1001";
-        //网络错误
-        public static final String NETWORK_ERROR = "-1002";
-        //证书出错
-        public static final String SSL_ERROR = "-1003";
-        //连接超时
-        public static final String TIMEOUT_ERROR = "-1004";
-        //解析壳错误
-        public static final String SHELL_FORMAT_ERROR = "-1005";
-    }
+        const val UNKNOWN = "-1000"
 
+        //解析错误
+        const val PARSE_ERROR = "-1001"
+
+        //网络错误
+        const val NETWORK_ERROR = "-1002"
+
+        //证书出错
+        const val SSL_ERROR = "-1003"
+
+        //连接超时
+        const val TIMEOUT_ERROR = "-1004"
+
+        //解析壳错误
+        const val SHELL_FORMAT_ERROR = "-1005"
+    }
 }

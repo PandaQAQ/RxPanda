@@ -1,142 +1,119 @@
-package com.pandaq.rxpanda.exception;
+package com.pandaq.rxpanda.exception
 
-import android.net.ParseException;
-
-import com.google.gson.JsonParseException;
-import com.pandaq.rxpanda.HttpCode;
-
-import org.json.JSONException;
-
-import java.io.IOException;
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-
-import retrofit2.HttpException;
+import android.net.ParseException
+import com.google.gson.JsonParseException
+import com.pandaq.rxpanda.HttpCode
+import org.json.JSONException
+import retrofit2.HttpException
+import java.io.IOException
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import javax.net.ssl.SSLHandshakeException
 
 /**
  * Created by huxinyu on 2019/3/8.
  * Email : panda.h@foxmail.com
  * Description :自定义网络异常类
  */
-public class ApiException extends IOException {
+class ApiException : IOException {
+    val code: String
+    private var msg: String?
+    private var data: String? = null
+    var exceptionType = ExceptionType.UNKNOWN
 
-    private final String code;
-    private String message;
-    private String data;
-    private ExceptionType exceptionType = ExceptionType.UNKNOWN;
-
-    public ApiException(Throwable throwable, String code) {
-        super(throwable);
-        this.code = code;
-        this.message = throwable.getMessage();
+    constructor(throwable: Throwable, code: String) : super(throwable) {
+        this.code = code
+        msg = throwable.message
     }
 
-    public ApiException(String code) {
-        this.code = code;
-        this.data = "";
-        this.message = "";
+    constructor(code: String, msg: String?, data: String?) {
+        this.code = code
+        this.data = data
+        this.msg = msg
     }
 
-    public ApiException(String code, String msg, String data) {
-        this.code = code;
-        this.data = data;
-        this.message = msg;
+    fun getMsg(): String {
+        return if (message == null) "" else message!!
     }
 
-    public ExceptionType getExceptionType() {
-        return exceptionType;
+    fun setMessage(message: String?): ApiException {
+        this.msg = message
+        return this
     }
 
-    public void setExceptionType(ExceptionType exceptionType) {
-        this.exceptionType = exceptionType;
+    fun getData(): String {
+        return if (data == null) "" else data!!
     }
 
-    public String getCode() {
-        return code;
+    fun setData(data: String?) {
+        this.data = data
     }
 
-    public String getMessage() {
-        return message == null ? "" : message;
+    override fun toString(): String {
+        return "$message(code:$code)"
     }
 
-    public ApiException setMessage(String message) {
-        this.message = message;
-        return this;
-    }
+    companion object {
+        @JvmStatic
+        fun handleException(e: Throwable): ApiException {
+            val ex: ApiException
+            return when (e) {
+                is HttpException -> {
+                    ex = ApiException(e, e.code().toString())
+                    when (e.code()) {
+                        HttpCode.HTTP.CAN_NOT_RECEIVE, HttpCode.HTTP.CREATED, HttpCode.HTTP.RECEIVED, HttpCode.HTTP.UN_AUTH_CONTENT, HttpCode.HTTP.NONE_CONTENT, HttpCode.HTTP.RESET, HttpCode.HTTP.PART_RESOLVED, HttpCode.HTTP.ERROR, HttpCode.HTTP.UNAUTHORIZED, HttpCode.HTTP.REFUSE, HttpCode.HTTP.NOT_FOUND, HttpCode.HTTP.METHOD_REFUSE, HttpCode.HTTP.WAIT_TIME_OUT, HttpCode.HTTP.INNER_EXCEPTION, HttpCode.HTTP.UN_IMPLEMENTS, HttpCode.HTTP.GATEWAY_EXCEPTION, HttpCode.HTTP.SERVICE_UNUSEFUL, HttpCode.HTTP.GATEWAY_TIME_OUT, HttpCode.HTTP.HTTP_VERSION_UNSUPPORT -> {
+                            ex.exceptionType = ExceptionType.SERVER
+                            ex.msg = e.message
+                        }
 
-    public String getData() {
-        return data == null ? "" : data;
-    }
+                        else -> {
+                            ex.exceptionType = ExceptionType.SERVER
+                            ex.msg = e.message
+                        }
+                    }
+                    ex
+                }
 
-    public void setData(String data) {
-        this.data = data;
-    }
+                is JsonParseException, is JSONException, is ParseException -> {
+                    ex = ApiException(e, HttpCode.FRAMEWORK.PARSE_ERROR)
+                    ex.msg = e.message
+                    ex.exceptionType = ExceptionType.LOCAL
+                    ex
+                }
 
-    @Override
-    public String toString() {
-        return message + "(code:" + code + ")";
-    }
+                is ConnectException -> {
+                    ex = ApiException(e, HttpCode.FRAMEWORK.NETWORK_ERROR)
+                    ex.exceptionType = ExceptionType.CONNECT
+                    ex.msg = "网络跑丢了，稍后再试"
+                    ex
+                }
 
-    public static ApiException handleException(Throwable e) {
-        ApiException ex;
-        if (e instanceof HttpException) {
-            HttpException httpException = (HttpException) e;
-            ex = new ApiException(e, String.valueOf(httpException.code()));
-            switch (httpException.code()) {
-                case HttpCode.HTTP.CAN_NOT_RECEIVE:
-                case HttpCode.HTTP.CREATED:
-                case HttpCode.HTTP.RECEIVED:
-                case HttpCode.HTTP.UN_AUTH_CONTENT:
-                case HttpCode.HTTP.NONE_CONTENT:
-                case HttpCode.HTTP.RESET:
-                case HttpCode.HTTP.PART_RESOLVED:
-                case HttpCode.HTTP.ERROR:
-                case HttpCode.HTTP.UNAUTHORIZED:
-                case HttpCode.HTTP.REFUSE:
-                case HttpCode.HTTP.NOT_FOUND:
-                case HttpCode.HTTP.METHOD_REFUSE:
-                case HttpCode.HTTP.WAIT_TIME_OUT:
-                case HttpCode.HTTP.INNER_EXCEPTION:
-                case HttpCode.HTTP.UMIMPLEMENTS:
-                case HttpCode.HTTP.GATEWAY_EXCEPTION:
-                case HttpCode.HTTP.SERVICE_UNUSEFUL:
-                case HttpCode.HTTP.GATEWAY_TIME_OUT:
-                case HttpCode.HTTP.HTTP_VERSION_UNSUPPORT:
-                default:
-                    ex.setExceptionType(ExceptionType.SERVER);
-                    ex.message = e.getMessage();
-                    break;
+                is SSLHandshakeException -> {
+                    ex = ApiException(e, HttpCode.FRAMEWORK.SSL_ERROR)
+                    ex.exceptionType = ExceptionType.CONNECT
+                    ex.msg = "网络跑丢了，稍后再试"
+                    ex
+                }
+
+                is SocketTimeoutException -> {
+                    ex = ApiException(e, HttpCode.FRAMEWORK.TIMEOUT_ERROR)
+                    ex.exceptionType = ExceptionType.CONNECT
+                    ex.msg = "网络跑丢了，稍后再试"
+                    ex
+                }
+
+                is ApiException -> {
+                    e.exceptionType = ExceptionType.API
+                    e
+                }
+
+                else -> {
+                    ex = ApiException(e, HttpCode.FRAMEWORK.UNKNOWN)
+                    ex.exceptionType = ExceptionType.UNKNOWN
+                    ex.msg = e.message
+                    ex
+                }
             }
-            return ex;
-        } else if (e instanceof JsonParseException || e instanceof JSONException || e instanceof ParseException) {
-            ex = new ApiException(e, HttpCode.FRAME_WORK.PARSE_ERROR);
-            ex.message = e.getMessage();
-            ex.setExceptionType(ExceptionType.LOCAL);
-            return ex;
-        } else if (e instanceof ConnectException) {
-            ex = new ApiException(e, HttpCode.FRAME_WORK.NETWORK_ERROR);
-            ex.setExceptionType(ExceptionType.CONNECT);
-            ex.message = "网络跑丢了，稍后再试";
-            return ex;
-        } else if (e instanceof javax.net.ssl.SSLHandshakeException) {
-            ex = new ApiException(e, HttpCode.FRAME_WORK.SSL_ERROR);
-            ex.setExceptionType(ExceptionType.CONNECT);
-            ex.message = "网络跑丢了，稍后再试";
-            return ex;
-        } else if (e instanceof SocketTimeoutException) {
-            ex = new ApiException(e, HttpCode.FRAME_WORK.TIMEOUT_ERROR);
-            ex.setExceptionType(ExceptionType.CONNECT);
-            ex.message = "网络跑丢了，稍后再试";
-            return ex;
-        } else if (e instanceof ApiException) {
-            ApiException exception = (ApiException) e;
-            exception.setExceptionType(ExceptionType.API);
-            return exception;
-        } else {
-            ex = new ApiException(e, HttpCode.FRAME_WORK.UNKNOWN);
-            ex.setExceptionType(ExceptionType.UNKNOWN);
-            ex.message = e.getMessage();
-            return ex;
         }
     }
 }

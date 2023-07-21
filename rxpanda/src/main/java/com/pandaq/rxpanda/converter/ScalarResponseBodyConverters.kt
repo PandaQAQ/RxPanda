@@ -1,121 +1,116 @@
-package com.pandaq.rxpanda.converter;
+package com.pandaq.rxpanda.converter
 
-import okhttp3.ResponseBody;
-import retrofit2.Converter;
-
-import java.io.IOException;
+import okhttp3.ResponseBody
+import retrofit2.Converter
+import java.io.IOException
 
 /**
  * Created by huxinyu on 2019/6/25.
  * Email : panda.h@foxmail.com
  * Description :
  */
-final class ScalarResponseBodyConverters {
-    private ScalarResponseBodyConverters() {
-    }
-
-    static final class ShortResponseBodyConverter implements Converter<ResponseBody, Short> {
-        static final ScalarResponseBodyConverters.ShortResponseBodyConverter INSTANCE = new ScalarResponseBodyConverters.ShortResponseBodyConverter();
-
-        ShortResponseBodyConverter() {
+internal class ScalarResponseBodyConverters private constructor() {
+    internal class ShortResponseBodyConverter : Converter<ResponseBody, Short> {
+        @Throws(IOException::class)
+        override fun convert(value: ResponseBody): Short {
+            return value.string().toShort()
         }
 
-        public Short convert(ResponseBody value) throws IOException {
-            return Short.valueOf(value.string());
+        companion object {
+            val INSTANCE = ShortResponseBodyConverter()
         }
     }
 
-    static final class LongResponseBodyConverter implements Converter<ResponseBody, Long> {
-        static final ScalarResponseBodyConverters.LongResponseBodyConverter INSTANCE = new ScalarResponseBodyConverters.LongResponseBodyConverter();
-
-        LongResponseBodyConverter() {
+    internal class LongResponseBodyConverter : Converter<ResponseBody, Long> {
+        @Throws(IOException::class)
+        override fun convert(value: ResponseBody): Long {
+            return java.lang.Long.valueOf(value.string())
         }
 
-        public Long convert(ResponseBody value) throws IOException {
-            return Long.valueOf(value.string());
-        }
-    }
-
-    static final class IntegerResponseBodyConverter implements Converter<ResponseBody, Integer> {
-        static final ScalarResponseBodyConverters.IntegerResponseBodyConverter INSTANCE = new ScalarResponseBodyConverters.IntegerResponseBodyConverter();
-
-        IntegerResponseBodyConverter() {
-        }
-
-        public Integer convert(ResponseBody value) throws IOException {
-            return Integer.valueOf(value.string());
+        companion object {
+            val INSTANCE = LongResponseBodyConverter()
         }
     }
 
-    static final class FloatResponseBodyConverter implements Converter<ResponseBody, Float> {
-        static final ScalarResponseBodyConverters.FloatResponseBodyConverter INSTANCE = new ScalarResponseBodyConverters.FloatResponseBodyConverter();
-
-        FloatResponseBodyConverter() {
+    internal class IntegerResponseBodyConverter : Converter<ResponseBody, Int> {
+        @Throws(IOException::class)
+        override fun convert(value: ResponseBody): Int {
+            return Integer.valueOf(value.string())
         }
 
-        public Float convert(ResponseBody value) throws IOException {
-            return Float.valueOf(value.string());
-        }
-    }
-
-    static final class DoubleResponseBodyConverter implements Converter<ResponseBody, Double> {
-        static final ScalarResponseBodyConverters.DoubleResponseBodyConverter INSTANCE = new ScalarResponseBodyConverters.DoubleResponseBodyConverter();
-
-        DoubleResponseBodyConverter() {
-        }
-
-        public Double convert(ResponseBody value) throws IOException {
-            return Double.valueOf(value.string());
+        companion object {
+            val INSTANCE = IntegerResponseBodyConverter()
         }
     }
 
-    static final class CharacterResponseBodyConverter implements Converter<ResponseBody, Character> {
-        static final ScalarResponseBodyConverters.CharacterResponseBodyConverter INSTANCE = new ScalarResponseBodyConverters.CharacterResponseBodyConverter();
-
-        CharacterResponseBodyConverter() {
+    internal class FloatResponseBodyConverter : Converter<ResponseBody, Float> {
+        @Throws(IOException::class)
+        override fun convert(value: ResponseBody): Float {
+            return java.lang.Float.valueOf(value.string())
         }
 
-        public Character convert(ResponseBody value) throws IOException {
-            String body = value.string();
-            if (body.length() != 1) {
-                throw new IOException("Expected body of length 1 for Character conversion but was " + body.length());
+        companion object {
+            val INSTANCE = FloatResponseBodyConverter()
+        }
+    }
+
+    internal class DoubleResponseBodyConverter : Converter<ResponseBody, Double> {
+        @Throws(IOException::class)
+        override fun convert(value: ResponseBody): Double {
+            return java.lang.Double.valueOf(value.string())
+        }
+
+        companion object {
+            val INSTANCE = DoubleResponseBodyConverter()
+        }
+    }
+
+    internal class CharacterResponseBodyConverter : Converter<ResponseBody, Char> {
+        @Throws(IOException::class)
+        override fun convert(value: ResponseBody): Char {
+            val body = value.string()
+            return if (body.length != 1) {
+                throw IOException("Expected body of length 1 for Character conversion but was " + body.length)
             } else {
-                return body.charAt(0);
+                body[0]
             }
         }
-    }
 
-    static final class ByteResponseBodyConverter implements Converter<ResponseBody, Byte> {
-        static final ScalarResponseBodyConverters.ByteResponseBodyConverter INSTANCE = new ScalarResponseBodyConverters.ByteResponseBodyConverter();
-
-        ByteResponseBodyConverter() {
-        }
-
-        public Byte convert(ResponseBody value) throws IOException {
-            return Byte.valueOf(value.string());
+        companion object {
+            val INSTANCE = CharacterResponseBodyConverter()
         }
     }
 
-    static final class BooleanResponseBodyConverter implements Converter<ResponseBody, Boolean> {
-        static final ScalarResponseBodyConverters.BooleanResponseBodyConverter INSTANCE = new ScalarResponseBodyConverters.BooleanResponseBodyConverter();
-
-        BooleanResponseBodyConverter() {
+    internal class ByteResponseBodyConverter : Converter<ResponseBody, Byte> {
+        @Throws(IOException::class)
+        override fun convert(value: ResponseBody): Byte {
+            return java.lang.Byte.valueOf(value.string())
         }
 
-        public Boolean convert(ResponseBody value) throws IOException {
-            return Boolean.valueOf(value.string());
+        companion object {
+            val INSTANCE = ByteResponseBodyConverter()
         }
     }
 
-    static final class StringResponseBodyConverter implements Converter<ResponseBody, String> {
-        static final ScalarResponseBodyConverters.StringResponseBodyConverter INSTANCE = new ScalarResponseBodyConverters.StringResponseBodyConverter();
-
-        StringResponseBodyConverter() {
+    internal class BooleanResponseBodyConverter : Converter<ResponseBody, Boolean> {
+        @Throws(IOException::class)
+        override fun convert(value: ResponseBody): Boolean {
+            return java.lang.Boolean.valueOf(value.string())
         }
 
-        public String convert(ResponseBody value) throws IOException {
-            return value.string();
+        companion object {
+            val INSTANCE = BooleanResponseBodyConverter()
+        }
+    }
+
+    internal class StringResponseBodyConverter : Converter<ResponseBody, String> {
+        @Throws(IOException::class)
+        override fun convert(value: ResponseBody): String {
+            return value.string()
+        }
+
+        companion object {
+            val INSTANCE = StringResponseBodyConverter()
         }
     }
 }
-

@@ -1,56 +1,41 @@
-package com.pandaq.rxpanda.models;
+package com.pandaq.rxpanda.models
 
-
-import com.pandaq.rxpanda.callbacks.TransmitCallback;
-import com.pandaq.rxpanda.utils.ThreadUtils;
-
-import java.io.IOException;
-
-import io.reactivex.annotations.NonNull;
-import okhttp3.MediaType;
-import okhttp3.ResponseBody;
-import okio.Buffer;
-import okio.BufferedSource;
-import okio.ForwardingSource;
-import okio.Okio;
-import okio.Source;
+import com.pandaq.rxpanda.callbacks.DownloadCallBack
+import okhttp3.MediaType
+import okhttp3.ResponseBody
+import okio.Buffer
+import okio.BufferedSource
+import okio.ForwardingSource
+import okio.Okio
+import okio.Source
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
 
 /**
  * Created by huxinyu on 2018/6/8.
  * Email : panda.h@foxmail.com
- * <p>
+ *
+ *
  * Description :待写入进度的响应体
  */
-public class ProgressDownloadBody extends ResponseBody {
-    //实际的待包装响应体
-    private final ResponseBody responseBody;
-    //进度回调接口
-    private final TransmitCallback mCallback;
+class ProgressDownloadBody(
+    private val responseBody: ResponseBody?,
+    private val mCallback: DownloadCallBack?
+) : ResponseBody() {
     //包装完成的BufferedSource
-    private BufferedSource bufferedSource;
+    private var bufferedSource: BufferedSource? = null
+
     //记录当前的Progress
-    private int currentProgress = 0;
-
-    /**
-     * 构造函数，赋值
-     *
-     * @param responseBody 待包装的响应体
-     * @param mCallback    回调接口
-     */
-    public ProgressDownloadBody(ResponseBody responseBody, TransmitCallback mCallback) {
-        this.responseBody = responseBody;
-        this.mCallback = mCallback;
-    }
-
+    private var currentProgress = 0
 
     /**
      * 重写调用实际的响应体的contentType
      *
      * @return MediaType
      */
-    @Override
-    public MediaType contentType() {
-        return responseBody.contentType();
+    override fun contentType(): MediaType? {
+        return responseBody?.contentType()
     }
 
     /**
@@ -58,23 +43,54 @@ public class ProgressDownloadBody extends ResponseBody {
      *
      * @return contentLength
      */
-    @Override
-    public long contentLength() {
-        return responseBody.contentLength();
+    override fun contentLength(): Long {
+        return responseBody?.contentLength() ?: 0
     }
 
     /**
-     * 重写进行包装source
+     * 重新进行包装source
      *
      * @return BufferedSource
      */
-    @Override
-    public BufferedSource source() {
+    override fun source(): BufferedSource {
         if (bufferedSource == null) {
             //包装
-            bufferedSource = Okio.buffer(source(responseBody.source()));
+            bufferedSource = responseBody?.let { source(it.source()) }?.let { Okio.buffer(it) }
         }
-        return bufferedSource;
+        bufferedSource?.let {
+            saveFile(it.inputStream())
+        }
+        return bufferedSource!!
+    }
+
+    /**
+     * 写入文件到 SD 卡
+     */
+    private fun saveFile(inputStream: InputStream) {
+        if (mCallback?.getTargetFile() == null) {
+            mCallback?.failed(IOException())
+            return
+        }
+        val fos = FileOutputStream(mCallback.getTargetFile())
+        try {
+            var len: Int
+            val buffer = ByteArray(2048)
+            while (-1 != inputStream.read(buffer).also { len = it }) {
+                fos.write(buffer, 0, len)
+            }
+        } catch (e: IOException) {
+            mCallback.failed(IOException())
+            return
+        } finally {
+            try {
+                fos.flush()
+                fos.close()
+                inputStream.close()
+            } catch (e: Exception) {
+                mCallback.failed(IOException())
+            }
+        }
+        mCallback.done()
     }
 
     /**
@@ -83,30 +99,29 @@ public class ProgressDownloadBody extends ResponseBody {
      * @param source Source
      * @return Source
      */
-    private Source source(Source source) {
-
-        return new ForwardingSource(source) {
+    private fun source(source: Source): Source {
+        return object : ForwardingSource(source) {
             //当前读取字节数
-            long totalBytesRead = 0L;
+            var totalBytesRead = 0L
 
-            @Override
-            public long read(@NonNull Buffer sink, long byteCount) throws IOException {
-                long bytesRead = super.read(sink, byteCount);
+            @Throws(IOException::class)
+            override fun read(sink: Buffer, byteCount: Long): Long {
+                val bytesRead = super.read(sink, byteCount)
                 //增加当前读取的字节数，如果读取完成了bytesRead会返回-1
-                totalBytesRead += bytesRead != -1 ? bytesRead : 0;
+                totalBytesRead += if (bytesRead != -1L) bytesRead else 0
                 //回调，如果contentLength()不知道长度，会返回-1
-                ThreadUtils.getMainHandler().post(() -> sendStatus(totalBytesRead));
-                return bytesRead;
+                sendStatus(totalBytesRead)
+                return bytesRead
             }
-        };
+        }
     }
 
-    private void sendStatus(long totalBytesRead) {
+    private fun sendStatus(totalBytesRead: Long) {
         if (mCallback != null) {
-            int progress = (int) ((totalBytesRead * 1f / contentLength()) * 100);
+            val progress = (totalBytesRead * 1f / contentLength() * 100).toInt()
             if (currentProgress != progress) {
-                currentProgress = progress;
-                mCallback.inProgress(progress);
+                currentProgress = progress
+                mCallback.progress(progress)
             }
         }
     }

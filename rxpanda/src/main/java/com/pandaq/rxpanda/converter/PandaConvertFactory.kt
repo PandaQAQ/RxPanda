@@ -1,53 +1,33 @@
-package com.pandaq.rxpanda.converter;
+package com.pandaq.rxpanda.converter
 
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
-import com.google.gson.reflect.TypeToken;
-import com.pandaq.rxpanda.annotation.ApiData;
-import com.pandaq.rxpanda.annotation.RealEntity;
-import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.BooleanResponseBodyConverter;
-import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.ByteResponseBodyConverter;
-import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.CharacterResponseBodyConverter;
-import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.DoubleResponseBodyConverter;
-import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.FloatResponseBodyConverter;
-import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.IntegerResponseBodyConverter;
-import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.LongResponseBodyConverter;
-import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.ShortResponseBodyConverter;
-import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.StringResponseBodyConverter;
-import com.pandaq.rxpanda.utils.GsonUtil;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-
-import io.reactivex.annotations.NonNull;
-import io.reactivex.annotations.Nullable;
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
-import retrofit2.Converter;
-import retrofit2.Retrofit;
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.pandaq.rxpanda.annotation.ApiData
+import com.pandaq.rxpanda.annotation.RealEntity
+import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.BooleanResponseBodyConverter
+import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.ByteResponseBodyConverter
+import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.CharacterResponseBodyConverter
+import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.DoubleResponseBodyConverter
+import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.FloatResponseBodyConverter
+import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.IntegerResponseBodyConverter
+import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.LongResponseBodyConverter
+import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.ShortResponseBodyConverter
+import com.pandaq.rxpanda.converter.ScalarResponseBodyConverters.StringResponseBodyConverter
+import com.pandaq.rxpanda.utils.GsonUtil.gson
+import okhttp3.RequestBody
+import okhttp3.ResponseBody
+import retrofit2.Converter
+import retrofit2.Retrofit
+import java.lang.reflect.Type
 
 /**
  * Created by huxinyu on 2018/5/31.
  * Email : panda.h@foxmail.com
- * <p>
+ *
+ *
  * Description :自定义解析工厂类
  */
-public class PandaConvertFactory extends Converter.Factory {
-
-    private Gson gson;
-
-    public static PandaConvertFactory create() {
-        return create(GsonUtil.gson());
-    }
-
-    private static PandaConvertFactory create(@NonNull Gson gson) {
-        return new PandaConvertFactory(gson);
-    }
-
-    private PandaConvertFactory(Gson gson) {
-        this.gson = gson;
-    }
-
+class PandaConvertFactory private constructor(private val gson: Gson) : Converter.Factory() {
     /**
      * 这里这个 type 是本地接口方法中传入的泛型类型
      *
@@ -56,51 +36,69 @@ public class PandaConvertFactory extends Converter.Factory {
      * @param retrofit    Retrofit 对象
      * @return 转换器
      */
-    @Override
-    public Converter<ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations, Retrofit retrofit) {
-        for (Annotation annotation : annotations) {
+    override fun responseBodyConverter(
+        type: Type,
+        annotations: Array<Annotation>,
+        retrofit: Retrofit
+    ): Converter<ResponseBody, *> {
+        for (annotation in annotations) {
             // PandaResponseBodyConverter 转换时不使用 ApiData 剥壳，直接转换为接口中定义的对象
-            if (annotation instanceof RealEntity) {
-                if (type == String.class) {
-                    return StringResponseBodyConverter.INSTANCE;
-                } else if (type == Boolean.class || type == Boolean.TYPE) {
-                    return BooleanResponseBodyConverter.INSTANCE;
-                } else if (type == Byte.class || type == Byte.TYPE) {
-                    return ByteResponseBodyConverter.INSTANCE;
-                } else if (type == Character.class || type == Character.TYPE) {
-                    return CharacterResponseBodyConverter.INSTANCE;
-                } else if (type == Double.class || type == Double.TYPE) {
-                    return DoubleResponseBodyConverter.INSTANCE;
-                } else if (type == Float.class || type == Float.TYPE) {
-                    return FloatResponseBodyConverter.INSTANCE;
-                } else if (type == Integer.class || type == Integer.TYPE) {
-                    return IntegerResponseBodyConverter.INSTANCE;
-                } else if (type == Long.class || type == Long.TYPE) {
-                    return LongResponseBodyConverter.INSTANCE;
-                } else if (type == Short.class || type == Short.TYPE) {
-                    return ShortResponseBodyConverter.INSTANCE;
+            if (annotation is RealEntity) {
+                return if (type === String::class.java) {
+                    StringResponseBodyConverter.INSTANCE
+                } else if (type === Boolean::class.java || type === java.lang.Boolean.TYPE) {
+                    BooleanResponseBodyConverter.INSTANCE
+                } else if (type === Byte::class.java || type === java.lang.Byte.TYPE) {
+                    ByteResponseBodyConverter.INSTANCE
+                } else if (type === Char::class.java || type === Character.TYPE) {
+                    CharacterResponseBodyConverter.INSTANCE
+                } else if (type === Double::class.java || type === java.lang.Double.TYPE) {
+                    DoubleResponseBodyConverter.INSTANCE
+                } else if (type === Float::class.java || type === java.lang.Float.TYPE) {
+                    FloatResponseBodyConverter.INSTANCE
+                } else if (type === Int::class.java || type === Integer.TYPE) {
+                    IntegerResponseBodyConverter.INSTANCE
+                } else if (type === Long::class.java || type === java.lang.Long.TYPE) {
+                    LongResponseBodyConverter.INSTANCE
+                } else if (type === Short::class.java || type === java.lang.Short.TYPE) {
+                    ShortResponseBodyConverter.INSTANCE
                 } else {
-                    return new GsonResponseBodyConverter<>(gson, type);
+                    GsonResponseBodyConverter<Any>(gson, type)
                 }
             }
             // 指定某一接口自己的 App壳
-            if (annotation instanceof ApiData) {
-                return new PandaResponseBodyConverter<>(gson, type, ((ApiData) annotation).clazz());
+            if (annotation is ApiData) {
+                return PandaResponseBodyConverter<Any>(gson, type, annotation.clazz.java)
             }
         }
-        return new PandaResponseBodyConverter<>(gson, type);
+        return PandaResponseBodyConverter<Any>(gson, type)
     }
 
-    @Nullable
-    @Override
-    public Converter<?, RequestBody> requestBodyConverter(Type type, Annotation[] parameterAnnotations, Annotation[] methodAnnotations, Retrofit retrofit) {
-        TypeAdapter<?> adapter = gson.getAdapter(TypeToken.get(type));
-        return new PandaRequestBodyConverter<>(gson, adapter);
+    override fun requestBodyConverter(
+        type: Type,
+        parameterAnnotations: Array<Annotation>,
+        methodAnnotations: Array<Annotation>,
+        retrofit: Retrofit
+    ): Converter<*, RequestBody> {
+        val adapter = gson.getAdapter(TypeToken.get(type))
+        return PandaRequestBodyConverter<Any>(gson, adapter)
     }
 
-    @Nullable
-    @Override
-    public Converter<?, String> stringConverter(Type type, Annotation[] annotations, Retrofit retrofit) {
-        return super.stringConverter(type, annotations, retrofit);
+    override fun stringConverter(
+        type: Type,
+        annotations: Array<Annotation>,
+        retrofit: Retrofit
+    ): Converter<*, String>? {
+        return super.stringConverter(type, annotations, retrofit)
+    }
+
+    companion object {
+        fun create(): PandaConvertFactory {
+            return create(gson())
+        }
+
+        private fun create(gson: Gson): PandaConvertFactory {
+            return PandaConvertFactory(gson)
+        }
     }
 }

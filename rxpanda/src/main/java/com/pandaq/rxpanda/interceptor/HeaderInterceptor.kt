@@ -1,43 +1,32 @@
-package com.pandaq.rxpanda.interceptor;
+package com.pandaq.rxpanda.interceptor
 
-
-import io.reactivex.annotations.NonNull;
-import okhttp3.Interceptor;
-import okhttp3.Request;
-import okhttp3.Response;
-
-import java.io.IOException;
-import java.util.Map;
+import androidx.annotation.NonNull
+import okhttp3.Interceptor
+import okhttp3.Response
+import java.io.IOException
 
 /**
  * Created by huxinyu on 2018/5/31.
  * Email : panda.h@foxmail.com
- * <p>
+ *
+ *
  * Description :请求头拦截器，为每一次请求添加请求头
  */
-public class HeaderInterceptor implements Interceptor {
-
-    /**
-     * 设置的 header
-     */
-    private final Map<String, String> headers;
-
-    public HeaderInterceptor(@NonNull Map<String, String> headers) {
-        this.headers = headers;
-    }
-
-    @Override
-    public Response intercept(@NonNull Chain chain) throws IOException {
-        Request.Builder builder = chain.request().newBuilder();
+class HeaderInterceptor(
+    @param:NonNull private val headers: Map<String, String>
+) : Interceptor {
+    @Throws(IOException::class)
+    override fun intercept(@NonNull chain: Interceptor.Chain): Response {
+        val builder = chain.request().newBuilder()
         if (checkNotNull(headers)) {
-            for (Map.Entry<String, String> item : headers.entrySet()) {
-                builder.header(item.getKey(), item.getValue());
+            for ((key, value) in headers) {
+                builder.header(key, value)
             }
         }
-        return chain.proceed(builder.build());
+        return chain.proceed(builder.build())
     }
 
-    private boolean checkNotNull(Map map) {
-        return map != null && !map.isEmpty();
+    private fun checkNotNull(map: Map<*, *>?): Boolean {
+        return map != null && map.isNotEmpty()
     }
 }

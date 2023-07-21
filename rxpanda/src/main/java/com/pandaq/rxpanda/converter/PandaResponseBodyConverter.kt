@@ -1,85 +1,76 @@
-package com.pandaq.rxpanda.converter;
+package com.pandaq.rxpanda.converter
 
-import android.util.Log;
-
-import com.google.gson.Gson;
-import com.pandaq.rxpanda.HttpCode;
-import com.pandaq.rxpanda.RxPanda;
-import com.pandaq.rxpanda.config.HttpGlobalConfig;
-import com.pandaq.rxpanda.entity.EmptyData;
-import com.pandaq.rxpanda.entity.IApiData;
-import com.pandaq.rxpanda.exception.ApiException;
-import com.pandaq.rxpanda.exception.ExceptionType;
-import com.pandaq.rxpanda.utils.GsonUtil;
-
-import java.io.IOException;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import io.reactivex.annotations.NonNull;
-import okhttp3.ResponseBody;
-import retrofit2.Converter;
+import android.util.Log
+import com.google.gson.Gson
+import com.pandaq.rxpanda.HttpCode
+import com.pandaq.rxpanda.config.HttpGlobalConfig
+import com.pandaq.rxpanda.entity.EmptyData
+import com.pandaq.rxpanda.entity.IApiData
+import com.pandaq.rxpanda.exception.ApiException
+import com.pandaq.rxpanda.exception.ExceptionType
+import com.pandaq.rxpanda.utils.GsonUtil.gson
+import okhttp3.ResponseBody
+import retrofit2.Converter
+import java.io.IOException
+import java.lang.reflect.ParameterizedType
+import java.lang.reflect.Type
+import java.lang.reflect.TypeVariable
+import java.math.BigDecimal
 
 /**
  * Created by huxinyu on 2018/5/31.
  * Email : panda.h@foxmail.com
- * <p>
+ *
+ *
  * Description :响应实体解析类,对返回数据实体做去壳处理
  */
-
-public class PandaResponseBodyConverter<T> implements Converter<ResponseBody, T> {
-
-    private Gson gson;
-    private Class apiDataClazz;
-    private Type dataType; //定义的解析类型
-
-    PandaResponseBodyConverter(Gson gson, Type dataType) {
-        this.gson = gson;
-        this.dataType = dataType;
+class PandaResponseBodyConverter<T> : Converter<ResponseBody, T> {
+    private var gson: Gson
+    //定义的解析类型
+    private var apiDataClazz: Class<*>? = null
+    private var dataType: Type?
+    internal constructor(gson: Gson, dataType: Type?) {
+        this.gson = gson
+        this.dataType = dataType
     }
 
-    PandaResponseBodyConverter(Gson gson, Type dataType, Class<? extends IApiData> clazz) {
-        this.gson = gson;
-        this.dataType = dataType;
-        this.apiDataClazz = clazz;
+    internal constructor(gson: Gson, dataType: Type?, clazz: Class<out IApiData<*>?>?) {
+        this.gson = gson
+        this.dataType = dataType
+        apiDataClazz = clazz
     }
 
-    @Override
-    public T convert(@NonNull ResponseBody value) throws IOException {
-        String response = value.string();
+    @Throws(IOException::class)
+    override fun convert(value: ResponseBody): T {
+        val response = value.string()
         if (apiDataClazz == null) {
-            apiDataClazz = HttpGlobalConfig.getInstance().getApiDataClazz();
+            apiDataClazz = HttpGlobalConfig.instance.getApiDataClazz()
         }
-        IApiData<T> apiData = gson.fromJson(response, (Type) apiDataClazz);
+        val apiData = gson.fromJson<IApiData<T?>>(response, apiDataClazz as Type?)
         /* 如是按约定格式返回数据 apiData 中的 code 是必须的。
          * 因此可以用 code 是否存在来判断数据是否合法
-         */
-        if (apiData.getCode() == null) {
-            throw new ApiException(HttpCode.FRAME_WORK.SHELL_FORMAT_ERROR, response, response);
+         */return if (apiData.code == null) {
+            throw ApiException(HttpCode.FRAMEWORK.SHELL_FORMAT_ERROR, response, response)
         } else {
-            String data = apiData.getData() == null ? defaultData() : GsonUtil.gson().toJson(apiData.getData());
+            val data = if (apiData.data == null) defaultData() else gson().toJson(apiData.data)
             if (!apiData.isSuccess()) {
-                ApiException exception = new ApiException(apiData.getCode(), apiData.getMsg(), data);
-                exception.setExceptionType(ExceptionType.API);
-                throw exception;
+                val exception = ApiException(apiData.code!!, apiData.msg, data)
+                exception.exceptionType = ExceptionType.API
+                throw exception
             } else {
                 try {
-                    return GsonUtil.gson().fromJson(data, dataType);
-                } catch (Exception e) {
-                    if (HttpGlobalConfig.getInstance().isDebug()) {
-                        e.printStackTrace();
-                        Log.w("errorData: ", response);
+                    gson().fromJson<T>(data, dataType)
+                } catch (e: Exception) {
+                    if (HttpGlobalConfig.instance.isDebug) {
+                        e.printStackTrace()
+                        Log.w("errorData: ", response)
                     }
                     // 原始数据解析不通
-                    ApiException exception = new ApiException(apiData.getCode(), "接口数据类型不匹配", data);
-                    exception.setExceptionType(ExceptionType.JSON_PARSE);
-                    throw exception;
+                    val exception = ApiException(apiData.code!!, "接口数据类型不匹配", data)
+                    exception.exceptionType = ExceptionType.JSON_PARSE
+                    throw exception
                 } finally {
-                    value.close();
+                    value.close()
                 }
             }
         }
@@ -90,28 +81,16 @@ public class PandaResponseBodyConverter<T> implements Converter<ResponseBody, T>
      *
      * @return 处理后的 data 填充值
      */
-    private String defaultData() {
-        String data;
+    private fun defaultData(): String {
         // 当解析类型为 DefaultTypeAdapter 中的类型时，设置为 null 交给 GsonAdapter 处理对应的空值
-        if (Boolean.class.equals(dataType) ||
-                Byte.class.equals(dataType) ||
-                Short.class.equals(dataType) ||
-                Integer.class.equals(dataType) ||
-                Long.class.equals(dataType) ||
-                Float.class.equals(dataType) ||
-                Double.class.equals(dataType) ||
-                Number.class.equals(dataType) ||
-                String.class.equals(dataType) ||
-                BigDecimal.class.equals(dataType) ||
-                StringBuilder.class.equals(dataType) ||
-                StringBuffer.class.equals(dataType)) {
-            data = "null";
-        } else if (List.class.getName().equals(getClazzName())) { //解析类型为 List 时返回一个空集合的 gson 数据
-            data = GsonUtil.gson().toJson(new ArrayList<>());
-        } else {  //为 null 时默认按空对象解析
-            data = GsonUtil.gson().toJson(new EmptyData());
-        }
-        return data;
+        val data: String = if (Boolean::class.java == dataType || Byte::class.java == dataType || Short::class.java == dataType || Int::class.java == dataType || Long::class.java == dataType || Float::class.java == dataType || Double::class.java == dataType || Number::class.java == dataType || String::class.java == dataType || BigDecimal::class.java == dataType || StringBuilder::class.java == dataType || StringBuffer::class.java == dataType) {
+                "null"
+            } else if (MutableList::class.java.name == clazzName) { //解析类型为 List 时返回一个空集合的 gson 数据
+                gson().toJson(ArrayList<Any>())
+            } else {  //为 null 时默认按空对象解析
+                gson().toJson(EmptyData())
+            }
+        return data
     }
 
     /**
@@ -119,22 +98,28 @@ public class PandaResponseBodyConverter<T> implements Converter<ResponseBody, T>
      *
      * @return 完整类名
      */
-    private String getClazzName() {
-        String className = null;
-        if (null != dataType) {
-            if (dataType instanceof ParameterizedType) {
-                ParameterizedType pt = (ParameterizedType) dataType;
-                Class clz = (Class) pt.getRawType();
-                className = clz.getName();
-            } else if (dataType instanceof TypeVariable) {
-                TypeVariable tType = (TypeVariable) dataType;
-                className = tType.getGenericDeclaration().toString();
-            } else {
-                Class clz = (Class) dataType;
-                className = clz.getName();
-            }
-        }
-        return className;
-    }
+    private val clazzName: String?
+        get() {
+            var className: String? = null
+            if (null != dataType) {
+                className = when (dataType) {
+                    is ParameterizedType -> {
+                        val pt = dataType as ParameterizedType
+                        val clz = pt.rawType as Class<*>
+                        clz.name
+                    }
 
+                    is TypeVariable<*> -> {
+                        val tType = dataType as TypeVariable<*>
+                        tType.genericDeclaration.toString()
+                    }
+
+                    else -> {
+                        val clz = dataType as Class<*>
+                        clz.name
+                    }
+                }
+            }
+            return className
+        }
 }

@@ -1,48 +1,31 @@
-package com.pandaq.rxpanda;
+package com.pandaq.rxpanda
 
-import android.util.Log;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
-
-import java.util.HashMap;
-import java.util.Map;
+import android.util.Log
+import kotlinx.coroutines.Job
 
 /**
  * Created by huxinyu on 2019/3/11.
  * Email : panda.h@foxmail.com
  * Description : http requests manage
  */
-public class RequestManager {
+class RequestJobHelper private constructor() {
+    private val activeJobs: MutableMap<Any, Job> = HashMap()
 
-    private static RequestManager sManager;
+    fun addJob(tag: Any, Job: Job) {
 
-    private Map<Object, Disposable> subscribers = new HashMap<>();
-
-    private RequestManager() {
-
-    }
-
-    public static synchronized RequestManager get() {
-        if (sManager == null) {
-            sManager = new RequestManager();
+        if (activeJobs.containsKey(tag)) {
+            Log.w("RxPanda", "the tag: $tag has been used by another request !!!")
         }
-        return sManager;
+        activeJobs[tag] = Job
     }
 
-    public void addTag(@NonNull Object tag, @NonNull Disposable disposable) {
-        if (subscribers.containsKey(tag)) {
-            Log.w("RxPanda","the tag: " + tag + " has been used by another request !!!");
-        }
-        subscribers.put(tag, disposable);
-    }
-
-    public void addTags(@NonNull Map<Object, Disposable> tags) {
-        for (Object key : tags.keySet()) {
-            if (subscribers.containsKey(key)) {
-                Log.w("RxPanda","the tag: " + key + " has been used by another request !!!");
+    fun addJobs(tags: Map<Any, Job>) {
+        for (key in tags.keys) {
+            if (activeJobs.containsKey(key)) {
+                Log.w("RxPanda", "the tag: $key has been used by another request !!!")
             }
         }
-        subscribers.putAll(tags);
+        activeJobs.putAll(tags)
     }
 
     /**
@@ -50,8 +33,8 @@ public class RequestManager {
      *
      * @param tag 被移除的 tag
      */
-    public void removeTag(@NonNull Object tag) {
-        subscribers.remove(tag);
+    fun removeJob(tag: Any) {
+        activeJobs.remove(tag)
     }
 
     /**
@@ -59,15 +42,17 @@ public class RequestManager {
      *
      * @param tags 被移除的 tag
      */
-    public void removeTags(@NonNull Map<Object, Disposable> tags) {
-        subscribers.remove(tags);
+    fun removeJobs(tags: ArrayList<Any>) {
+        tags.forEach {
+            removeJob(it)
+        }
     }
 
     /**
      * 移除所有管理请求
      */
-    public void removeAll() {
-        subscribers.clear();
+    private fun removeAll() {
+        activeJobs.clear()
     }
 
     /**
@@ -75,10 +60,12 @@ public class RequestManager {
      *
      * @param tag 指定tag
      */
-    public void cancelTag(@NonNull Object tag) {
-        Disposable disposable = subscribers.get(tag);
-        if (disposable != null && !disposable.isDisposed()) {
-            disposable.dispose();
+    fun cancelJob(tag: Any) {
+        activeJobs.entries.forEach {
+            if (it.key == tag && it.value.isActive) {
+                it.value.cancel()
+                activeJobs.remove(it.key)
+            }
         }
     }
 
@@ -87,11 +74,11 @@ public class RequestManager {
      *
      * @param tags 被取消的请求的 tag
      */
-    public void cancelTags(@NonNull Object... tags) {
-        for (Object tag : tags) {
-            Disposable disposable = subscribers.get(tag);
-            if (disposable != null && !disposable.isDisposed()) {
-                disposable.dispose();
+    fun cancelJobs(vararg tags: Any) {
+        activeJobs.entries.forEach {
+            if (it.key in tags && it.value.isActive) {
+                it.value.cancel()
+                activeJobs.remove(it.key)
             }
         }
     }
@@ -99,12 +86,25 @@ public class RequestManager {
     /**
      * 取消所有已经加入管理的网络请求监听
      */
-    public void cancelAll() {
-        for (Map.Entry<Object, Disposable> entry : subscribers.entrySet()) {
-            Disposable disposable = entry.getValue();
-            if (disposable != null && !disposable.isDisposed()) {
-                disposable.dispose();
+    fun cancelAll() {
+        for ((_, job) in activeJobs) {
+            if (job.isActive) {
+                job.cancel()
             }
+        }
+        removeAll()
+    }
+
+    companion object {
+        private var sManager: RequestJobHelper? = null
+
+        @JvmStatic
+        @Synchronized
+        fun get(): RequestJobHelper? {
+            if (sManager == null) {
+                sManager = RequestJobHelper()
+            }
+            return sManager
         }
     }
 }
