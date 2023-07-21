@@ -4,13 +4,24 @@
 # 项目地址
 [RxPanda](https://github.com/PandaQAQ/RxPanda)，欢迎使用和 star，提出的问题我会及时回复并处理。
 # 接入方式
-## <= 1.0.3
-```grovy
-dependencies {
-    implementation "com.pandaq:rxpanda:version"
+## kotlin 协程版本
+- 1
+```groovy
+// project 的 build.gradle 中配置
+allprojects {
+    repositories {
+        // your other properties
+        maven { url 'https://gitee.com/monkeies/maven/raw/master' }
+    }
 }
 ```
-## >= 1.0.4 
+- 2
+```grovy
+dependencies {
+   implementation "com.pandaq:ktpanda:1.0.0"
+}
+```
+## rxjava2 版本
 - 1
 ```groovy
 // project 的 build.gradle 中配置
@@ -28,7 +39,7 @@ dependencies {
 }
 ```
 # RxPanda
-基于 `RxJava2` `Retrofit2` `Okhttp3` 封装的网络库，处理了数据格式封装，gson 数据类型处理，gson 类解析空安全问题，使用时推荐使用 Release Log 中的最新版本目前为 1.0.3版本。
+基于 `RxJava2/Kotlin Coroutine` `Retrofit2` `Okhttp3` 封装的网络库，处理了数据格式封装，gson 数据类型处理，gson 类解析空安全问题，使用时推荐使用 Release Log 中的最新版本目前为 1.0.3版本。
 
 > - 1、支持解析数据壳 key 自定义
 > - 2、支持接口单独配置禁用脱壳返回接口定义的原始对象
@@ -40,30 +51,6 @@ dependencies {
 > - 8、支持 json 解析时解析类型为第七条中的类型但是返回为 null 时替换为配置的默认值
 > - 9、兼容 PHP 接口 `float`、`int`、`double`、`long` 类型无值时后端未处理返回空字符串导致解析失败
 > - 10、支持开发阶段单接口返回模拟json数据（适用于脱离后端接口开发，提高开发效率）
-
-# Release Log
-> - 1.2.1  bug 修复
-> - 1.1.6  下载请求回调增加在子线程进行回调
-> - 1.1.5  修复因全局使用一个 client 导致配置重叠的问题
-> - 1.1.4  优化下载进度日志打印
-> - 1.1.3  RetrofitRequest Bug 修复，修复初始化接口请求对象时配置局部参数和header失效问题
-> - 1.1.2: 日志打印优化
-> - 1.1.0: ApiData code 类型由 `long` 更改为 `String` 类型，以兼容后端 String 类型 code 码
-> - 1.0.4: 修复拦截器被重复添加的 bug
-> - 1.0.3: http 请求方式增加 mock 数据支持
-> - 1.0.2: a、修复 int、float、double 类型数据空字符串不能补全的问题；b、新增注解`@MockJson`debug 模式下替换模拟数据功能
-> - 1.0.0: a、修复全局设置请求超时时间无效，会被 CONFIG 的默认超时时间覆盖问题；b、默认超时时间与 okhttp 保持一致设置为 10s
-> - 0.2.6: 升级 Retrofit 版本以达到支持 kotlin suspend 关键字，配合协程使用
-> - 0.2.5: Json 解析为对象时，基本数据类型 null 值或缺失的情况下增加默认值兼容
-> - 0.2.4: ApiException msg 空兼容性优化
-> - 0.2.3: 兼容 Number 类型 data，接口无数据时返回空字符串会解析报错的问题
-> - 0.2.2: 日志拦截器重复添加 bug 修复
-> - 0.2.1: 新增 http 错误类型分组功能、retrofit 进行 post、get 请求适配公共参数添加、日志打印通过拦截器添加的参数信息缺失问题
-> - 0.2.0: 使用 LogPrinter 同步输出并发请求日志，避免日志错乱
-> - 0.1.9: 兼容 boolean 类型的 data
-> - 0.1.8: 兼容 Android 9.0 移除反射方式替换 GsonAdapter，改用注册方式
-> - 0.1.7：文件上传下载支持
-> - 0.1.6：fix 数字解析为 String 类型时变成 double 类型字符串（1 按 String 解析变为 1.0 bug）
 
 # 基本用法
 ### 一、全局配置推荐在 Application 初始化时配置
@@ -246,7 +233,6 @@ public class UserInfo {
 ``` kotlin
     RxPanda.get("https://www.xx.xx.xx/xx/xx/xx")
     .addParam(paramsMap)
-    .tag("tags") // 可使用 RequestManager 根据 tag 管理请求
     .request(object :ApiObserver<List<ZooData>>(){
         override fun onSuccess(data: List<ZooData>?) {
             // do something
@@ -270,7 +256,6 @@ public class UserInfo {
                 RxPanda.post("xxxxxx")
                     .addHeader("header", "value")
                     .urlParams("key", "value")
-                    .tag("ss")
                     .request(object : AppCallBack<String>() {
                         override fun success(data: String?) {
 
