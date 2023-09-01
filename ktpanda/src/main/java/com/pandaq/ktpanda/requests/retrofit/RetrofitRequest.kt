@@ -37,7 +37,6 @@ open class RetrofitRequest : Request<RetrofitRequest>() {
         val retrofit: Retrofit = if (!TextUtils.isEmpty(baseUrl)) { // 如果基础地址改了者需要重新构建个 Retrofit 对象，避免影响默认请求的配置
             val newRetrofitBuilder = Retrofit.Builder()
             newRetrofitBuilder.baseUrl(baseUrl)
-            globalConfig.converterFactory
             newRetrofitBuilder.addConverterFactory(globalConfig.converterFactory)
             if (globalConfig.getCallAdapterFactories().isNotEmpty()) {
                 for (factory in globalConfig.getCallAdapterFactories()) {
